@@ -1,0 +1,35 @@
+@font-face {
+  font-family: "Bleeding";
+  src: url("../../static-fonts/Bleeding_Cowboys.ttf");
+}
+@font-face {
+  font-family: "28Days";
+  src: url("../../static-fonts/28\ Days\ Later.ttf");
+}
+@font-face {
+  font-family: "blood";
+  src: url("../../static-fonts/Blood.ttf");
+}
+@font-face {
+  font-family: "flame";
+  src: url("../../static-fonts/Flame.ttf");
+}
+.logo {
+  font-family: "Bleeding";
+  font-size: 2.5rem;
+  color: #f4303af3;
+  text-shadow: 2px 2px 4px #000000;
+  padding: 5px 0px 0px 35px;
+  cursor: pointer;
+}
+@media (max-width: 768px) {
+  .logo {
+    padding-left: 0px;
+    scale: 0.75;
+  }
+}
+.item_header {
+  @apply h-full px-3 flex max-w-max items-center col-span-1 text-gray-100 hover:text-yellow-300  hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer;
+  font-family: "flame";
+  font-size: 25px;
+}
