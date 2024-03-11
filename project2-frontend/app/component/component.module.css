@@ -32,6 +32,9 @@
   @apply h-full px-3 relative flex max-w-max items-center col-span-1 text-gray-100 hover:text-yellow-300  hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer;
   font-family: "flame";
   font-size: 25px;
+  -webkit-user-select: none;
+  user-select: none;
+  -moz-user-select: none;
 }
 .menu_1 {
   @apply absolute top-16 left-0 w-max h-max hover:text-white;
@@ -54,14 +57,21 @@
   background-color: #0000008f;
 }
 .item_menu {
-  @apply text-lg flex p-4 px-6 items-center justify-center hover:text-yellow-300 hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer;
+  @apply flex p-4 px-6 items-center justify-center hover:text-yellow-300 hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer;
+  font-size: 15px;
 }
 .info_header {
   background-color: #0000008f;
   @apply flex-col w-max h-max text-white rounded-lg;
+  -webkit-user-select: none;
+  user-select: none;
+  -moz-user-select: none;
+  position: relative;
+  right: -30px;
 }
 .info_item {
-  @apply text-xs sm:text-lg flex  p-4 px-6 items-center  hover:text-yellow-300 hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer;
+  @apply sm:text-lg flex  p-4 px-6 items-center  hover:text-yellow-300 hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer;
+  font-size: 15px;
 }
 .divider {
   @apply h-0 w-full bg-gray-300;

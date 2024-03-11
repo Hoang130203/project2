@@ -87,12 +87,12 @@ function Header() {
             <div className='flex space-x-2 justify-center items-center pr-2 sm:pr-10'>
                 <div className='relative' onMouseEnter={() => { setShowInfoHeader(true) }} onMouseLeave={() => { setShowInfoHeader(false) }}>
                     <img src='https://www.tnmt.edu.vn/wp-content/uploads/2023/11/hinh-nen-dai-dien-1.jpg' className='cursor-pointer rounded-full w-10 h-10 sm:w-12 sm:h-12 hover:ring-2 hover:ring-blue-300 ring-1 ring-gray-300'></img>
-                    <div className='absolute h-max w-max top-11 sm:top-12 right-0 '>
+                    <div className='absolute h-max w-max top-11 sm:top-12 right-0 sm:right-8 '>
                         <InfoHeader isVisible={showInfoHeader} />
                     </div>
                 </div>
-                <div className='block md:hidden ring-1 ring-gray-300 rounded-full p-1 relative focus:ring-yellow-300' >
-                    <div onClick={() => { setShowMenuMobile(!showMenuMobile) }}>
+                <div className='block md:hidden ring-1 ring-gray-300 rounded-full p-1 relative focus:ring-yellow-300' onMouseEnter={() => { setShowMenuMobile(true) }} onMouseLeave={() => { setShowMenuMobile(false) }}>
+                    <div >
                         <MenuIcon color='#fff' />
                     </div>
                     <div className='absolute h-max w-max top-12 md right-0'>
