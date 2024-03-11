@@ -29,7 +29,41 @@
   }
 }
 .item_header {
-  @apply h-full px-3 flex max-w-max items-center col-span-1 text-gray-100 hover:text-yellow-300  hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer;
+  @apply h-full px-3 relative flex max-w-max items-center col-span-1 text-gray-100 hover:text-yellow-300  hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer;
   font-family: "flame";
   font-size: 25px;
+}
+.menu_1 {
+  @apply absolute top-16 left-0 w-max h-max hover:text-white;
+}
+.list_item {
+  @apply h-max w-max grid grid-cols-3 grid-flow-row items-center justify-center rounded-lg;
+  background-color: #0000008f;
+}
+.item {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  @apply text-lg p-4 hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer;
+}
+.item_header:hover {
+  .item {
+    @apply text-white hover:text-yellow-300;
+  }
+}
+.menu_mobile {
+  @apply text-white rounded-lg;
+  background-color: #0000008f;
+}
+.item_menu {
+  @apply text-lg flex p-4 px-6 items-center justify-center hover:text-yellow-300 hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer;
+}
+.info_header {
+  background-color: #0000008f;
+  @apply flex-col w-max h-max text-white rounded-lg;
+}
+.info_item {
+  @apply text-xs sm:text-lg flex  p-4 px-6 items-center  hover:text-yellow-300 hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer;
+}
+.divider {
+  @apply h-0 w-full bg-gray-300;
+  border: 1px solid #1d101086;
 }
