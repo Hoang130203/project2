@@ -38,16 +38,18 @@ function Header() {
     return (
         <div className='flex justify-between z-20' style={{ height: '68px', position: 'fixed', width: '100%', backgroundColor: `${scroll ? '#3d3c3c3d' : '#ccc0'}`, backdropFilter: `${scroll ? 'blur(6px)' : 'blur(1px)'}`, display: 'flex', transition: '-moz-initial 1s' }}>
             <div className='flex  space-x-8'>
-                <div className={styles.logo} style={{ WebkitUserSelect: 'none', userSelect: 'none', MozUserSelect: 'none' }}>
-                    <span style={{ fontSize: '2.5rem' }}>P</span>
-                    <span style={{ fontSize: '2.3rem' }}>R</span>
-                    <span style={{ fontSize: '2.1rem' }}>J</span>
-                    <span style={{ fontSize: '1.9rem' }}>2</span>
-                    <span style={{ fontSize: '1.9rem' }}>F</span>
-                    <span style={{ fontSize: '2.1rem' }}>L</span>
-                    <span style={{ fontSize: '2.3rem' }}>I</span>
-                    <span style={{ fontSize: '2.5rem' }}>X</span>
-                </div>
+                <Link href='/'>
+                    <div className={styles.logo} style={{ WebkitUserSelect: 'none', userSelect: 'none', MozUserSelect: 'none' }}>
+                        <span style={{ fontSize: '2.5rem' }}>P</span>
+                        <span style={{ fontSize: '2.3rem' }}>R</span>
+                        <span style={{ fontSize: '2.1rem' }}>J</span>
+                        <span style={{ fontSize: '1.9rem' }}>2</span>
+                        <span style={{ fontSize: '1.9rem' }}>F</span>
+                        <span style={{ fontSize: '2.1rem' }}>L</span>
+                        <span style={{ fontSize: '2.3rem' }}>I</span>
+                        <span style={{ fontSize: '2.5rem' }}>X</span>
+                    </div>
+                </Link>
                 <div className='hidden sm:flex gap-2'>
                     <div className={styles.item_header}>
                         <Link href='#' >
