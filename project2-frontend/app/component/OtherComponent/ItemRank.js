@@ -1,8 +1,15 @@
+// import pikachu from '../../../public/pikachu.gif'
 function ItemRank({ index }) {
     const color = ['#FFD700', '#C0C0C0', '#CD7F32']
     const color2 = ['red', '#333']
+    const icons = ['/pikachu.gif', '/canhcut.gif', '/meo.gif']
     return (
         <div className="max-w-full  rounded-2xl h-24 px-5 relative flex " style={{ backgroundColor: '#18181b' }}>
+            {icons[index] && <div className="badge_div " style={{ backgroundColor: 'transparent', color: color2[index] }}>
+                <img src={icons[index]}></img>
+            </div>
+            }
+
             <div className="badge_div left-2" style={{ backgroundColor: color[index], color: color2[index] }}>{index + 1}</div>
             <img src="https://images.fpt.shop/unsafe/filters:quality(5)/fptshop.com.vn/uploads/images/tin-tuc/171197/Originals/hinh%20nen%20anime%20nam%20(45).jpg" className="h-full max-w-20 object-cover rounded-md cursor-pointer "></img>
             <div className="flex-1 h-full max-w-[90%]">
