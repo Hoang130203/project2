@@ -102,17 +102,17 @@ function CardScroll({ data, cardid, show = true }) {
                                 );
                             })
                         ) : (
-                            cardid === 'Related Anime' ? (
+                            cardid === 'Tập mới' ? (
                                 data?.map((item) => {
                                     const anime = {
                                         id: item?.node?.id || '',
-                                        coverImage: item?.node?.coverImage?.extraLarge || '',
-                                        title: item?.node?.title || '',
-                                        status: item?.node?.status || '',
-                                        format: item?.node?.format || '',
-                                        episodes: item?.node?.episodes || '',
-                                        nextAiringEpisode: item?.node?.nextAiringEpisode || '',
-                                        relationType: item?.relationType || ''
+                                        coverImage: item?.node?.coverImage?.extraLarge || 'https://cdn.sforum.vn/sforum/wp-content/uploads/2024/01/hinh-nen-anime-17.jpg',
+                                        title: item?.node?.title || 'Solo leveling',
+                                        status: item?.node?.status || 'đang ra',
+                                        format: item?.node?.format || 'Solo leveling',
+                                        episodes: item?.node?.episodes || '2',
+                                        nextAiringEpisode: item?.node?.nextAiringEpisode || 'd',
+                                        relationType: item?.relationType || '5'
                                     };
                                     return (
                                         <Link href={`/anime/info/${anime.id}`} key={anime.id}>

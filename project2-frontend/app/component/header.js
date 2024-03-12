@@ -88,7 +88,7 @@ function Header() {
             </div>
             <div className='flex space-x-2 justify-center items-center pr-2 sm:pr-10'>
                 <div className='relative' onMouseEnter={() => { setShowInfoHeader(true) }} onMouseLeave={() => { setShowInfoHeader(false) }}>
-                    <img src='https://www.tnmt.edu.vn/wp-content/uploads/2023/11/hinh-nen-dai-dien-1.jpg' className='cursor-pointer rounded-full w-10 h-10 sm:w-12 sm:h-12 hover:ring-2 hover:ring-blue-300 ring-1 ring-gray-300'></img>
+                    <img src='https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/08/hinh-nen-dien-thoai-anime-3.jpg' className='cursor-pointer rounded-full w-10 h-10 sm:w-12 sm:h-12 hover:ring-2 hover:ring-blue-300 ring-1 ring-gray-300 object-cover'></img>
                     <div className='absolute h-max w-max top-11 sm:top-12 right-0 sm:right-8 '>
                         <InfoHeader isVisible={showInfoHeader} />
                     </div>

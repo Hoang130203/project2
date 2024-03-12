@@ -27,10 +27,10 @@ function ItemContent({ anime, cardid }) {
     }
 
     return (
-        <div className={styles.carditem}>
-            {cardid === 'Recent Episodes' && (
+        <div className={styles.carditem} style={{ fontFamily: 'initial' }}>
+            {cardid === 'Tập mới' && (
                 <div className="flex-shrink-0 absolute top-0 right-0 flex items-center justify-center gap-[.4rem] bg-black/60 backdrop-blur font-light xl:font-normal text-white !text-xs  line-clamp-1 px-2 p-1 rounded-bl-lg tracking-wider">
-                    <span className='hidden md:flex'>Episode</span><span className='md:hidden'>Ep</span> <span className='font-medium'>{anime?.currentEpisode || '?'}</span></div>
+                    <span className='hidden md:flex'>Tập</span><span className='md:hidden'>Tập</span> <span className='font-medium'>{anime?.currentEpisode || '?'}</span></div>
             )}
             {cardid === 'Related Anime' && (
                 <div className="flex-shrink-0 absolute top-0 right-0 flex items-center justify-center gap-[.4rem] bg-black/60 backdrop-blur font-light xl:font-normal text-white !text-xs  line-clamp-1 px-2 p-1 rounded-bl-lg tracking-wider">
@@ -54,12 +54,12 @@ function ItemContent({ anime, cardid }) {
             <div className="hidden xl:flex h-[85%] w-[100%] rounded absolute hover:bg-gradient-to-t from-black/90 to-transparent z-7 opacity-0 hover:opacity-100 transition-all duration-300 ease  justify-center">
                 <div className="bottom-4 absolute text-xs font-light flex flex-wrap items-center justify-center gap-[.3rem] z-10">
                     <span className="uppercase">{anime.format || "?"}</span> <span className='text-[10px]'>&#8226;</span>
-                    <span className={anime.status === 'RELEASING' ? 'text-green-400 font-normal' : anime.status === 'NOT_YET_RELEASED' ? 'text-red-600 font-normal' : 'text-white font-normal'}>
+                    <span className={anime.status === 'đang ra' ? 'text-green-400 font-normal' : anime.status === 'NOT_YET_RELEASED' ? 'text-red-600 font-normal' : 'text-white font-normal'}>
                         {anime.status}
                     </span>
                     <span className='text-[10px]'>&#8226;</span>
-                    {cardid === 'Recent Episodes' ? (
-                        <span>Ep {anime?.totalEpisodes || anime?.currentEpisode || '?'}</span>
+                    {cardid === 'Tập mới' ? (
+                        <span>Tập {anime?.totalEpisodes || anime?.currentEpisode || '?'}</span>
                     ) : (
                         <span>Ep {anime?.episodes || anime?.nextAiringEpisode?.episode - 1 || '?'}</span>
                     )}
