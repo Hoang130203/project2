@@ -134,3 +134,6 @@ body {
 .badge_div {
   @apply absolute inline-flex items-center justify-center w-7 h-7 text-xl font-bold text-white bg-slate-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900;
 }
+.badge_div_2 {
+  @apply absolute inline-flex items-center justify-center w-7 h-7 text-xl font-bold text-white bg-slate-500   rounded-full -top-2 -end-2;
+}

@@ -5,7 +5,7 @@ function ItemRank({ index }) {
     const icons = ['/pikachu.gif', '/canhcut.gif', '/meo.gif']
     return (
         <div className="max-w-full  rounded-2xl h-24 px-5 relative flex " style={{ backgroundColor: '#18181b' }}>
-            {icons[index] && <div className="badge_div " style={{ backgroundColor: 'transparent', color: color2[index] }}>
+            {icons[index] && <div className="badge_div_2 " style={{ backgroundColor: 'transparent', color: color2[index] }}>
                 <img src={icons[index]}></img>
             </div>
             }
@@ -13,7 +13,7 @@ function ItemRank({ index }) {
             <div className="badge_div left-2" style={{ backgroundColor: color[index], color: color2[index] }}>{index + 1}</div>
             <img src="https://images.fpt.shop/unsafe/filters:quality(5)/fptshop.com.vn/uploads/images/tin-tuc/171197/Originals/hinh%20nen%20anime%20nam%20(45).jpg" className="h-full max-w-20 object-cover rounded-md cursor-pointer "></img>
             <div className="flex-1 h-full max-w-[90%]">
-                <div className="px-3 md:px-5 flex flex-col h-full justify-between py-2 max-w-full text-gray-400" style={{ maxWidth: '90%' }}>
+                <div className="px-3 md:px-5 flex flex-col h-full justify-between py-2 max-w-full text-gray-400" style={{ width: '90%' }}>
                     <div className=" text-nowrap max-w-full overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer hover:text-yellow-300" style={{ fontFamily: 'impact' }}>
                         Kimesu no Yaiba - Demon Slayer
                     </div>

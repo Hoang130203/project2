@@ -4,8 +4,9 @@ import styles from './Animecard.module.css';
 import { useDraggable } from 'react-use-draggable-scroll';
 import Link from 'next/link';
 import ItemContent from './ItemContent';
+import ItemContent2 from './ItemContent2';
 
-function CardScroll({ data, cardid, show = true }) {
+function CardScroll({ data, cardid, show = true, type }) {
     const containerRef = useRef();
     const { events } = useDraggable(containerRef);
     const [isLeftArrowActive, setIsLeftArrowActive] = useState(false);
@@ -47,8 +48,8 @@ function CardScroll({ data, cardid, show = true }) {
         <div className={styles.animecard}>
             {show && (
                 <div className={styles.cardhead}>
-                    <span className={styles.bar}></span>
-                    <h1 className={styles.headtitle}>{cardid}</h1>
+
+                    {type ? '' : <h1 className={styles.headtitle}>{cardid}</h1>}
                 </div>
             )}
             <div className={styles.animeitems}>
@@ -116,7 +117,7 @@ function CardScroll({ data, cardid, show = true }) {
                                     };
                                     return (
                                         <Link href={`/anime/info/${anime.id}`} key={anime.id}>
-                                            <ItemContent anime={anime} cardid={cardid} />
+                                            {type ? <ItemContent2 anime={anime} cardid={cardid}></ItemContent2> : <ItemContent anime={anime} cardid={cardid} />}
                                         </Link>
                                     );
                                 })
@@ -134,7 +135,7 @@ function CardScroll({ data, cardid, show = true }) {
 
                                     return (
                                         <Link href={`/anime/info/${anime.id}`} key={anime.id}>
-                                            <ItemContent anime={anime} cardid={cardid} />
+                                            {type ? <ItemContent2 anime={anime} cardid={cardid}></ItemContent2> : <ItemContent anime={anime} cardid={cardid} />}
                                         </Link>
                                     );
                                 })

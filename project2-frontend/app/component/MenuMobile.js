@@ -15,12 +15,12 @@ function MenuMobile({ isVisible }) {
             <div className="flex-col justify-between">
                 <div className="flex-col gap-2">
                     <div className={styles.item_menu}>
-                        <Link href='#' >
+                        <Link href='/page/films/movie'>
                             Phim lẻ
                         </Link>
                     </div>
                     <div className={styles.item_menu}>
-                        <Link href='#' >
+                        <Link href='/page/films/series' >
                             Phim bộ
                         </Link>
                     </div>

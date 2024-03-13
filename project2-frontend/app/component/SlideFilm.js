@@ -11,7 +11,7 @@ function SlideFilm() {
                 transition={{ duration: 0.5 }}
                 viewport={{ once: true }}
             >
-                <CardScroll data={herodata} cardid="Nổi bật " />
+                <CardScroll data={herodata} cardid="Nổi bật" />
             </MotionDiv>
         </div>
     );

@@ -52,12 +52,12 @@ function Header() {
                 </Link>
                 <div className='hidden sm:flex gap-2'>
                     <div className={styles.item_header}>
-                        <Link href='#' >
+                        <Link href='/page/films/movie' >
                             Phim lẻ
                         </Link>
                     </div>
                     <div className={styles.item_header}>
-                        <Link href='#' >
+                        <Link href='/page/films/series' >
                             Phim bộ
                         </Link>
                     </div>

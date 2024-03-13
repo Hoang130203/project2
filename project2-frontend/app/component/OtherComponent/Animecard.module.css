@@ -76,7 +76,17 @@
   /* border: 1px solid white; */
   /* align-items: center; */
 }
-
+.carditem_2 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: max-content;
+  /* width: 375px; */
+  @apply md:w-[375px] w-[250px];
+  margin: 0 3px 0 0;
+  /* border: 1px solid white; */
+  /* align-items: center; */
+}
 .carditem:hover .cardinfo {
   opacity: 1;
 }
@@ -225,7 +235,10 @@
     height: 90%;
     right: 0px;
   }
-
+  .rightarrow_2 {
+    height: 100%;
+    right: 0px;
+  }
   .rightarrow svg {
     width: 25px;
     height: 25px;
