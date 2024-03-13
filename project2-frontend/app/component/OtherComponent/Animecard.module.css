@@ -80,9 +80,8 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  height: max-content;
   /* width: 375px; */
-  @apply md:w-[375px] w-[250px];
+  @apply md:w-[375px] w-[250px] h-[180px] md:h-[300px];
   margin: 0 3px 0 0;
   /* border: 1px solid white; */
   /* align-items: center; */

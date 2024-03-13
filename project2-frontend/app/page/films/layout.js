@@ -7,7 +7,7 @@ function PageFilmLayout({ children }) {
                 {children}
             </div>
             <div className="min-h-24 md:w-96 shrink-0 no_select max-w-full">
-                <div className="min-h-[200px] pt-10 pl-5 text-xl md:text-2xl" >
+                <div className="min-h-[200px] pt-10 pl-3 md:pl-5 text-xl md:text-2xl" >
                     <div style={{ fontFamily: 'flame' }}>Năm phát hành</div>
                     <div className="grid grid-cols-3 gap-2 pr-2 py-3 text-gray-400" >
                         {year.map((item, index) => {

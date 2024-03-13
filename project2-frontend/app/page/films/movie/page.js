@@ -9,7 +9,7 @@ function Movie() {
         <div className="w-full">
             <div className="w-full flex justify-center items-center p-7 no_select">
                 <div className="flex-1 h-0" style={{ borderTop: '1px solid #ccc' }}></div>
-                <div className="mx-2 text-2xl md:text-4xl font-serif" >Phim lẻ </div>
+                <div className="mx-2 text-2xl md:text-4xl " style={{ fontFamily: 'bleeding' }}>Phim lẻ </div>
                 <div className="flex-1 h-0" style={{ borderTop: '1px solid #ccc' }}></div>
             </div>
             <div className="space-y-2 w-full h-max justify-start " style={{ fontFamily: 'flame' }}>
@@ -22,6 +22,12 @@ function Movie() {
                     >
                         <CardScroll data={data} cardid="Nổi bật" type={2} />
                     </MotionDiv>
+                </div>
+            </div>
+            <div className="w-full items-center p-3 no_select">
+                <div className="mx-1 md:mx-2 text-xl md:text-3xl font-serif" style={{ fontFamily: 'bleeding' }}>Phim lẻ mới ra</div>
+                <div>
+
                 </div>
             </div>
         </div>
