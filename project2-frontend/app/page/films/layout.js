@@ -6,7 +6,7 @@ function PageFilmLayout({ children }) {
             <div className="flex-1 md:max-w-[70%] ">
                 {children}
             </div>
-            <div className="min-h-24 w-96 shrink-0 no_select max-w-full">
+            <div className="min-h-24 md:w-96 shrink-0 no_select max-w-full">
                 <div className="min-h-[200px] pt-10 pl-5 text-xl md:text-2xl" >
                     <div style={{ fontFamily: 'flame' }}>Năm phát hành</div>
                     <div className="grid grid-cols-3 gap-2 pr-2 py-3 text-gray-400" >
@@ -19,7 +19,7 @@ function PageFilmLayout({ children }) {
                         }
                         )}
                     </div>
-                    <div className="py-4 ">
+                    <div className="py-4 mr-2">
                         {listFilm.map((item, index) => {
                             return (
                                 <div key={index} className="flex my-2 group bg-gray-900 hover:bg-gray-800 h-24 cursor-pointer rounded-md">
