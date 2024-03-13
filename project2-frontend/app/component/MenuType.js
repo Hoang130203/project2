@@ -12,7 +12,7 @@ function MenuType({ isVisible }) {
         <div className={styles.list_item} style={{ display: `${show ? '' : 'none'}` }}>
             {types.map((item, index) => (
                 <div key={index} className={styles.item}>
-                    <Link href={`/page/types/+${index + 1}`} >
+                    <Link href={`/page/types/${index + 1}`} >
                         Thể loại {item}
                     </Link>
                 </div>

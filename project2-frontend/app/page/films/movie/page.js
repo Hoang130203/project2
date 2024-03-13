@@ -28,7 +28,7 @@ function Movie() {
                 <div className="mx-1 md:mx-2 text-xl md:text-3xl font-serif" style={{ fontFamily: 'bleeding' }}>Phim lẻ mới cập nhật</div>
                 <div className="grid grid-cols-3 md:grid-cols-5 gap-4 pt-8">
                     {newData.map((item, index) => (
-                        <div className="min-h-16  group cursor-pointer " >
+                        <div key={index} className="min-h-16  group cursor-pointer " >
                             <div className="h-40 md:h-52 w-full">
                                 <div className="h-full w-full flex bg-slate-300 overflow-hidden rounded-md relative" >
                                     <img src="https://i.pinimg.com/236x/7e/d4/83/7ed483e065ea9cd5de8d00886f607ccf.jpg" className="w-full h-full object-cover group-hover:scale-110 rounded-md transition-transform duration-500" ></img>
