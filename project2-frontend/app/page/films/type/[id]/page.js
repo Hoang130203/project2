@@ -29,8 +29,8 @@ function TypeFilm({ params }) {
                 <div className=" md:hidden grid grid-cols-3 gap-2 px-2 py-3 text-gray-400">
                     {listTypes.map((item, index) => {
                         return (
-                            <Link href={`/page/films/type/${item.id}`}>
-                                <div key={index} style={{ border: `${item.active == true ? '1px solid #5b9ae9' : ''}`, color: `${item.active == true ? '#5b9ae9' : ''}` }} className="cursor-pointer text-xs rounded-[4px] ring-1 py-1 ring-gray-400 flex justify-center items-center  hover:bg-slate-800 ">
+                            <Link key={index} href={`/page/films/type/${item.id}`}>
+                                <div style={{ border: `${item.active == true ? '1px solid #5b9ae9' : ''}`, color: `${item.active == true ? '#5b9ae9' : ''}` }} className="cursor-pointer text-xs rounded-[4px] ring-1 py-1 ring-gray-400 flex justify-center items-center  hover:bg-slate-800 ">
                                     {item.name}
                                 </div>
                             </Link>
