@@ -31,7 +31,7 @@ function MenuMobile({ isVisible }) {
 
                     </div>
                     <div className={styles.item_menu} onMouseEnter={() => { setShow2(true) }} onMouseLeave={() => { setShow2(false) }}>
-                        <Link href='#' >
+                        <Link href='/page/films/country/1' >
                             Quốc gia
                         </Link>
                     </div>
