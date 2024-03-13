@@ -3,13 +3,13 @@ function PageFilmLayout({ children }) {
     const listFilm = [1, 2, 3, 4, 5, 6, 7, 8, 9]
     return (
         <div className="flex flex-col md:flex-row justify-between text-white min-h-[800px] w-full pt-16  md:px-6" >
-            <div className="flex-1 md:max-w-[70%] ">
+            <div className="flex-1 md:max-w-[calc(100%-360px)] ">
                 {children}
             </div>
-            <div className="min-h-24 md:w-96 shrink-0 no_select max-w-full">
-                <div className="min-h-[200px] pt-10 pl-3 md:pl-5 text-xl md:text-2xl" >
+            <div className="min-h-24 md:w-96 shrink-0 no_select max-w-full ">
+                <div className="min-h-[200px] pt-10 pl-3 md:pl-5 text-xl md:text-2xl " >
                     <div style={{ fontFamily: 'flame' }}>Năm phát hành</div>
-                    <div className="grid grid-cols-3 gap-2 pr-2 py-3 text-gray-400" >
+                    <div className="grid grid-cols-3 gap-2 pr-2 py-3 text-gray-400">
                         {year.map((item, index) => {
                             return (
                                 <div key={index} className=" cursor-pointer text-xl rounded-[4px] ring-1 ring-gray-400 flex justify-center items-center hover:ring-blue-400 hover:text-blue-400 hover:bg-slate-800 ">
@@ -18,12 +18,15 @@ function PageFilmLayout({ children }) {
                             )
                         }
                         )}
+
                     </div>
                     <div className="py-4 mr-2">
                         {listFilm.map((item, index) => {
                             return (
-                                <div key={index} className="flex my-2 group bg-gray-900 hover:bg-gray-800 h-24 cursor-pointer rounded-md">
-                                    <div className="h-full w-16 flex bg-slate-300 overflow-hidden rounded-md" >
+                                <div key={index} className="relative flex my-2 group bg-gray-900 hover:bg-gray-800 h-24 cursor-pointer rounded-md">
+                                    <div className="film_img_2"></div>
+                                    <div className="h-full w-16 flex bg-slate-300 overflow-hidden rounded-md relative" >
+                                        <div className="film_img"></div>
                                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_m8cav_i37AVLD6fGhHS78IZ0fbhmC6VIHg&usqp=CAU" className="w-full h-full object-cover group-hover:scale-110 rounded-md transition-transform duration-300" ></img>
                                     </div>
                                     <div className="px-3 md:px-5 flex flex-col h-full justify-between py-2 max-w-full text-gray-400" style={{ width: '75%' }}>

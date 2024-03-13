@@ -41,14 +41,14 @@ export default function Home() {
         <div className="space-y-2 w-full h-max justify-start" style={{ fontFamily: 'flame' }}>
           <NewEposide />
         </div>
-        <div className="flex flex-col md:flex-row w-full md:space-x-52 space-y-5 md:space-y-0">
+        <div className="flex flex-col md:flex-row w-full md:space-x-28 space-y-5 md:space-y-0">
           <div className="flex-1 text-lg md:text-2xl flex-col md:max-w-[45%]" style={{ fontFamily: '-moz-initial' }}>
             <div className=" flex"><div className="card_bar"></div>TOP ĐÁNH GIÁ</div>
             <div className="max-w-full mt-7">
               <Rank type={1} />
             </div>
           </div>
-          <div className="flex-1 text-lg md:text-2xl " style={{ fontFamily: '-moz-initial' }}>
+          <div className="flex-1 text-lg md:text-2xl md:max-w-[45%]" style={{ fontFamily: '-moz-initial' }}>
             <div className=" flex"><div className="card_bar"></div>TOP XEM NHIỀU</div>
             <div className="max-w-full mt-7">
               <Rank type={2} />

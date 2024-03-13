@@ -19,13 +19,7 @@ function Header() {
             const scrollableElement = document.documentElement;
             const scrollTop = scrollableElement.scrollTop;
 
-            if (scrollTop > 60) {
-                setScroll(true);
-                console.log('Vị trí thanh cuộn lớn hơn 10px.');
-            } else {
-                setScroll(false);
-                console.log('Vị trí thanh cuộn không lớn hơn 10px.');
-            }
+
         }
 
         window.addEventListener('scroll', handleScroll);
@@ -62,7 +56,7 @@ function Header() {
                         </Link>
                     </div>
                     <div className={styles.item_header} onMouseEnter={() => { setShow1(true) }} onMouseLeave={() => { setShow1(false) }}>
-                        <Link href='#'>
+                        <Link href=''>
                             Thể loại
 
                         </Link>
