@@ -36,7 +36,7 @@ function Movie() {
                                 </div>
                             </div>
                             <div className="h-10 pt-2 px-2 text-center">
-                                <div className="text text-nowrap max-w-full overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer group-hover:text-yellow-300 text-xl" >
+                                <div className="text text-nowrap max-w-full overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer group-hover:text-yellow-300 text-xs md:text-xl" >
                                     Advenger
                                 </div>
                             </div>

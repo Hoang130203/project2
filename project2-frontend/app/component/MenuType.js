@@ -4,18 +4,19 @@ import styles from './component.module.css'
 import Link from 'next/link';
 function MenuType({ isVisible }) {
     const [show, setShow] = useState(isVisible);
-    const types = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    const listTypes = [{ id: 1, name: 'Hành động' }, { id: 2, name: 'Phiêu lưu' }, { id: 3, name: 'Kinh dị' }, { id: 4, name: 'Hài hước' }, { id: 5, name: 'Lãng mạn' }, { id: 6, name: 'Chiến tranh' }, { id: 7, name: 'Tâm lý' }, { id: 8, name: 'Anime' }, { id: 9, name: 'Cổ trang' }, { id: 10, name: 'Viễn tưởng' }]
+
     useEffect(() => {
         setShow(isVisible);
     }, [isVisible]);
     return (
         <div className={styles.list_item} style={{ display: `${show ? '' : 'none'}` }}>
-            {types.map((item, index) => (
-                <div key={index} className={styles.item}>
-                    <Link href={`/page/types/${index + 1}`} >
-                        Thể loại {item}
-                    </Link>
-                </div>
+            {listTypes.map((item, index) => (
+                <Link key={index} href={`/page/films/type/${index + 1}`} >
+                    <div className={styles.item}>
+                        {item.name}
+                    </div>
+                </Link>
 
             ))}
         </div>

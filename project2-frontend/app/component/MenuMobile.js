@@ -25,7 +25,7 @@ function MenuMobile({ isVisible }) {
                         </Link>
                     </div>
                     <div className={styles.item_menu} onMouseEnter={() => { setShow1(true) }} onMouseLeave={() => { setShow1(false) }}>
-                        <Link href='#' >
+                        <Link href='/page/films/type/1' >
                             Thể loại
                         </Link>
 
