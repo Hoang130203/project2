@@ -3,6 +3,7 @@ package com.example.project2backend.backendfilmproject.Entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,20 +17,16 @@ import java.util.Set;
 @NoArgsConstructor
 public class User {
     @Id
-    @Column(name = "id")
-    @Max(50)
+    @Column(name = "id",columnDefinition = "varchar(70)")
     private String id;
 
-    @Column(name = "account")
-    @Max(50)
+    @Column(name = "account",columnDefinition = "varchar(50)")
     private String account;
 
-    @Column(name = "password")
-    @Max(50)
+    @Column(name = "password",columnDefinition = "varchar(70)")
     private String password;
 
-    @Column(name = "email")
-    @Max(100)
+    @Column(name = "email",columnDefinition = "varchar(70)")
     @Email
     private String email;
 
@@ -39,12 +36,30 @@ public class User {
     @Column(name = "avatar",columnDefinition = "nvarchar(max)")
     private String avatar;
 
-    @Column(name="name")
-    @Max(70)
+    @Column(name="name",columnDefinition = "nvarchar(70)")
     private String name;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles=new HashSet<>();
+
+    public User(@NotNull String userName, @NotNull String email, @NotNull String password) {
+        this.account = userName;
+        this.email = email;
+        this.password = password;
+    }
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", account='" + account + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", hasProvider=" + hasProvider +
+                ", avatar='" + avatar + '\'' +
+                ", name='" + name + '\'' +
+                ", roles=" + roles +
+                '}';
+    }
 }

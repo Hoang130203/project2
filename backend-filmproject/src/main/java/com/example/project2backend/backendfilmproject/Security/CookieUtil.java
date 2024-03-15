@@ -23,7 +23,7 @@ public class CookieUtil {
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setMaxAge(1);
-        cookie.setDomain("localHost");
+        cookie.setDomain("localhost");
         httpServletResponse.addCookie(cookie);
 
     }

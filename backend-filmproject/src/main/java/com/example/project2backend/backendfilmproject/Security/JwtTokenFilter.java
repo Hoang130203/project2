@@ -40,6 +40,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         } catch (Exception e){
             logger.error(e.getMessage());
         }
+        filterChain.doFilter(request, response);
     }
     private String getToken(HttpServletRequest request){
         Cookie cookie = WebUtils.getCookie(request,cookieName);
