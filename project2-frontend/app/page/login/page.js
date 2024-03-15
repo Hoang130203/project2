@@ -1,7 +1,25 @@
+'use client'
 import { GoogleIcon, TwitterIcon } from "@/icons/icon";
+import axios from "axios";
 import Link from "next/link";
+import { useEffect } from "react";
 
 function Login() {
+    // useEffect(() => {
+    //     // axios.post('http://localhost:8080/auth/login', { userName: 'k58a2', password: '130203' }, { withCredentials: true })
+    //     //     .then(response => {
+    //     //         console.log(response)
+    //     //     }).catch(console.error)
+    //     axios.get('http://localhost:8080/auth/logout', { withCredentials: true }).then(response => console.log(response)).catch(console.error)
+
+    //     axios.get('http://localhost:8080/auth/details', { withCredentials: true }).then(response => console.log(response)).catch(console.error)
+    // }
+    //     , []);
+    useEffect(() => {
+    }, []);
+    const handleLogout = () => {
+        axios.post('http://localhost:8080/auth/logout').then(response => console.log(response)).catch(console.error)
+    }
     return (
         <div className="flex flex-col md:flex-row pt-16 text-white justify-between items-center space-x-2 animate-slide-up">
             <div className="p-8 w-full space-y-6 md:ring-2 md:ring-gray-500 md:ml-16 rounded-2xl md:mb-20 flex-shrink-0" style={{ maxWidth: '480px' }}>
@@ -22,7 +40,7 @@ function Login() {
                     <div className="flex-1 h-0" style={{ borderTop: '1px solid #ccc' }}></div>
                 </div>
                 <div >
-                    <form className="flex flex-col space-y-6 w-full">
+                    <div className="flex flex-col space-y-6 w-full">
                         <input type="text" placeholder="Tài khoản" className="p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 bg-gray-800 focus:border-transparent"></input>
                         <input type="password" placeholder="Mật khẩu" className="p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 bg-gray-800 focus:border-transparent"></input>
                         <div class="flex items-center justify-between">
@@ -36,8 +54,8 @@ function Login() {
                             </div>
                             <a href="#" class="text-sm font-medium text-primary-600 hover:underline text-blue-400">Quên mật khẩu?</a>
                         </div>
-                        <button className="bg-orange-400 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:ring-opacity-50 rounded-md px-4 py-2">Đăng nhập</button>
-                    </form>
+                        <button onClick={handleLogout} className="bg-orange-400 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:ring-opacity-50 rounded-md px-4 py-2">Đăng nhập</button>
+                    </div>
                 </div>
                 <div>
                     <p>Bạn chưa có tài khoản? <Link href="/page/register" className="text-blue-400 hover:underline">Đăng ký</Link></p>

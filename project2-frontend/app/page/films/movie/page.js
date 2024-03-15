@@ -7,6 +7,7 @@ function Movie() {
     const newData = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }, { id: 7 }, { id: 8 }, { id: 9 }, { id: 10 }, { id: 11 }, { id: 12 }, { id: 13 }, { id: 14 }, { id: 15 }, { id: 16 }, { id: 17 }, { id: 18 }, { id: 19 }, { id: 20 }]
     return (
         <div className="w-full">
+            <iframe className="disable-hover-click no_select" width="560" height="315" style={{ maxWidth: '100%' }} src="https://www.youtube.com/embed/Cceum-qAXHg?si=4QgagZ-qmNDfUxm0&autoplay=1&mute=1&controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
             <div className="w-full flex justify-center items-center p-7 no_select">
                 <div className="flex-1 h-0" style={{ borderTop: '1px solid #ccc' }}></div>
                 <div className="mx-2 text-2xl md:text-4xl " style={{ fontFamily: 'bleeding' }}>Phim lẻ </div>
