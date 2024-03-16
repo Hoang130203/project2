@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react";
+import { MotionDiv } from "./MotionDiv";
 
 const { default: ItemRank } = require("./ItemRank");
 
@@ -17,7 +18,14 @@ function Rank({ type }) {
         <div className="max-w-full flex flex-col space-y-4">
             {rank.map((item, index) => {
                 return (
-                    <ItemRank key={index} index={index}></ItemRank>
+                    <MotionDiv key={index}
+                        initial={{ y: 15, opacity: 0 }}
+                        whileInView={{ y: 0, opacity: 1 }}
+                        transition={{ duration: 0.5 }}
+                        viewport={{ once: true }}
+                    >
+                        <ItemRank index={index}></ItemRank>
+                    </MotionDiv>
                 )
             }
             )}
