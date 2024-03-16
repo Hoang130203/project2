@@ -33,9 +33,9 @@ function Country({ params }) {
                     )}
                 </div>
                 <div className="w-full flex justify-center items-center p-9 no_select hidden md:flex">
-                    <div className="flex-1 h-0" style={{ borderTop: '1px solid #ccc' }}></div>
-                    <div className="mx-2 text-2xl md:text-4xl " style={{ fontFamily: 'monospace' }}>Phim {countries[id - 1].name} </div>
-                    <div className="flex-1 h-0" style={{ borderTop: '1px solid #ccc' }}></div>
+                    <div className="flex-1 h-0" style={{ borderTop: '1px solid #333' }}></div>
+                    <div className="mx-2 text-2xl md:text-4xl " style={{ fontFamily: 'west' }}>Phim {countries[id - 1].name} </div>
+                    <div className="flex-1 h-0" style={{ borderTop: '1px solid #333' }}></div>
                 </div>
                 <div className="grid grid-cols-3 md:grid-cols-5 gap-4 pt-8 px-3 md:px-7">
                     {newData.map((item, index) => (

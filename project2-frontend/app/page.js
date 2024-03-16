@@ -8,6 +8,7 @@ import NewEposide from "./component/NewEposide";
 import Rank from "./component/OtherComponent/Rank";
 
 export default function Home() {
+
   // <video muted loop className="max-w-full relative bottom-0" src="https://pipedproxy-bom.kavin.rocks/videoplayback?c=ANDROID&clen=14594388&cpn=dny-ke2fgPS7vpzI&dur=93.124&ei=XXfuZZXMCPO6rtoPucOwuAk&expire=1710148541&fexp=24007246&fvip=2&gir=yes&host=rr5---sn-npoe7nsr.googlevideo.com&id=o-AHdMPdkEG7e2URzIUjfkbQLHPEIEtNqlqSK9KVTPuYvX&initcwndbps=812500&ip=23.26.221.24&itag=248&keepalive=yes&lmt=1702679622466113&lsig=APTiJQcwRQIgQYOATftiyBubwytP-q2zNTlTufLV8IUZ_ZayRyKIemYCIQDWDR1SblQcvLF0Y5uV4mj9KoxU_Bu01hkRP25cWByMlg%3D%3D&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&mh=HJ&mime=video%2Fwebm&mm=31%2C29&mn=sn-npoe7nsr%2Csn-npoldne7&ms=au%2Crdu&mt=1710126784&mv=m&mvi=5&pl=24&qhash=8f8cc146&requiressl=yes&sig=AJfQdSswRgIhAOC2MRSm49Zu1hDm4GAWIdmujvC1qInRcXkP5ikRQ0B9AiEA2xo9xanGDJFhTrzlLTrVQ9O7q0ViSHDARtdfGzs48kE%3D&source=youtube&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Cgir%2Cclen%2Cdur%2Clmt&spc=UWF9f4KOyBpTAW7CjYNFPffX7_tu8Iad53P7gg5aJBjGWCRJnQ&svpuc=1&txp=5535434&ump=1&vprv=1&xpc=EgVo2aDSNQ%3D%3D" preload="auto" autoplay="" className="Herosection_herovideo__xZ6cW"></video>
   const array = ['https://res.cloudinary.com/dxmczmcpn/video/upload/v1710345342/dk2aktsqvbrefnc0inwc.webm',
     'https://res.cloudinary.com/dxmczmcpn/video/upload/v1710345388/tifb2wr1wic4gzo47jcc.webm',

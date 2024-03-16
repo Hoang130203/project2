@@ -5,16 +5,16 @@ import Link from "next/link";
 import { useEffect } from "react";
 
 function Login() {
-    // useEffect(() => {
-    //     // axios.post('http://localhost:8080/auth/login', { userName: 'k58a2', password: '130203' }, { withCredentials: true })
-    //     //     .then(response => {
-    //     //         console.log(response)
-    //     //     }).catch(console.error)
-    //     axios.get('http://localhost:8080/auth/logout', { withCredentials: true }).then(response => console.log(response)).catch(console.error)
+    useEffect(() => {
+        axios.post('http://localhost:8080/api/auth/login', { account: 'k58a23', password: '130203' }, { withCredentials: true })
+            .then(response => {
+                console.log(response)
+            }).catch(console.error)
+        // axios.get('http://localhost:8080/auth/logout', { withCredentials: true }).then(response => console.log(response)).catch(console.error)
 
-    //     axios.get('http://localhost:8080/auth/details', { withCredentials: true }).then(response => console.log(response)).catch(console.error)
-    // }
-    //     , []);
+        axios.get('http://localhost:8080/api/auth/details', { withCredentials: true }).then(response => console.log(response)).catch(console.error)
+    }
+        , []);
     useEffect(() => {
     }, []);
     const handleLogout = () => {

@@ -9,7 +9,7 @@ function InfoHeader({ isVisible }) {
     }, [isVisible]);
     return (
         <div className={styles.info_header} style={{ display: `${show ? '' : 'none'}` }}>
-            <Link href='#'>
+            <Link href='/page/account/info'>
                 <div className={styles.info_item}>
                     <div>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -19,7 +19,7 @@ function InfoHeader({ isVisible }) {
                     &nbsp;Thông tin tài khoản
                 </div>
             </Link>
-            <Link href='#'>
+            <Link href='/page/account/saved'>
                 <div className={styles.info_item}>
                     <div>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -29,7 +29,7 @@ function InfoHeader({ isVisible }) {
                     &nbsp;Phim đã lưu
                 </div>
             </Link>
-            <Link href='#'>
+            <Link href='/page/account/favorite'>
                 <div className={styles.info_item}>
                     <div>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
