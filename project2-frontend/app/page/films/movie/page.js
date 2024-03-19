@@ -1,6 +1,7 @@
 import CardScroll from "@/app/component/OtherComponent/CardScroll";
 import { MotionDiv } from "@/app/component/OtherComponent/MotionDiv";
 import SlideFilm from "@/app/component/SlideFilm";
+import Link from "next/link";
 //<iframe className="disable-hover-click no_select" width="560" height="315" src="https://www.youtube.com/embed/c_hnKogqvEs?si=xofpzzaDHSrBTt32&amp;list=PL3h_l0eg0zdgFPHA0WofJacPC54_yBtLU&autoplay=1&mute=1&controls=0&loop=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 function Movie() {
@@ -35,19 +36,21 @@ function Movie() {
                             transition={{ duration: 0.5 }}
                             viewport={{ once: true }}
                         >
-                            <div className="min-h-16  group cursor-pointer " >
-                                <div className="h-40 md:h-52 w-full">
-                                    <div className="h-full w-full flex bg-slate-300 overflow-hidden rounded-md relative" >
-                                        <img src="https://i.pinimg.com/236x/7e/d4/83/7ed483e065ea9cd5de8d00886f607ccf.jpg" className="w-full h-full object-cover group-hover:scale-110 rounded-md transition-transform duration-500" ></img>
-                                        <div className="film_img_hover hidden group-hover:block"></div>
+                            <Link href={'/page/detail/2'} className="cursor-pointer">
+                                <div className="min-h-16  group cursor-pointer " >
+                                    <div className="h-40 md:h-52 w-full">
+                                        <div className="h-full w-full flex bg-slate-300 overflow-hidden rounded-md relative" >
+                                            <img src="https://i.pinimg.com/236x/7e/d4/83/7ed483e065ea9cd5de8d00886f607ccf.jpg" className="w-full h-full object-cover group-hover:scale-110 rounded-md transition-transform duration-500" ></img>
+                                            <div className="film_img_hover hidden group-hover:block"></div>
+                                        </div>
+                                    </div>
+                                    <div className="h-10 pt-2 px-2 text-center">
+                                        <div className="text text-nowrap max-w-full overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer group-hover:text-yellow-300 text-xs md:text-xl" >
+                                            Advenger
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="h-10 pt-2 px-2 text-center">
-                                    <div className="text text-nowrap max-w-full overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer group-hover:text-yellow-300 text-xs md:text-xl" >
-                                        Advenger
-                                    </div>
-                                </div>
-                            </div>
+                            </Link>
                         </MotionDiv>
                     )
                     )}

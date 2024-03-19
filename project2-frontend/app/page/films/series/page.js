@@ -1,5 +1,6 @@
 import CardScroll from "@/app/component/OtherComponent/CardScroll";
 import { MotionDiv } from "@/app/component/OtherComponent/MotionDiv";
+import Link from "next/link";
 function Series() {
     const data = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }]
     const newData = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }, { id: 7 }, { id: 8 }, { id: 9 }, { id: 10 }, { id: 11 }, { id: 12 }, { id: 13 }, { id: 14 }, { id: 15 }, { id: 16 }, { id: 17 }, { id: 18 }, { id: 19 }, { id: 20 }]
@@ -32,19 +33,21 @@ function Series() {
                             transition={{ duration: 0.5 }}
                             viewport={{ once: true }}
                         >
-                            <div className="min-h-16  group cursor-pointer " >
-                                <div className="h-40 md:h-52 w-full">
-                                    <div className="h-full w-full flex bg-slate-300 overflow-hidden rounded-md relative" >
-                                        <img src="https://webstatic.hoyoverse.com/upload/op-public/2023/07/18/80414e484d3d40804e4618a59ad835dc_4106200218812732412.jpeg" className="w-full h-full object-cover group-hover:scale-110 rounded-md transition-transform duration-500" ></img>
-                                        <div className="film_img_hover hidden group-hover:block"></div>
+                            <Link href={'/page/detail/2'} className="cursor-pointer">
+                                <div className="min-h-16  group cursor-pointer " >
+                                    <div className="h-40 md:h-52 w-full">
+                                        <div className="h-full w-full flex bg-slate-300 overflow-hidden rounded-md relative" >
+                                            <img src="https://webstatic.hoyoverse.com/upload/op-public/2023/07/18/80414e484d3d40804e4618a59ad835dc_4106200218812732412.jpeg" className="w-full h-full object-cover group-hover:scale-110 rounded-md transition-transform duration-500" ></img>
+                                            <div className="film_img_hover hidden group-hover:block"></div>
+                                        </div>
+                                    </div>
+                                    <div className="h-10 pt-2 px-2 text-center">
+                                        <div className="text text-nowrap max-w-full overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer group-hover:text-yellow-300 text-xs md:text-xl" >
+                                            Honkai: star rail
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="h-10 pt-2 px-2 text-center">
-                                    <div className="text text-nowrap max-w-full overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer group-hover:text-yellow-300 text-xs md:text-xl" >
-                                        Honkai: star rail
-                                    </div>
-                                </div>
-                            </div>
+                            </Link>
                         </MotionDiv>
                     )
                     )}

@@ -46,19 +46,21 @@ function Country({ params }) {
                             transition={{ duration: 0.5 }}
                             viewport={{ once: true }}
                         >
-                            <div className="min-h-16  group cursor-pointer " >
-                                <div className="h-40 md:h-52 w-full">
-                                    <div className="h-full w-full flex bg-slate-300 overflow-hidden rounded-md relative" >
-                                        <img src={images[id - 1]} className="w-full h-full object-cover group-hover:scale-110 rounded-md transition-transform duration-500"></img>
-                                        <div className="film_img_hover hidden group-hover:block"></div>
+                            <Link href={'/page/detail/2'} className="cursor-pointer">
+                                <div className="min-h-16  group cursor-pointer " >
+                                    <div className="h-40 md:h-52 w-full">
+                                        <div className="h-full w-full flex bg-slate-300 overflow-hidden rounded-md relative" >
+                                            <img src={images[id - 1]} className="w-full h-full object-cover group-hover:scale-110 rounded-md transition-transform duration-500"></img>
+                                            <div className="film_img_hover hidden group-hover:block"></div>
+                                        </div>
+                                    </div>
+                                    <div className="h-10 pt-2 px-2 text-center">
+                                        <div className="text text-nowrap max-w-full overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer group-hover:text-yellow-300 text-xs md:text-xl" >
+                                            Genshin Impact
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="h-10 pt-2 px-2 text-center">
-                                    <div className="text text-nowrap max-w-full overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer group-hover:text-yellow-300 text-xs md:text-xl" >
-                                        Genshin Impact
-                                    </div>
-                                </div>
-                            </div>
+                            </Link>
                         </MotionDiv>
                     )
                     )}

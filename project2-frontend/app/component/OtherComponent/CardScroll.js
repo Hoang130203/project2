@@ -79,7 +79,7 @@ function CardScroll({ data, cardid, show = true, type }) {
                                 (x) => x.number === item.currentEpisode
                             );
                             return (
-                                <Link href={`/anime/watch/${anime.id}/gogoanime/${item?.currentEpisode}?epid=${encodeURIComponent(currentEpisode?.id)}&type=sub`} key={anime.id}>
+                                <Link href={`/page/detail/1`} key={anime.id}>
                                     <ItemContent anime={anime} cardid={cardid} />
                                 </Link>
                             );
@@ -116,7 +116,7 @@ function CardScroll({ data, cardid, show = true, type }) {
                                         relationType: item?.relationType || '5'
                                     };
                                     return (
-                                        <Link href={`/anime/info/${anime.id}`} key={anime.id}>
+                                        <Link href={`/page/detail/1`} key={anime.id}>
                                             {type ? <ItemContent2 anime={anime} cardid={cardid}></ItemContent2> : <ItemContent anime={anime} cardid={cardid} />}
                                         </Link>
                                     );
@@ -134,7 +134,7 @@ function CardScroll({ data, cardid, show = true, type }) {
                                     };
 
                                     return (
-                                        <Link href={`/anime/info/${anime.id}`} key={anime.id}>
+                                        <Link href={`/page/detail/1`} key={anime.id}>
                                             {type ? <ItemContent2 anime={anime} cardid={cardid}></ItemContent2> : <ItemContent anime={anime} cardid={cardid} />}
                                         </Link>
                                     );
