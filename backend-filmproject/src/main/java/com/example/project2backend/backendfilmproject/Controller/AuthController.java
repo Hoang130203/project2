@@ -105,7 +105,6 @@ public class AuthController {
             Authentication authentication= authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.get().getAccount(),user.get().getAccount())
             );
-            System.out.println("test");
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = jwtProvider.generateToken(authentication);
@@ -128,7 +127,15 @@ public class AuthController {
             roles.add(roleService.getByName(ERole.ROLE_USER).get());
             newuser.setRoles(roles);
             userService.save(newuser);
-            return new ResponseEntity<>(newuser,HttpStatus.CREATED);
+            Authentication authentication= authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(newuser.getAccount(),newuser.getAccount())
+            );
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = jwtProvider.generateToken(authentication);
+            CookieUtil.create(httpServletResponse,cookieName,jwt,false,-1,"localhost");
+            return new ResponseEntity<>(new Message("Bạn đã đăng ký, đăng nhập thành công"), HttpStatus.OK);
+//            return new ResponseEntity<>(newuser,HttpStatus.CREATED);
         }
         return ResponseEntity.badRequest().body("error");
     }
