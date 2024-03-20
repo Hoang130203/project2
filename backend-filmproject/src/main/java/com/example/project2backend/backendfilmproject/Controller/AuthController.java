@@ -108,7 +108,7 @@ public class AuthController {
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = jwtProvider.generateToken(authentication);
-            CookieUtil.create(httpServletResponse,cookieName,jwt,false,-1,"localhost");
+            CookieUtil.create(httpServletResponse,cookieName,jwt,false,-1,"");
             return new ResponseEntity<>(new Message("Bạn đã đăng nhập"), HttpStatus.OK);
             } catch (Exception e) {
                 return new ResponseEntity<>(new Message("Lỗi rồi!"), HttpStatus.BAD_REQUEST);
@@ -133,7 +133,7 @@ public class AuthController {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = jwtProvider.generateToken(authentication);
-            CookieUtil.create(httpServletResponse,cookieName,jwt,false,-1,"localhost");
+            CookieUtil.create(httpServletResponse,cookieName,jwt,false,-1,"");
             return new ResponseEntity<>(new Message("Bạn đã đăng ký, đăng nhập thành công"), HttpStatus.OK);
 //            return new ResponseEntity<>(newuser,HttpStatus.CREATED);
         }
@@ -147,7 +147,7 @@ public class AuthController {
         String userName = userDetails.getUsername();
         Optional<User> user= this.userService.getByAccount(userName);
         if (!user.isPresent()) {
-            return new ResponseEntity<>(new Message("No encotrado"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new Message("No info"), HttpStatus.NOT_FOUND);
         }
 
         return new ResponseEntity<>(roleService.getByUser(user.get()), HttpStatus.OK) ;
