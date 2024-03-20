@@ -1,5 +1,6 @@
 package com.example.project2backend.backendfilmproject.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
@@ -21,9 +22,11 @@ public class User {
     private String id;
 
     @Column(name = "account",columnDefinition = "varchar(50)")
+    @JsonIgnore
     private String account;
 
     @Column(name = "password",columnDefinition = "varchar(70)")
+    @JsonIgnore
     private String password;
 
     @Column(name = "email",columnDefinition = "varchar(70)")
@@ -39,6 +42,10 @@ public class User {
     @Column(name="name",columnDefinition = "nvarchar(70)")
     private String name;
 
+    @Column(name = "age")
+    private int age;
+
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))

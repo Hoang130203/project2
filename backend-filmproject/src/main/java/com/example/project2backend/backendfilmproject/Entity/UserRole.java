@@ -12,6 +12,7 @@ import java.sql.Date;
 @Setter
 @NoArgsConstructor
 @Table(name = "user_role")
+@IdClass(UserRoleKey.class)
 public class UserRole {
 //    @Id
 //    @Column(name = "id")
