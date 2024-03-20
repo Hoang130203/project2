@@ -63,8 +63,8 @@ public class AuthController {
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = jwtProvider.generateToken(authentication);
-            CookieUtil.create(httpServletResponse,cookieName,jwt,false,-1,"localhost");
-            return new ResponseEntity<>(new Message("Bạn đã đăng nhập"), HttpStatus.OK);
+            CookieUtil.create(httpServletResponse,cookieName,jwt,false,-1,"");
+            return new ResponseEntity<>(jwt, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new Message("Lỗi rồi!"), HttpStatus.BAD_REQUEST);
         }
