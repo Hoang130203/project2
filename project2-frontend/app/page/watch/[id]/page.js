@@ -37,7 +37,7 @@ function Watch({ params }) {
                 <div className="grid grid-cols-6 py-5 sm:grid-cols-9 md:grid-cols-12 px-2 gap-y-3 md:gap-y-5 md:px-3 md:pr-10">
                     {
                         list.map((item, index) => (
-                            <Link href={`/page/watch/${item.id}`}>
+                            <Link key={index} href={`/page/watch/${item.id}`}>
                                 <div className="md:w-14 md:h-14 w-12 h-12  p-1 bg-slate-600 hover:text-yellow-300 rounded-xl flex justify-center items-center cursor-pointer hover:bg-slate-500 hover:ring-2 hover:ring-blue-400 hover:scale-105 duration-100 transition-transform">
                                     {item.id}
                                 </div>
