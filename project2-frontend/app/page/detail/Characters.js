@@ -52,26 +52,33 @@ function Character() {
                 </span>
                 <div className={styles.cardcontainer} id="cardid" {...events} ref={containerRef} onScroll={handleScroll}>
                     {herodata?.map((character, index) => (
-                        <div className='h-full' key={index}>
-                            <div
-                                className="w-[135px] md:w-[155px] xl:w-[175px] h-[200px] md:h-[230px] xl:h-[265px] relative rounded-lg cursor-pointer"
-                            >
-                                <img
-                                    className={`w-full h-full rounded-lg transition-opacity absolute `}
-                                    src={character?.node?.image?.large || 'https://i.pinimg.com/236x/2d/a8/50/2da8506fdad531cd61ed3b70aac153d0.jpg'}
-                                    alt={character?.node?.name?.full}
-                                    width={170}
-                                    height={230}
-                                    style={{ objectFit: 'cover' }}
-                                />
-                                <div className="p-2 absolute top-0 left-0 align-bottom flex flex-col-reverse w-full h-full bg-gradient-to-b from-transparent via-transparent to-black">
-                                    <div className="font-medium text-xs opacity-80 text-white">{character.role || 'Nhân vật chính'}</div>
-                                    <div className="font-semibold text-lg text-red-300" style={{ fontFamily: 'Instagram' }}>
-                                        {character?.name?.full || 'Uchiha Sasuke'}
+                        <MotionDiv key={index}
+                            initial={{ y: 15, opacity: 0 }}
+                            whileInView={{ y: 0, opacity: 1 }}
+                            transition={{ duration: 0.5 }}
+                            viewport={{ once: true }}
+                        >
+                            <div className='h-full'>
+                                <div
+                                    className="w-[135px] md:w-[155px] xl:w-[175px] h-[200px] md:h-[230px] xl:h-[265px] relative rounded-lg cursor-pointer"
+                                >
+                                    <img
+                                        className={`w-full h-full rounded-lg transition-opacity absolute `}
+                                        src={character?.node?.image?.large || 'https://i.pinimg.com/236x/2d/a8/50/2da8506fdad531cd61ed3b70aac153d0.jpg'}
+                                        alt={character?.node?.name?.full}
+                                        width={170}
+                                        height={230}
+                                        style={{ objectFit: 'cover' }}
+                                    />
+                                    <div className="p-2 absolute top-0 left-0 align-bottom flex flex-col-reverse w-full h-full bg-gradient-to-b from-transparent via-transparent to-black">
+                                        <div className="font-medium text-xs opacity-80 text-white">{character.role || 'Nhân vật chính'}</div>
+                                        <div className="font-semibold text-lg text-red-300" style={{ fontFamily: 'Instagram' }}>
+                                            {character?.name?.full || 'Uchiha Sasuke'}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </MotionDiv>
                     ))}
                 </div>
             </div>
