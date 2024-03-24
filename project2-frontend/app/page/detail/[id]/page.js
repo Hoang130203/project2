@@ -1,12 +1,33 @@
+'use client'
 import Link from "next/link";
 import NavBottom from "../NavBottom";
 import Image from "next/image";
 import { MotionDiv } from "@/app/component/OtherComponent/MotionDiv";
+import { SendIcon } from "@/icons/icon";
+import { useState } from "react";
 
 function Detail({ params }) {
     const bg = 'https://images3.alphacoders.com/132/1328396.png'
     const img = 'https://cdn.oneesports.vn/cdn-data/sites/4/2023/10/Anime-Naruto-avt.jpg'
     const epdata = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    const [review, setReview] = useState('')
+
+    const [listReview, setListReview] = useState([
+        { id: 1, name: 'Uzumaki Naruto', comment: 'Phim này hay quá', date: '20-3-2024', avatar: 'https://cdn.popsww.com/blog/sites/2/2022/02/naruto-co-bao-nhieu-tap.jpg' },
+        { id: 2, name: 'Uchiha Sasuke', comment: 'Phim cảm động ghê', date: '19-3-2024', avatar: 'https://gamek.mediacdn.vn/133514250583805952/2020/7/6/photo-1-15940093634781712523938.png' },
+        { id: 3, name: 'Haruno Sakura', comment: 'Ok', date: '18-3-2024', avatar: 'https://kilala.vn/data/upload/article/4589/cac%20nang%20sakura%20(4).jpg' },
+        { id: 4, name: 'Hatake Kakashi', comment: 'Hmm', date: '17-3-2024', avatar: 'https://cdn.oneesports.vn/cdn-data/sites/4/2023/02/Naruto-Kakashi-1-63ed2500d4625.jpg' },
+        { id: 5, name: 'Uzumaki Boruto', comment: 'Hehe', date: '16-3-2024', avatar: 'https://cdn.popsww.com/blog/sites/2/2023/02/cac-nhan-vat-trong-boruto-2.jpg' },
+        { id: 6, name: 'Uzumaki Himawari', comment: 'Hay quá đi', date: '15-3-2024', avatar: 'https://cdn.popsww.com/blog/sites/2/2023/07/himawari.jpg' },
+
+    ])
+    const sendReview = () => {
+        if (review != '') {
+            setListReview((prev) => [{ id: 0, name: 'Mai Minh Hoàng', comment: review, date: 'vừa xong', avatar: 'https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/08/hinh-nen-dien-thoai-anime-3.jpg' }, ...prev])
+            setReview('')
+        }
+    }
+
     return (
         <div className="w-full min-h-[800px] no_select">
             <div className="h-[500px]">
@@ -95,6 +116,50 @@ function Detail({ params }) {
                         </Link>
                     );
                 })}
+            </div>
+            <div className="min-h-[300px]  rounded-xl w-full p-4 mt-9 px-4 sm:px-20 pb-7 text-white">
+                <div className=" text-2xl sm:text-3xl py-4 pt-6 " style={{ fontFamily: 'west' }}>Review</div>
+                <div className="pt-2 md:pt-3 md:flex md:items-center">
+                    <div className="flex items-end gap-x-3 ">
+                        <div className="hover:ring-2 hover:ring-blue-300 ring-1 ring-gray-300 rounded-full w-10 h-10 sm:w-12 sm:h-12 overflow-hidden">
+                            <img src='https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/08/hinh-nen-dien-thoai-anime-3.jpg' className='cursor-pointer rounded-full w-10 h-10 sm:w-12 sm:h-12  object-cover hover:scale-110'></img>
+                        </div>
+                        <p className="md:hidden text-xl text-blue-200" style={{ fontFamily: 'Instagram' }}>Mai Minh Hoàng</p>
+                    </div>
+                    <div className="flex items-center pt-2 md:w-[90%] md:pl-5">
+                        <input type="text" placeholder="Nhập review" value={review} onChange={(e) => setReview(e.target.value)} className="bg-slate-900 w-full h-10 md:h-11 px-2 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500"></input>
+                        <div className="cursor-pointer flex  w-[28px]  ml-4 hover:scale-110 hover" onClick={sendReview}>
+                            <SendIcon />
+                        </div>
+                    </div>
+                </div>
+                <div className="w-full h-1 py-3" style={{ borderBottom: '1px solid #a6a6a6' }}></div>
+                <div>
+                    {
+                        listReview.map((item, index) => {
+                            return (
+                                <MotionDiv key={index}
+                                    initial={{ y: 15, opacity: 0 }}
+                                    whileInView={{ y: 0, opacity: 1 }}
+                                    transition={{ duration: 0.5 }}
+                                    viewport={{ once: true }}
+                                >
+                                    <div >
+                                        <div className="flex items-center mt-4">
+                                            <Image width={100} height={100} src={item.avatar} className='cursor-pointer rounded-full w-10 h-10 sm:w-12 sm:h-12 hover:ring-2 hover:ring-blue-300 ring-1 ring-gray-300 object-cover'></Image>
+                                            <div className="pl-3">
+                                                <p className="text-lg text-gray-200 " style={{ fontFamily: 'west' }}>{item.name}</p>
+                                                <p className="text-sm text-gray-400">{item.date}</p>
+                                            </div>
+                                        </div>
+                                        <div className="pl-14 pt-2 ">{item.comment}</div>
+                                    </div>
+                                </MotionDiv>
+                            )
+                        })
+                    }
+
+                </div>
             </div>
             <div className="min-h-6"></div>
         </div>

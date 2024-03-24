@@ -28,7 +28,7 @@ function Movie() {
             </div>
             <div className="w-full items-center p-3 no_select">
                 <div className="mx-1 md:mx-2 text-xl md:text-3xl font-serif" style={{ fontFamily: 'west' }}>Phim lẻ mới cập nhật</div>
-                <div className="grid grid-cols-3 md:grid-cols-5 gap-4 pt-8">
+                <div className="grid grid-cols-3 md:grid-cols-5 gap-4 pt-8 2xl:grid-cols-6">
                     {newData.map((item, index) => (
                         <MotionDiv key={index}
                             initial={{ y: 15, opacity: 0 }}

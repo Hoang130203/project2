@@ -44,7 +44,7 @@ function TypeFilm({ params }) {
                     <div className="mx-2 text-2xl md:text-4xl " style={{ fontFamily: 'west' }}>Phim {listTypes[id - 1].name} </div>
                     <div className="flex-1 h-0" style={{ borderTop: '1px solid #333' }}></div>
                 </div>
-                <div className="grid grid-cols-3 md:grid-cols-5 gap-4 pt-8 px-3 md:px-7">
+                <div className="grid grid-cols-3 md:grid-cols-5 gap-4 pt-8 px-3 md:px-7 2xl:grid-cols-6">
                     {newData.map((item, index) => (
                         <MotionDiv key={index}
                             initial={{ y: 15, opacity: 0 }}
