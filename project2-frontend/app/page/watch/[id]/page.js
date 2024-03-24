@@ -9,9 +9,9 @@ function Watch({ params }) {
     const id = params.id;
     const [comment, setComment] = useState('')
     const list = [
-        { id: 1, episode: 'https://1080.opstream4.com/share/1ca626c2c91dad03c61ca216b535145b' },
-        { id: 2, episode: 'https://1080.opstream4.com/share/9145f5ea393c6f6a4a7eff618814f91e' },
-        { id: 3, episode: 'https://1080.opstream4.com/share/ccacb872e833031d124beb4e0a5be380' },
+        { id: 1, episode: 'https://www.youtube.com/embed/LD8G3oC0X2g?si=015U-CcfDX7E5--h' },
+        { id: 2, episode: 'https://vip.opstream17.com/share/d736bb10d83a904aefc1d6ce93dc54b8' },
+        { id: 3, episode: 'https://vip.opstream17.com/share/82b8a3434904411a9fdc43ca87cee70c' },
         { id: 4, episode: 'https://1080.opstream4.com/share/eaf72c29ea749db9d115947ff9caa86f' },
         { id: 5, episode: 'https://1080.opstream4.com/share/ef8ff3bb5f926198d139c3e9750a3739' },
         { id: 6, episode: 'https://1080.opstream4.com/share/e4e13c3ff0c5a77ff11d6cb979ba7187' },
@@ -34,17 +34,23 @@ function Watch({ params }) {
             setComment('')
         }
     }
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            handleSend()
+        }
+    };
     return (
         <div className="py-20 md:px-10 px-3 flex justify-between text-white no_select">
             <div className="xl:w-[75%] w-full ">
                 <div className="relative h-0 rounded-md" style={{ paddingTop: '56.25%' }}>
                     <iframe
                         className="absolute top-0 left-0 w-full h-full rounded-md"
-                        src={list[id - 1].episode}
+                        src={`${list[id - 1].episode}`}
                         frameBorder="0"
                         allowTransparency="true"
                         allowFullScreen="true"
                         scrolling="no"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     ></iframe>
                 </div>
                 <div>
@@ -74,7 +80,7 @@ function Watch({ params }) {
                             <p className="md:hidden text-xl text-blue-200" style={{ fontFamily: 'Instagram' }}>Mai Minh Hoàng</p>
                         </div>
                         <div className="flex items-center pt-2 md:w-[90%] md:pl-5">
-                            <input type="text" placeholder="Nhập bình luận" value={comment} onChange={(e) => setComment(e.target.value)} className="bg-slate-900 w-full h-10 md:h-11 px-2 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500"></input>
+                            <input type="text" placeholder="Nhập bình luận" onKeyDown={handleKeyDown} value={comment} onChange={(e) => setComment(e.target.value)} className="bg-slate-900 w-full h-10 md:h-11 px-2 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500"></input>
                             <div className="cursor-pointer flex  w-[28px]  ml-4 hover:scale-110 hover" onClick={handleSend}>
                                 <SendIcon />
                             </div>

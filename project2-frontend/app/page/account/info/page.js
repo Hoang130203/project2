@@ -21,6 +21,7 @@ function Favorite() {
     }, [file])
     return (
         <div className="px-4 md:px-10 py-20 min-h-[900px] md:pt-28">
+            <div style={{ zIndex: 0, position: 'fixed', top: '0px', left: '0px', height: '100%', width: '100%', backgroundImage: `url('https://wallpapercave.com/wp/wp11337851.png')`, backgroundPosition: 'center', opacity: 0.2, backgroundRepeat: 'no-repeat' }}></div>
             <div className="flex sm:flex-row flex-col-reverse justify-start sm:justify- pb-12 mt-10 gap-y-2">
                 <div className="sm:w-[60%] md:w-[70%] md:pr-3 no_select relative group">
                     <div className="p-3 min-h-64 bg-opacity-65 bg-slate-950 rounded-xl text-white gap-4">
@@ -116,7 +117,7 @@ function Favorite() {
                 transition={{ duration: 0.5 }}
                 viewport={{ once: true }}
             >
-                <div className="antialiased font-sans font-normal text-sm text-white leading-6 relative items-center w-full rounded-md whitespace-pre-wrap flex justify-between px-4 rounded border border-solid bg-gray-800 border-orange-400 box-border flex-col md:flex-row min-h-[40px] mb-6">
+                <div className="antialiased font-sans font-normal no_select text-sm text-white leading-6 relative items-center w-full rounded-md whitespace-pre-wrap flex justify-between px-4 rounded border border-solid bg-gray-800 border-orange-400 box-border flex-col md:flex-row min-h-[40px] mb-6">
                     <div className="flex py-4 md:pr-10"><div className="flex items-center mr-4"><svg width="24" height="24" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.25107 3.34184C7.88662 3.79979 7.47772 4.50308 6.89105 5.51641L3.84439 10.7788C3.25563 11.7958 2.84775 12.5033 2.63131 13.0493C2.41671 13.5906 2.45384 13.8189 2.54002 13.9684C2.6262 14.1178 2.80514 14.2643 3.38114 14.3499C3.96212 14.4361 4.77877 14.4376 5.95387 14.4376H12.0472C13.2223 14.4376 14.0389 14.4361 14.6199 14.3499C15.1959 14.2643 15.3749 14.1178 15.461 13.9684C15.5472 13.8189 15.5844 13.5906 15.3698 13.0493C15.1533 12.5033 14.7454 11.7958 14.1567 10.7788L11.11 5.51642C10.5233 4.50308 10.1144 3.7998 9.74998 3.34184C9.38879 2.88798 9.17293 2.8064 9.00053 2.8064C8.82813 2.8064 8.61227 2.88798 8.25107 3.34184ZM7.37081 2.6413C7.80297 2.09826 8.3081 1.6814 9.00053 1.6814C9.69296 1.6814 10.1981 2.09826 10.6303 2.6413C11.053 3.17245 11.5028 3.94945 12.0591 4.91036L12.0836 4.95275L15.1303 10.2152L15.1548 10.2576L15.1548 10.2576L15.1548 10.2576C15.7132 11.2221 16.1647 12.0018 16.4156 12.6347C16.672 13.2816 16.7823 13.929 16.4357 14.5303C16.089 15.1316 15.4734 15.3605 14.7851 15.4627C14.1116 15.5626 13.2107 15.5626 12.0962 15.5626H12.0472H5.95387H5.90488C4.79039 15.5626 3.88944 15.5626 3.21594 15.4627C2.52763 15.3605 1.91209 15.1316 1.56541 14.5303C1.21872 13.929 1.32905 13.2816 1.58548 12.6347C1.8364 12.0018 2.28783 11.2221 2.84624 10.2576L2.87079 10.2152L5.91745 4.95275L5.94198 4.91037L5.94199 4.91035C6.49828 3.94945 6.94811 3.17245 7.37081 2.6413ZM9.00053 6.1876C9.31119 6.1876 9.56303 6.43944 9.56303 6.7501V9.7501C9.56303 10.0608 9.31119 10.3126 9.00053 10.3126C8.68987 10.3126 8.43803 10.0608 8.43803 9.7501V6.7501C8.43803 6.43944 8.68987 6.1876 9.00053 6.1876ZM9.00053 12.7501C9.41474 12.7501 9.75053 12.4143 9.75053 12.0001C9.75053 11.5859 9.41474 11.2501 9.00053 11.2501C8.58632 11.2501 8.25053 11.5859 8.25053 12.0001C8.25053 12.4143 8.58632 12.7501 9.00053 12.7501Z" className="fill-orange-400"></path></svg></div>
                         <div className="flex-col">
                             <div className="antialiased font-sans font-medium text-sm text-gray-400 leading-6">
@@ -140,14 +141,14 @@ function Favorite() {
 
                 </div>
             </MotionDiv>
-            <div className={`mt-12 grid grid-cols-1 md:grid-cols-3 gap-3 ${showPay ? "" : "hidden "} transition-none ease-in-out delay-350 duration-300`}>
+            <div className={`mt-12  no_select  grid grid-cols-1 md:grid-cols-3 gap-3 ${showPay ? "" : "hidden "} transition-none ease-in-out delay-350 duration-300`}>
                 <MotionDiv
                     initial={{ y: -10, opacity: 0 }}
                     whileInView={{ y: 0, opacity: 1 }}
                     transition={{ duration: 0.5 }}
                     viewport={{ once: true }}
                 >
-                    <div href="#" className=" relative group overflow-hidden p-8 rounded-xl bg-white border border-gray-200 dark:border-gray-800 dark:bg-gray-900">
+                    <div href="#" className="relative group overflow-hidden p-8 rounded-xl bg-white border border-gray-200 dark:border-gray-800 dark:bg-gray-900">
                         <div aria-hidden="true" className="inset-0 absolute aspect-video border rounded-full -translate-y-1/2 group-hover:-translate-y-1/4 duration-300 bg-gradient-to-b from-green-500 to-white  blur-2xl opacity-25 dark:opacity-5 dark:group-hover:opacity-10"></div>
                         <div className="relative">
                             <div className="flex items-center">

@@ -24,7 +24,7 @@ function Rank({ type }) {
                         transition={{ duration: 0.5 }}
                         viewport={{ once: true }}
                     >
-                        <ItemRank index={index}></ItemRank>
+                        <ItemRank index={index} type={type}></ItemRank>
                     </MotionDiv>
                 )
             }

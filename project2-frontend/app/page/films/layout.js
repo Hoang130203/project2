@@ -3,10 +3,11 @@ function PageFilmLayout({ children }) {
     const listFilm = [1, 2, 3, 4, 5, 6, 7, 8, 9]
     return (
         <div className="flex flex-col md:flex-row justify-between text-white min-h-[800px] w-full pt-16  md:px-6" >
-            <div className="flex-1 md:max-w-[calc(100%-360px)] ">
+            <div style={{ zIndex: 0, position: 'fixed', top: '0px', left: '0px', height: '100%', width: '100%', backgroundImage: `url('https://i.pinimg.com/originals/cb/bb/2f/cbbb2f79e94fe48b30427b1cc41cb771.jpg')`, backgroundPosition: 'center', opacity: 0.1 }}></div>
+            <div className="flex-1 md:max-w-[calc(100%-360px)]  z-[2]">
                 {children}
             </div>
-            <div className="min-h-24 md:w-96 shrink-0 no_select max-w-full ">
+            <div className="min-h-24 md:w-96 shrink-0 no_select max-w-full z-[2]">
                 <div className="min-h-[200px] pt-10 pl-3 md:pl-5 text-xl md:text-2xl " >
                     <div style={{ fontFamily: 'flame' }}>Năm phát hành</div>
                     <div className="grid grid-cols-3 gap-2 pr-2 py-3 text-gray-400">

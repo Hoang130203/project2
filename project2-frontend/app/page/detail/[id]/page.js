@@ -27,7 +27,11 @@ function Detail({ params }) {
             setReview('')
         }
     }
-
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            sendReview()
+        }
+    };
     return (
         <div className="w-full min-h-[800px] no_select">
             <div className="h-[500px]">
@@ -127,7 +131,7 @@ function Detail({ params }) {
                         <p className="md:hidden text-xl text-blue-200" style={{ fontFamily: 'Instagram' }}>Mai Minh Hoàng</p>
                     </div>
                     <div className="flex items-center pt-2 md:w-[90%] md:pl-5">
-                        <input type="text" placeholder="Nhập review" value={review} onChange={(e) => setReview(e.target.value)} className="bg-slate-900 w-full h-10 md:h-11 px-2 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500"></input>
+                        <input type="text" placeholder="Nhập review" onKeyDown={handleKeyDown} value={review} onChange={(e) => setReview(e.target.value)} className="bg-slate-900 w-full h-10 md:h-11 px-2 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500"></input>
                         <div className="cursor-pointer flex  w-[28px]  ml-4 hover:scale-110 hover" onClick={sendReview}>
                             <SendIcon />
                         </div>
