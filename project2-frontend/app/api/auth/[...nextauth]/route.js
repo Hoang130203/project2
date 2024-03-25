@@ -2,7 +2,7 @@
 import NextAuth from "next-auth/next";
 import GoogleProvider from 'next-auth/providers/google'
 // import FacebookProvider from 'next-auth/providers/facebook'
-// import GithubProvider from 'next-auth/providers/github'
+import GithubProvider from 'next-auth/providers/github'
 import TwitterProvider from 'next-auth/providers/twitter'
 
 const handler = NextAuth({
@@ -16,14 +16,14 @@ const handler = NextAuth({
         //     clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
         //     scope: 'email,user_friends,user_gender,user_age_range,user_phone_number'
         // }),
-        // GithubProvider({
-        //     clientId: process.env.GITHUB_CLIENT_ID,
-        //     clientSecret: process.env.GITHUB_CLIENT_SECRET
-        // }),
-        TwitterProvider({
-            clientId: process.env.TWITTER_CLIENT_ID,
-            clientSecret: process.env.TWITTER_CLIENT_SECRET
-        })
+        GithubProvider({
+            clientId: process.env.GITHUB_CLIENT_ID,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET
+        }),
+        // TwitterProvider({
+        //     clientId: process.env.TWITTER_CLIENT_ID,
+        //     clientSecret: process.env.TWITTER_CLIENT_SECRET
+        // })
     ],
     callbacks: {
         session: async ({ session, token }) => {

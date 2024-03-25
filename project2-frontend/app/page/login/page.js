@@ -52,8 +52,8 @@ function Login() {
                     <div onClick={() => signIn('google')} className="flex items-center justify-center space-x-3 text-gray-300 w-full ring-gray-500 hover:ring-orange-400 ring-2 rounded-lg py-2 cursor-pointer hover:bg-gray-700 hover:text-white">
                         <GoogleIcon /><div> Đăng nhập với Google</div>
                     </div>
-                    <div onClick={() => signIn('twitter')} className="flex items-center justify-center space-x-3 text-gray-300 w-full ring-gray-500 hover:ring-orange-400 ring-2 rounded-lg py-2 cursor-pointer hover:bg-gray-700 hover:text-white">
-                        <TwitterIcon /><div> Đăng nhập với Twitter</div>
+                    <div onClick={() => signIn('github')} className="flex items-center justify-center space-x-3 text-gray-300 w-full ring-gray-500 hover:ring-orange-400 ring-2 rounded-lg py-2 cursor-pointer hover:bg-gray-700 hover:text-white">
+                        <TwitterIcon /><div> Đăng nhập với Github</div>
                     </div>
                 </div>
                 <div className="w-full flex justify-center items-center">
