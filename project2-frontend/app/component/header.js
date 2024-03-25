@@ -23,25 +23,16 @@ function Header() {
             return '';
         }
     };
-    var avatar2 = '';
+    let avatar2
     try {
         avatar2 = localStorage.getItem('film_avatar');
     } catch (error) {
-        console.error('Error retrieving avatar from localStorage:', error);
-    }
-    const [avatar, setAvatar] = useState(() => {
-        // Initialize the state
-        try {
-            const value = localStorage.getItem('film_avatar')
-            // Check if the local storage already has any values,
-            // otherwise initialize it with the passed initialValue
-            return value ? value : ''
-        } catch (error) {
-            console.log(error)
-            // return ''
-        }
 
-    });
+    }
+    const [avatar, setAvatar] = useState('');
+    useEffect(() => {
+        setAvatar(getAvatarFromLocalStorage());
+    }, []);
     useEffect(() => {
         function handleScroll() {
             const scrollableElement = document.documentElement;

@@ -13,24 +13,16 @@ function Favorite() {
             return '';
         }
     };
-    var avatar2 = ''
+    let avatar2
     try {
-        var avatar2 = localStorage.getItem('film_avatar');
+        avatar2 = localStorage.getItem('film_avatar');
     } catch (error) {
         console.error('Error retrieving avatar from localStorage:', error);
     }
-    const [avatar, setAvatar] = useState(() => {
-        // Initialize the state
-        try {
-            const value = window.localStorage.getItem('film_avatar')
-            // Check if the local storage already has any values,
-            // otherwise initialize it with the passed initialValue
-            return value ? value : ''
-        } catch (error) {
-            console.log(error)
-            // return ''
-        }
-    })
+    const [avatar, setAvatar] = useState('')
+    useEffect(() => {
+        setAvatar(getAvatarFromLocalStorage());
+    }, []);
     const [file, setFile] = useState()
     const handleFileChange = (event) => {
         // setIsposting(false)
