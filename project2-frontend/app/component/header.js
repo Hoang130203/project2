@@ -7,24 +7,41 @@ import MenuType from './MenuType';
 import MenuCountry from './MenuCountry';
 import MenuMobile from './MenuMobile';
 import InfoHeader from './InfoHeader';
-const getAvatarFromLocalStorage = () => {
-    try {
-        console.log(localStorage.getItem('film_avatar'))
-        return localStorage.getItem('film_avatar');
 
-    } catch (error) {
-        console.error('Error retrieving avatar from localStorage:', error);
-        return null;
-    }
-};
 function Header() {
     const [scroll, setScroll] = useState(0);
     const [show1, setShow1] = useState(false);
     const [show2, setShow2] = useState(false);
     const [showMenuMobile, setShowMenuMobile] = useState(false);
     const [showInfoHeader, setShowInfoHeader] = useState(false);
-    const [avatar, setAvatar] = useState(getAvatarFromLocalStorage())
+    const getAvatarFromLocalStorage = () => {
+        try {
+            avatar2 = localStorage.getItem('film_avatar');
+            return avatar2.length > 0 ? avatar2 : '';
+        } catch (error) {
+            console.error('Error retrieving avatar from localStorage:', error);
+            return '';
+        }
+    };
+    var avatar2 = '';
+    try {
+        avatar2 = localStorage.getItem('film_avatar');
+    } catch (error) {
+        console.error('Error retrieving avatar from localStorage:', error);
+    }
+    const [avatar, setAvatar] = useState(() => {
+        // Initialize the state
+        try {
+            const value = localStorage.getItem('film_avatar')
+            // Check if the local storage already has any values,
+            // otherwise initialize it with the passed initialValue
+            return value ? value : ''
+        } catch (error) {
+            console.log(error)
+            // return ''
+        }
 
+    });
     useEffect(() => {
         function handleScroll() {
             const scrollableElement = document.documentElement;
@@ -95,7 +112,7 @@ function Header() {
             </div>
             <div className='flex space-x-2 justify-center items-center pr-2 sm:pr-10'>
                 <div className='relative' onMouseEnter={() => { setShowInfoHeader(true) }} onMouseLeave={() => { setShowInfoHeader(false) }}>
-                    <img src={avatar ?? 'https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/08/hinh-nen-dien-thoai-anime-3.jpg'} className='cursor-pointer rounded-full w-10 h-10 sm:w-12 sm:h-12 hover:ring-2 hover:ring-blue-300 ring-1 ring-gray-300 object-cover'></img>
+                    <img src={avatar.length > 0 ? avatar : 'https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/08/hinh-nen-dien-thoai-anime-3.jpg'} className='cursor-pointer rounded-full w-10 h-10 sm:w-12 sm:h-12 hover:ring-2 hover:ring-blue-300 ring-1 ring-gray-300 object-cover'></img>
                     <div className='absolute h-max w-max top-11 sm:top-12 right-0 sm:right-8 '>
                         <InfoHeader isVisible={showInfoHeader} />
                     </div>

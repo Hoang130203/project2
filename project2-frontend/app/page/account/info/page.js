@@ -1,19 +1,36 @@
 'use client'
 import { MotionDiv } from "@/app/component/OtherComponent/MotionDiv";
 import { useEffect, useState } from "react";
-const getAvatarFromLocalStorage = () => {
-    try {
-        console.log(localStorage.getItem('film_avatar'))
-        return localStorage.getItem('film_avatar');
 
-    } catch (error) {
-        console.error('Error retrieving avatar from localStorage:', error);
-        return null;
-    }
-};
 function Favorite() {
     const [showPay, setShowPay] = useState(false)
-    const [avatar, setAvatar] = useState(getAvatarFromLocalStorage())
+    const getAvatarFromLocalStorage = () => {
+        try {
+            avatar2 = localStorage.getItem('film_avatar');
+            return avatar2.length > 0 ? avatar2 : '';
+        } catch (error) {
+            console.error('Error retrieving avatar from localStorage:', error);
+            return '';
+        }
+    };
+    var avatar2 = ''
+    try {
+        var avatar2 = localStorage.getItem('film_avatar');
+    } catch (error) {
+        console.error('Error retrieving avatar from localStorage:', error);
+    }
+    const [avatar, setAvatar] = useState(() => {
+        // Initialize the state
+        try {
+            const value = window.localStorage.getItem('film_avatar')
+            // Check if the local storage already has any values,
+            // otherwise initialize it with the passed initialValue
+            return value ? value : ''
+        } catch (error) {
+            console.log(error)
+            // return ''
+        }
+    })
     const [file, setFile] = useState()
     const handleFileChange = (event) => {
         // setIsposting(false)
