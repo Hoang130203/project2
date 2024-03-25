@@ -7,13 +7,24 @@ import MenuType from './MenuType';
 import MenuCountry from './MenuCountry';
 import MenuMobile from './MenuMobile';
 import InfoHeader from './InfoHeader';
+const getAvatarFromLocalStorage = () => {
+    try {
+        console.log(localStorage.getItem('film_avatar'))
+        return localStorage.getItem('film_avatar');
 
+    } catch (error) {
+        console.error('Error retrieving avatar from localStorage:', error);
+        return null;
+    }
+};
 function Header() {
     const [scroll, setScroll] = useState(0);
     const [show1, setShow1] = useState(false);
     const [show2, setShow2] = useState(false);
     const [showMenuMobile, setShowMenuMobile] = useState(false);
     const [showInfoHeader, setShowInfoHeader] = useState(false);
+    const [avatar, setAvatar] = useState(getAvatarFromLocalStorage())
+
     useEffect(() => {
         function handleScroll() {
             const scrollableElement = document.documentElement;
@@ -29,6 +40,8 @@ function Header() {
             window.removeEventListener('scroll', handleScroll);
         };
     }, []);
+
+
     return (
         <div className='flex justify-between z-20' style={{ height: '68px', position: 'fixed', width: '100%', maxWidth: '100vw', backgroundColor: `${scroll ? '#3d3c3c3d' : '#ccc0'}`, backdropFilter: `${scroll ? 'blur(6px)' : 'blur(1px)'}`, display: 'flex', transition: '-moz-initial 1s' }}>
             <div className='flex  space-x-8'>
@@ -82,7 +95,7 @@ function Header() {
             </div>
             <div className='flex space-x-2 justify-center items-center pr-2 sm:pr-10'>
                 <div className='relative' onMouseEnter={() => { setShowInfoHeader(true) }} onMouseLeave={() => { setShowInfoHeader(false) }}>
-                    <img src='https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/08/hinh-nen-dien-thoai-anime-3.jpg' className='cursor-pointer rounded-full w-10 h-10 sm:w-12 sm:h-12 hover:ring-2 hover:ring-blue-300 ring-1 ring-gray-300 object-cover'></img>
+                    <img src={avatar ?? 'https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/08/hinh-nen-dien-thoai-anime-3.jpg'} className='cursor-pointer rounded-full w-10 h-10 sm:w-12 sm:h-12 hover:ring-2 hover:ring-blue-300 ring-1 ring-gray-300 object-cover'></img>
                     <div className='absolute h-max w-max top-11 sm:top-12 right-0 sm:right-8 '>
                         <InfoHeader isVisible={showInfoHeader} />
                     </div>

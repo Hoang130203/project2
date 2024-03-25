@@ -1,10 +1,19 @@
 'use client'
 import { MotionDiv } from "@/app/component/OtherComponent/MotionDiv";
 import { useEffect, useState } from "react";
+const getAvatarFromLocalStorage = () => {
+    try {
+        console.log(localStorage.getItem('film_avatar'))
+        return localStorage.getItem('film_avatar');
 
+    } catch (error) {
+        console.error('Error retrieving avatar from localStorage:', error);
+        return null;
+    }
+};
 function Favorite() {
     const [showPay, setShowPay] = useState(false)
-    const [avatar, setAvatar] = useState('')
+    const [avatar, setAvatar] = useState(getAvatarFromLocalStorage())
     const [file, setFile] = useState()
     const handleFileChange = (event) => {
         // setIsposting(false)

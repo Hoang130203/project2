@@ -2,8 +2,28 @@
 import Link from 'next/link';
 import styles from './component.module.css'
 import { Fragment, useEffect, useState } from 'react';
+import { signOut, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 function InfoHeader({ isVisible }) {
     const [show, setShow] = useState(isVisible);
+    const { data: session } = useSession();
+
+    const nav = () => {
+        window.location.href = '/page/login'
+    }
+
+    const handleLogout = async () => {
+        if (session && session.user) {
+            localStorage.removeItem('film_user')
+            localStorage.removeItem('film_avatar')
+            await signOut({ redirect: false })
+            await nav()
+        } else {
+            nav()
+        }
+
+    }
+
     useEffect(() => {
         setShow(isVisible);
     }, [isVisible]);
@@ -40,16 +60,16 @@ function InfoHeader({ isVisible }) {
                 </div>
             </Link>
             <div className={styles.divider}></div>
-            <Link href='/page/login'>
-                <div className={styles.info_item}>
-                    <div  >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" transform="rotate(90)" className="w-6 h-6">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m0-3-3-3m0 0-3 3m3-3v11.25m6-2.25h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
-                        </svg>
-                    </div>
-                    &nbsp;&nbsp;Đăng xuất
+
+            <div className={styles.info_item} onClick={() => handleLogout()}>
+                <div >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" transform="rotate(90)" className="w-6 h-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m0-3-3-3m0 0-3 3m3-3v11.25m6-2.25h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
+                    </svg>
                 </div>
-            </Link>
+                &nbsp;&nbsp;Đăng xuất
+            </div>
+
         </div>
     );
 }

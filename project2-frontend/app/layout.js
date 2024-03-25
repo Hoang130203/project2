@@ -1,6 +1,9 @@
+
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/app/component/header";
+import { SessionProvider } from "next-auth/react";
+import Provider from "./Providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,8 +20,10 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/icon?<generated>" type="image/<generated>" sizes="<generated>"></link>
       </head>
       <body className=" dark:bg-black bg-white">
-        <Header />
-        {children}
+        <Provider>
+          <Header />
+          {children}
+        </Provider>
       </body>
     </html>
   );
