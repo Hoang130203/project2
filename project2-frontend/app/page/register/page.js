@@ -1,6 +1,29 @@
-import { GoogleIcon, TwitterIcon } from "@/icons/icon";
+'use client'
+import { GithubIcon, GoogleIcon, TwitterIcon } from "@/icons/icon";
+import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
 function Register() {
+    const { data: session } = useSession();
+
+    if (session && session.user) {
+        //       localStorage.setItem('user', session.user.name)
+        localStorage.setItem('film_avatar', session.user.image)
+        localStorage.setItem('film_id', session.user.id)
+        localStorage.setItem('film_name', session.user.name)
+        window.location.href = "/page/account/info"
+        // Api.login(session.user.id, session.user.name, session.user.image).then(res => {
+        //     if (res.status === 200) {
+        //         console.log("Login success")
+        //         console.log(res.data)
+        //         localStorage.setItem('film_user', res.data.name)
+        //         localStorage.setItem('film_info', res.data.id)
+        //         localStorage.setItem('account', res.data.account)
+        //         localStorage.setItem('password', res.data.password)
+        //         window.location.href = "/"
+        //     }
+        // })
+
+    }
     return (
         <div className="flex flex-col md:flex-row pt-16 text-white justify-between items-center space-x-2 animate-slide-up">
             <div className="p-8 w-full space-y-6 md:ring-2 md:ring-gray-500 md:ml-16 rounded-2xl md:mb-20 flex-shrink-0" style={{ maxWidth: '480px' }}>
@@ -8,11 +31,11 @@ function Register() {
                     <p className="text-orange-400 text-2xl md:text-3xl">Đăng ký tài khoản </p>
                 </div>
                 <div className="flex-col space-y-2 justify-center">
-                    <div className="flex items-center justify-center space-x-3 text-gray-300 w-full ring-gray-500 hover:ring-orange-400 ring-2 rounded-lg py-2 cursor-pointer hover:bg-gray-700 hover:text-white">
+                    <div onClick={() => signIn('google')} className="flex items-center justify-center space-x-3 text-gray-300 w-full ring-gray-500 hover:ring-orange-400 ring-2 rounded-lg py-2 cursor-pointer hover:bg-gray-700 hover:text-white">
                         <GoogleIcon /><div> Đăng nhập với Google</div>
                     </div>
-                    <div className="flex items-center justify-center space-x-3 text-gray-300 w-full ring-gray-500 hover:ring-orange-400 ring-2 rounded-lg py-2 cursor-pointer hover:bg-gray-700 hover:text-white">
-                        <TwitterIcon /><div> Đăng nhập với Twitter</div>
+                    <div onClick={() => signIn('github')} className="flex items-center justify-center space-x-3 text-gray-300 w-full ring-gray-500 hover:ring-orange-400 ring-2 rounded-lg py-2 cursor-pointer hover:bg-gray-700 hover:text-white">
+                        <GithubIcon /><div> Đăng nhập với Github</div>
                     </div>
                 </div>
                 <div className="w-full flex justify-center items-center">

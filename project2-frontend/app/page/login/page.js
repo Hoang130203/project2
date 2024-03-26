@@ -1,5 +1,5 @@
 'use client'
-import { GoogleIcon, TwitterIcon } from "@/icons/icon";
+import { GithubIcon, GoogleIcon, TwitterIcon } from "@/icons/icon";
 import axios from "axios";
 import Link from "next/link";
 import { useEffect } from "react";
@@ -53,7 +53,7 @@ function Login() {
                         <GoogleIcon /><div> Đăng nhập với Google</div>
                     </div>
                     <div onClick={() => signIn('github')} className="flex items-center justify-center space-x-3 text-gray-300 w-full ring-gray-500 hover:ring-orange-400 ring-2 rounded-lg py-2 cursor-pointer hover:bg-gray-700 hover:text-white">
-                        <TwitterIcon /><div> Đăng nhập với Github</div>
+                        <GithubIcon /><div> Đăng nhập với Github</div>
                     </div>
                 </div>
                 <div className="w-full flex justify-center items-center">

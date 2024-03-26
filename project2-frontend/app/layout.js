@@ -4,6 +4,8 @@ import "./globals.css";
 import Header from "@/app/component/header";
 import { SessionProvider } from "next-auth/react";
 import Provider from "./Providers";
+import { Fragment } from "react";
+import Wrap from "./wrap";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,6 +15,7 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+
   return (
     <html lang="en" className="dark">
       <head>
@@ -21,8 +24,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className=" dark:bg-black bg-white">
         <Provider>
-          <Header />
-          {children}
+          <Wrap>{children}</Wrap>
         </Provider>
       </body>
     </html>
