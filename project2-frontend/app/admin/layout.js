@@ -5,10 +5,12 @@ import styles from '../component/component.module.css'
 import { useRouter } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { MotionDiv } from "../component/OtherComponent/MotionDiv";
 function LayoutAdmin({ children }) {
     const router = useRouter();
     const [active, setActive] = useState(0)
     const [click, setClick] = useState(false)
+    const [showMenu, setShowMenu] = useState(false)
     useEffect(() => {
         setActive(() => {
             console.log(window.location.href)
@@ -63,7 +65,44 @@ function LayoutAdmin({ children }) {
     ]
     var avatar = ''
     return (
-        <div className="flex max-w-[100%]" admin={true}>
+        <div className="flex max-w-[100%] pt-7 md:pt-0" admin={true}>
+            <div className=" right-1 absolute p-3 pt-0 md:hidden" onClick={() => { setShowMenu(true) }}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-blue-300 ring-1 ring-blue-300 rounded-full p-1 hover:scale-105">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+            </div>
+            <div onClick={() => { setShowMenu(false) }} className="fixed w-full h-full  top-0 left-0 z-10" style={{ backgroundColor: '#4343439e', display: `${showMenu ? 'block' : 'none'}` }}></div>
+
+            <div className={`fixed duration-400 text-white bg-slate-950 h-[55%] w-56 top-[20%] left-2 rounded-lg pt-4 flex flex-col justify-between no_select ${showMenu ? 'opacity-100 translate-y-0 z-20' : 'opacity-0 translate-y-[-30px] z-0'}`}>
+                <div>
+                    <ul>
+                        {menu.map((item, index) => (
+                            <div key={index} className="relative" onClick={() => { setActive(index), router.push(`/admin/${item.link}`), setShowMenu(false) }}>
+                                <div className={`card_bar_2 absolute left-0 h-full top-2 duration-500 ${active == index ? 'transform translate-x-0' : 'transform -translate-x-[20px]'}`}></div>
+
+                                <li className={`p-4 pl-7 group hover:bg-slate-900 hover:text-green-400 cursor-pointer flex text-[16px] ${active == index ? 'text-green-400 bg-slate-900' : ''}`} style={{ fontFamily: 'sans-serif', fontWeight: '600' }}>
+                                    <div className="flex group-hover:pl-1 duration-250">
+                                        {item.icon}&nbsp;&nbsp;
+                                        {item.name}
+                                    </div>
+                                </li>
+                            </div>
+                        ))}
+                    </ul>
+                </div>
+                <div className="flex flex-row-reverse group hover:bg-slate-900 cursor-pointer hover:text-green-400 justify-between items-center" style={{ padding: '10px', paddingLeft: '30px' }}>
+                    <img src={avatar.length > 0 ? avatar : 'https://genk.mediacdn.vn/2019/12/11/photo-4-15760338752791880880837.jpg'} className='cursor-pointer rounded-full w-8 h-8 sm:w-12 sm:h-12 hover:ring-2 hover:ring-blue-300 ring-1 ring-gray-300 object-cover'></img>
+                    <div className="flex text-xl cursor-pointer items-center group" style={{ fontFamily: 'sans-serif', fontWeight: '600' }}>
+                        <div className="group-hover:p-1 duration-250 flex items-center text-[16px]">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" transform="rotate(90)" className="w-7 h-7">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m0-3-3-3m0 0-3 3m3-3v11.25m6-2.25h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
+                            </svg>
+                            &nbsp;&nbsp;Đăng xuất
+                        </div>
+
+                    </div>
+                </div>
+            </div>
             <div className=" hidden md:block flex-none w-72 no_select">
                 <a href='/' className="flex justify-center pr-5 fixed top-10 left-6 ">
                     <div className={styles.logo} style={{ WebkitUserSelect: 'none', userSelect: 'none', MozUserSelect: 'none', color: '#4ade80', fontFamily: 'hazu' }}>
@@ -94,7 +133,7 @@ function LayoutAdmin({ children }) {
                             ))}
                         </ul>
                     </div>
-                    <div className="flex flex-row-reverse hover:bg-slate-900 hover:text-green-400 justify-between items-center" style={{ padding: '10px', paddingLeft: '40px' }}>
+                    <div className="flex flex-row-reverse group hover:bg-slate-900 cursor-pointer hover:text-green-400 justify-between items-center" style={{ padding: '10px', paddingLeft: '40px' }}>
                         <img src={avatar.length > 0 ? avatar : 'https://genk.mediacdn.vn/2019/12/11/photo-4-15760338752791880880837.jpg'} className='cursor-pointer rounded-full w-10 h-10 sm:w-12 sm:h-12 hover:ring-2 hover:ring-blue-300 ring-1 ring-gray-300 object-cover'></img>
                         <div className="flex text-xl cursor-pointer items-center group" style={{ fontFamily: 'sans-serif', fontWeight: '600' }}>
                             <div className="group-hover:p-1 duration-250 flex items-center">
@@ -108,7 +147,7 @@ function LayoutAdmin({ children }) {
                     </div>
                 </div>
             </div>
-            <div className="flex-1 max-w-[100%] text-white md:pl-10 md:pt-7">
+            <div className="flex-1 max-w-[100%] text-white md:pl-10 md:pt-7 pt-3">
                 {children}
             </div>
         </div>

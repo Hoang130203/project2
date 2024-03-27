@@ -28,16 +28,16 @@ import { MotionDiv } from "@/app/component/OtherComponent/MotionDiv";
 const statusColorMap = {
     active: "success",
     paused: "danger",
-    vacation: "warning",
+    end: "warning",
 };
 
-const INITIAL_VISIBLE_COLUMNS = ["name", "role", "status", "actions"];
+const INITIAL_VISIBLE_COLUMNS = ["name", "watch", "status", "actions"];
 function Page() {
     const [filterValue, setFilterValue] = useState("");
     const [selectedKeys, setSelectedKeys] = useState(new Set([]));
     const [visibleColumns, setVisibleColumns] = useState(new Set(INITIAL_VISIBLE_COLUMNS));
     const [statusFilter, setStatusFilter] = useState("all");
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(6);
     const [sortDescriptor, setSortDescriptor] = useState({
         column: "age",
         direction: "ascending",
@@ -95,24 +95,22 @@ function Page() {
             case "name":
                 return (
                     <User
-                        avatarProps={{ radius: "lg", src: user.avatar }}
-                        description={user.email}
+                        avatarProps={{ radius: "lg", src: user.avatar, size: "lg" }}
+                        description={user.type}
                         name={cellValue}
                     >
-                        {user.email}
                     </User>
                 );
-            case "role":
+            case "watch":
                 return (
                     <div className="flex flex-col">
-                        <p className="text-bold text-small capitalize">{cellValue}</p>
-                        <p className="text-bold text-tiny capitalize text-default-400">{user.team}</p>
+                        <p className="text-bold text-small capitalize">{cellValue?.toLocaleString()}</p>
                     </div>
                 );
             case "status":
                 return (
                     <Chip className="capitalize" color={statusColorMap[user.status]} size="sm" variant="flat">
-                        {cellValue}
+                        {cellValue == 'active' ? 'Đang ra' : cellValue == 'paused' ? 'Tạm dừng' : 'Kết thúc'}
                     </Chip>
                 );
             case "actions":
@@ -125,9 +123,9 @@ function Page() {
                                 </Button>
                             </DropdownTrigger>
                             <DropdownMenu>
-                                <DropdownItem>View</DropdownItem>
-                                <DropdownItem>Edit</DropdownItem>
-                                <DropdownItem>Delete</DropdownItem>
+                                <DropdownItem>Chi tiết</DropdownItem>
+                                <DropdownItem>Chỉnh sửa</DropdownItem>
+                                <DropdownItem>Xóa</DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
                     </div>
@@ -175,7 +173,7 @@ function Page() {
                     <Input
                         isClearable
                         className="w-full sm:max-w-[44%] md:pb-0 pb-4"
-                        placeholder="Search by name..."
+                        placeholder="Tìm theo tên..."
                         startContent={<SearchIcon />}
                         value={filterValue}
                         onClear={() => onClear()}
@@ -185,7 +183,7 @@ function Page() {
                         <Dropdown>
                             <DropdownTrigger className="hidden sm:flex">
                                 <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
-                                    Status
+                                    Trạng thái
                                 </Button>
                             </DropdownTrigger>
                             <DropdownMenu
@@ -206,7 +204,7 @@ function Page() {
                         <Dropdown>
                             <DropdownTrigger className="hidden sm:flex">
                                 <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
-                                    Columns
+                                    Cột
                                 </Button>
                             </DropdownTrigger>
                             <DropdownMenu
@@ -225,19 +223,19 @@ function Page() {
                             </DropdownMenu>
                         </Dropdown>
                         <Button color="primary" endContent={<PlusIcon />}>
-                            Add New
+                            Thêm phim
                         </Button>
                     </div>
                 </div>
                 <div className="flex justify-between items-center">
-                    <span className="text-default-400 text-small">Total {users.length} users</span>
+                    <span className="text-default-400 text-small">Tổng {users.length} phim</span>
                     <label className="flex items-center text-default-400 text-small">
-                        Rows per page:
+                        Số hàng mỗi trang:
                         <select
                             className="bg-transparent outline-none text-default-400 text-small"
                             onChange={onRowsPerPageChange}
                         >
-                            <option value="5">5</option>
+                            <option value="6">6</option>
                             <option value="10">10</option>
                             <option value="15">15</option>
                         </select>
@@ -260,8 +258,8 @@ function Page() {
             <div className="py-2 px-2 flex justify-between items-center">
                 <span className="w-[30%] text-small text-default-400">
                     {selectedKeys === "all"
-                        ? "All items selected"
-                        : `${selectedKeys.size} of ${filteredItems.length} selected`}
+                        ? "Đã chọn tất cả"
+                        : `${selectedKeys.size} / ${filteredItems.length} đã chọn`}
                 </span>
                 <Pagination
                     isCompact
@@ -274,10 +272,10 @@ function Page() {
                 />
                 <div className="hidden sm:flex w-[30%] justify-end gap-2">
                     <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onPreviousPage}>
-                        Previous
+                        Trước
                     </Button>
                     <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onNextPage}>
-                        Next
+                        Sau
                     </Button>
                 </div>
             </div>
