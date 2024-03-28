@@ -14,7 +14,7 @@ const statusOptions = [
     { name: "Kết thúc", uid: "end" },
 ];
 
-const users = [
+let user = [
     {
         id: 1,
         name: "Tony Reichert",
@@ -217,4 +217,4 @@ const users = [
     },
 ];
 
-export { columns, users, statusOptions };
+export { columns, user, statusOptions };

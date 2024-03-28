@@ -21,9 +21,10 @@ import { PlusIcon } from "./PlusIcon";
 import { VerticalDotsIcon } from "./VerticalDotsIcon";
 import { SearchIcon } from "./SearchIcon";
 import { ChevronDownIcon } from "./ChevronDownIcon";
-import { columns, users, statusOptions } from "./data";
+import { columns, user, statusOptions } from "./data";
 import { capitalize } from "./utils";
 import { MotionDiv } from "@/app/component/OtherComponent/MotionDiv";
+import AddFilm from "./AddFilm";
 
 const statusColorMap = {
     active: "success",
@@ -38,8 +39,11 @@ function Page() {
     const [visibleColumns, setVisibleColumns] = useState(new Set(INITIAL_VISIBLE_COLUMNS));
     const [statusFilter, setStatusFilter] = useState("all");
     const [rowsPerPage, setRowsPerPage] = useState(6);
+    const [listRemove, setListRemove] = useState([]);
+    const [users, setUsers] = useState(user);
+    const [showAddFilm, setShowAddFilm] = useState(false);
     const [sortDescriptor, setSortDescriptor] = useState({
-        column: "age",
+        column: "id",
         direction: "ascending",
     });
     const [page, setPage] = useState(1);
@@ -53,7 +57,7 @@ function Page() {
     }, [visibleColumns]);
 
     const filteredItems = useMemo(() => {
-        let filteredUsers = [...users];
+        let filteredUsers = [...users].filter((user) => !listRemove.includes(user.id));
 
         if (hasSearchFilter) {
             filteredUsers = filteredUsers.filter((user) =>
@@ -67,7 +71,7 @@ function Page() {
         }
 
         return filteredUsers;
-    }, [users, filterValue, statusFilter]);
+    }, [users, filterValue, statusFilter, listRemove]);
 
     const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -125,7 +129,7 @@ function Page() {
                             <DropdownMenu>
                                 <DropdownItem>Chi tiết</DropdownItem>
                                 <DropdownItem>Chỉnh sửa</DropdownItem>
-                                <DropdownItem>Xóa</DropdownItem>
+                                <DropdownItem onClick={() => handleDelete(user)}>Xóa</DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
                     </div>
@@ -135,6 +139,14 @@ function Page() {
         }
     }, []);
 
+    const handleDelete = (userToDelete) => {
+
+        setListRemove(prevListRemove => {
+            const updatedListRemove = [...prevListRemove, userToDelete.id];
+            console.log(updatedListRemove);
+            return updatedListRemove;
+        });
+    };
     const onNextPage = useCallback(() => {
         if (page < pages) {
             setPage(page + 1);
@@ -222,7 +234,7 @@ function Page() {
                                 ))}
                             </DropdownMenu>
                         </Dropdown>
-                        <Button color="primary" endContent={<PlusIcon />}>
+                        <Button color="primary" endContent={<PlusIcon />} onClick={() => { setShowAddFilm(true) }}>
                             Thêm phim
                         </Button>
                     </div>
@@ -284,6 +296,9 @@ function Page() {
 
     return (
         <div className="p-3 pt-8 md:p-9 text-white">
+            <div onClick={() => { setShowAddFilm(false) }} className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-[30] w-full h-full max-w-[100%]" style={{ backgroundColor: '#4343439e', display: `${showAddFilm ? '' : 'none'}` }}>
+                <AddFilm />
+            </div>
             <MotionDiv
                 initial={{ y: 15, opacity: 0 }}
                 whileInView={{ y: 0, opacity: 1 }}
