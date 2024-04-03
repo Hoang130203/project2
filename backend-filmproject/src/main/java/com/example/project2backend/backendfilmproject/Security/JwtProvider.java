@@ -24,6 +24,12 @@ public class JwtProvider {
     @Value("${jwt.expiration}")
     private int expiration;
 
+    private static final String SECRET_KEY = "01145e10cb9df648b18058fb07d6a430"; // secret token fb
+
+    public static Claims parseToken(String token) {
+        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+    }
+
     //Token được ký bằng thuật toán HS512 và chứa thông tin về người dùng (username) cũng như thời gian phát hành và hết hạn.
     public String generateToken(Authentication authentication){
 

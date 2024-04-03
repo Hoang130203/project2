@@ -1,6 +1,8 @@
 package com.example.project2backend.backendfilmproject.Security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.server.Cookie;
+import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -28,7 +30,10 @@ import java.util.List;
 public class SecurityConfig {
     @Autowired
     private JwtException jwtException;
-
+    @Bean
+    public CookieSameSiteSupplier applicationCookieSameSiteSupplier() {
+        return CookieSameSiteSupplier.of(Cookie.SameSite.NONE);
+    }
     @Bean
     public JwtTokenFilter jwtTokenFilter(){
         return new JwtTokenFilter();
@@ -49,7 +54,7 @@ public class SecurityConfig {
 //                cors(cors->cors.notifyAll())
                 .cors().configurationSource(request -> {
             CorsConfiguration configuration= new CorsConfiguration();
-            configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+            configuration.setAllowedOrigins(List.of("http://localhost:3000","https://test-login-client.vercel.app"));
             configuration.setAllowedMethods(List.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH","OPTIONS"));
             configuration.setAllowCredentials(true);
             configuration.addExposedHeader("Message");

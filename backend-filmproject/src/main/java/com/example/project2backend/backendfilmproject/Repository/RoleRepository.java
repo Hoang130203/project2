@@ -1,6 +1,6 @@
 package com.example.project2backend.backendfilmproject.Repository;
 
-import com.example.project2backend.backendfilmproject.Entity.ERole;
+import com.example.project2backend.backendfilmproject.Entity.EClass_Key.ERole;
 import com.example.project2backend.backendfilmproject.Entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 

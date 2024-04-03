@@ -1,3 +1,6 @@
+'use client'
+import Search from "@/app/component/Search/Search";
+import { users } from './data'
 function PageFilmLayout({ children }) {
     const year = [2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010]
     const listFilm = [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -9,7 +12,11 @@ function PageFilmLayout({ children }) {
             </div>
             <div className="min-h-24 md:w-96 shrink-0 no_select max-w-full z-[2]">
                 <div className="min-h-[200px] pt-10 pl-3 md:pl-5 text-xl md:text-2xl " >
-                    <div style={{ fontFamily: 'flame' }}>Năm phát hành</div>
+                    <div style={{ fontFamily: 'Hazu' }}>
+                        Tìm kiếm
+                        <Search data={users}></Search>
+                    </div>
+                    <div className="text-3xl pt-4" style={{ fontFamily: 'Hazu' }}>Năm phát hành</div>
                     <div className="grid grid-cols-3 gap-2 pr-2 py-3 text-gray-400">
                         {year.map((item, index) => {
                             return (

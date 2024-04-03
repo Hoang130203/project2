@@ -1,5 +1,6 @@
 package com.example.project2backend.backendfilmproject.Entity;
 
+import com.example.project2backend.backendfilmproject.Entity.EClass_Key.UserRoleKey;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

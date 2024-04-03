@@ -1,5 +1,7 @@
-package com.example.project2backend.backendfilmproject.Entity;
+package com.example.project2backend.backendfilmproject.Entity.EClass_Key;
 
+import com.example.project2backend.backendfilmproject.Entity.Role;
+import com.example.project2backend.backendfilmproject.Entity.User;
 import lombok.Getter;
 import lombok.Setter;
 
