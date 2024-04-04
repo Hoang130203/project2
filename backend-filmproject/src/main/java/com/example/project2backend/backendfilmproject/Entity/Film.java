@@ -51,14 +51,18 @@ public class Film {
     @Column(name = "age_require")
     private int ageRequire;
 
-    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER,mappedBy = "films")
+//    @ManyToMany(fetch = FetchType.EAGER,mappedBy = "films")
+//    private List<Type> types;
+//    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "film_type",joinColumns = @JoinColumn(name = "film_id"),
+            inverseJoinColumns = @JoinColumn(name = "type_id"))
     private List<Type> types;
 
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "film")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "film",fetch = FetchType.EAGER)
     private List<Character> characters;
 
-    @JsonIgnore
+
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "film")
     private List<Episode> episodes;
 
@@ -66,6 +70,7 @@ public class Film {
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "film")
     private List<Review> reviews;
 
+    @JsonIgnore
     private Long views;
 
     public Film(String name, String trailer, ECountry country, String description, boolean isMovie, String image, String background, String author, int year, int ageRequire) {

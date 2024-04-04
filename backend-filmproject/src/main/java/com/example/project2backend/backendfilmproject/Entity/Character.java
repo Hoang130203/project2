@@ -1,6 +1,8 @@
 package com.example.project2backend.backendfilmproject.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Character {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,8 +27,15 @@ public class Character {
     @Column(columnDefinition = "varchar(max)")
     private String image;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
+    @ManyToOne
     @JoinColumn(name = "film_id")
     private Film film;
 
+    public Character(String name, String role, String image, Film film) {
+        this.name = name;
+        this.role = role;
+        this.image = image;
+        this.film = film;
+    }
 }

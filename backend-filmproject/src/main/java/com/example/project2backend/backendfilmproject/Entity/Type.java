@@ -1,6 +1,7 @@
 package com.example.project2backend.backendfilmproject.Entity;
 
 import com.example.project2backend.backendfilmproject.Entity.EClass_Key.EType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +24,8 @@ public class Type {
     @Enumerated(EnumType.STRING)
     private EType name;
 
-    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "film_type",joinColumns = @JoinColumn(name = "type_id"),
             inverseJoinColumns = @JoinColumn(name = "film_id"))
     private List<Film> films;

@@ -1,5 +1,6 @@
 package com.example.project2backend.backendfilmproject.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ public class Episode {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+//    @JsonIgnore
     @Column(columnDefinition = "nvarchar(max)")
     private String description;
 
@@ -27,6 +29,7 @@ public class Episode {
     @Column(columnDefinition = "varchar(max)")
     private String image;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "film_id")
     private Film film;
@@ -36,4 +39,13 @@ public class Episode {
 
     @Column(name = "vip_require")
     private boolean vipRequire;
+
+    public Episode(String description, int serial, Long views, String image, Film film, boolean vipRequire) {
+        this.description = description;
+        this.serial = serial;
+        this.views = views;
+        this.image = image;
+        this.film = film;
+        this.vipRequire = vipRequire;
+    }
 }

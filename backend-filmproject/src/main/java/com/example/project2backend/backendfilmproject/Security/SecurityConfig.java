@@ -68,7 +68,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,"/api/auth/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/h2-console/login.do").permitAll()
-
+                        .requestMatchers(HttpMethod.POST,"/api/film/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE,"/api/film/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT,"/api/film/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET,"/api/film/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling((exceptions) -> exceptions.authenticationEntryPoint(jwtException))
