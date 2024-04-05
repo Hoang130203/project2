@@ -1,6 +1,7 @@
 package com.example.project2backend.backendfilmproject.Controller;
 import com.example.project2backend.backendfilmproject.Payload.Request.LoginUser;
 import com.example.project2backend.backendfilmproject.Payload.Request.ProviderRegister;
+import com.example.project2backend.backendfilmproject.Payload.Response.UserBaseInfo;
 import com.example.project2backend.backendfilmproject.Security.CookieUtil;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import io.jsonwebtoken.Claims;
@@ -20,6 +21,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -43,6 +45,8 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+    @Autowired
+    private ModelMapper modelMapper;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
@@ -180,7 +184,13 @@ public class AuthController {
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = jwtProvider.generateToken(authentication);
-            CookieUtil.create(httpServletResponse,cookieName,jwt,false,-1,"");
+            CookieUtil.create(httpServletResponse,cookieName,jwt,true,-1,"");
+            Optional<User> userOptional= userService.getByAccount(loginUser.getAccount());
+            UserBaseInfo userBaseInfo= modelMapper.map(userOptional.get(),UserBaseInfo.class);
+            if(userOptional.isPresent()){
+                userBaseInfo.setRoles(roleService.getByUser(userOptional.get()));
+                return  ResponseEntity.ok(userBaseInfo);
+            }
             return new ResponseEntity<>(jwt, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new Message("Lỗi rồi!"), HttpStatus.BAD_REQUEST);
@@ -225,8 +235,15 @@ public class AuthController {
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = jwtProvider.generateToken(authentication);
-            CookieUtil.create(httpServletResponse,cookieName,jwt,false,-1,"");
-            return new ResponseEntity<>(new Message("Bạn đã đăng nhập"), HttpStatus.OK);
+            CookieUtil.create(httpServletResponse,cookieName,jwt,true,-1,"");
+            Optional<User> userOptional= userService.getById(providerRegister.getId());
+            UserBaseInfo userBaseInfo= modelMapper.map(userOptional.get(),UserBaseInfo.class);
+            if(userOptional.isPresent()){
+                userBaseInfo.setRoles(roleService.getByUser(userOptional.get()));
+                return  ResponseEntity.ok(userBaseInfo);
+            }else{
+                return ResponseEntity.ok("Failed");
+            }
             } catch (Exception e) {
                 return new ResponseEntity<>(new Message("Lỗi rồi!"), HttpStatus.BAD_REQUEST);
             }
@@ -250,8 +267,9 @@ public class AuthController {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = jwtProvider.generateToken(authentication);
-            CookieUtil.create(httpServletResponse,cookieName,jwt,false,-1,"");
-            return new ResponseEntity<>(new Message("Bạn đã đăng ký, đăng nhập thành công"), HttpStatus.OK);
+            CookieUtil.create(httpServletResponse,cookieName,jwt,true,-1,"");
+            UserBaseInfo userBaseInfo= modelMapper.map(newuser,UserBaseInfo.class);
+            return new ResponseEntity<>(userBaseInfo, HttpStatus.OK);
 //            return new ResponseEntity<>(newuser,HttpStatus.CREATED);
         }
         return ResponseEntity.badRequest().body("error");
