@@ -12,4 +12,6 @@ public interface UserService {
     void save(User user);
     User update(UserUpdateReq userUpdateReq,String userId);
     User updateAvt(String avatar,String userId);
+    void createTransaction(User user, Long amount,String info);
+    boolean completeTransaction(User user, Long amount);
 }

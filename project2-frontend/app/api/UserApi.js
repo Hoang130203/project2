@@ -56,5 +56,9 @@ class UserApi {
         return axios.put(`${base_api}/api/user/avatar?avatar=${avatar}`, {
         }, headers)
     }
+
+    VnPay(totalMoney, orderInfo) {
+        return axios.post(`${base_api}/vnpay/submitOrder?amount=${totalMoney}&orderInfo=${orderInfo}`, {}, headers)
+    }
 }
 export default new UserApi()

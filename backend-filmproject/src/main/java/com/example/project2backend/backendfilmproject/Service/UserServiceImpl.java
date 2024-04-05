@@ -1,13 +1,17 @@
 package com.example.project2backend.backendfilmproject.Service;
 
+import com.example.project2backend.backendfilmproject.Entity.Transaction;
 import com.example.project2backend.backendfilmproject.Entity.User;
 import com.example.project2backend.backendfilmproject.Payload.Request.UserUpdateReq;
+import com.example.project2backend.backendfilmproject.Repository.TransactionRepository;
 import com.example.project2backend.backendfilmproject.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -17,11 +21,13 @@ public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TransactionRepository transactionRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, TransactionRepository transactionRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.transactionRepository = transactionRepository;
     }
     @Override
     public Optional<User> getByAccount(String account) {
@@ -74,6 +80,35 @@ public class UserServiceImpl implements UserService{
         user.setAvatar(avatar);
         userRepository.save(user);
         return user;
+    }
+
+    @Override
+    public void createTransaction(User user, Long amount, String info) {
+        Transaction transaction= new Transaction(amount,user,new Timestamp(System.currentTimeMillis()),"process");
+        transactionRepository.save(transaction);
+    }
+
+    @Override
+    public boolean completeTransaction(User user,Long amount) {
+        List<Transaction> transactions= transactionRepository.findAllByUser(user);
+        System.out.println(transactions.size());
+        long currentTimeMillis = System.currentTimeMillis()-15*60*1000;
+        Timestamp timestamp1 = new Timestamp(currentTimeMillis);
+        for (Transaction transaction :
+                transactions) {
+//            System.out.println(amount);
+            if(transaction.getStatus().equals("process")&& transaction.getMoney().equals(amount)){
+                Timestamp timestamp2 = transaction.getTime();
+//                System.out.println(timestamp2);
+//                System.out.println(timestamp1);
+                if(timestamp1.after(timestamp2)){ System.out.println(timestamp1); continue; }
+//                System.out.println(amount);
+                transaction.setStatus("done");
+                transactionRepository.save(transaction);
+                return true;
+            }
+        }
+        return false;
     }
 
     public String randomString(){

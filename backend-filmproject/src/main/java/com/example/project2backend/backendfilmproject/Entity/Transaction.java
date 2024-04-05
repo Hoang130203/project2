@@ -2,6 +2,7 @@ package com.example.project2backend.backendfilmproject.Entity;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Transaction {
     @Id
     @Column(name = "id")
@@ -28,4 +30,14 @@ public class Transaction {
 
     @Column(name = "time",columnDefinition = "datetime")
     private Timestamp time;
+
+    @Column(name = "status")
+    private String status;
+
+    public Transaction(Long money, User user, Timestamp time, String status) {
+        this.money = money;
+        this.user = user;
+        this.time = time;
+        this.status = status;
+    }
 }
