@@ -239,8 +239,9 @@ function AddFilm() {
                         </div>
                         <div>Năm</div>
                         <Input variant="bordered" className="col-span-2 w-24"></Input>
-                        <div>Số tập</div>
-                        <div className="col-span-2">xx</div>
+                        <div>Tuổi yêu cầu</div>
+                        <div className="col-span-2"><Input variant="bordered" className="col-span-2 w-24"></Input>
+                        </div>
                         <div>Lượt xem</div>
                         <div className="col-span-2">x.xxx.xxx.xxx</div>
                     </div>

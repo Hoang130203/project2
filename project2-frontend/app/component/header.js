@@ -16,7 +16,7 @@ function Header() {
     const [showInfoHeader, setShowInfoHeader] = useState(false);
     const getAvatarFromLocalStorage = () => {
         try {
-            avatar2 = localStorage.getItem('film_avatar');
+            avatar2 = JSON.parse(localStorage.getItem('filmInfo'))?.avatar;
             return avatar2.length > 0 ? avatar2 : '';
         } catch (error) {
             console.error('Error retrieving avatar from localStorage:', error);

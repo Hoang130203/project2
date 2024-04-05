@@ -13,6 +13,7 @@ function InfoHeader({ isVisible }) {
     }
 
     const handleLogout = async () => {
+        localStorage.removeItem('filmInfo')
         if (session && session.user) {
             localStorage.removeItem('film_user')
             localStorage.removeItem('film_avatar')

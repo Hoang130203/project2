@@ -1,27 +1,44 @@
 'use client'
 import { MotionDiv } from "@/app/component/OtherComponent/MotionDiv";
 import { useEffect, useState } from "react";
-
+import UserApi from "@/app/api/UserApi";
 function Favorite() {
     const [showPay, setShowPay] = useState(false)
-    const getAvatarFromLocalStorage = () => {
+    const getUserFromLocalStorage = () => {
         try {
-            avatar2 = localStorage.getItem('film_avatar');
-            return avatar2.length > 0 ? avatar2 : '';
+            // avatar2 = localStorage.getItem('film_avatar');
+            userInfo = JSON.parse(localStorage.getItem('filmInfo'))
+            return userInfo
         } catch (error) {
             console.error('Error retrieving avatar from localStorage:', error);
             return '';
         }
     };
-    let avatar2
-    try {
-        avatar2 = localStorage.getItem('film_avatar');
-    } catch (error) {
-        console.error('Error retrieving avatar from localStorage:', error);
-    }
+    let avatar2, userInfo
+    // try {
+    //     // avatar2 = localStorage.getItem('film_avatar');
+    //     userInfo = JSON.parse(localStorage.getItem('filmInfo'))
+    //     avatar2 = userInfo.avatar
+    // } catch (error) {
+    //     console.error('Error retrieving avatar from localStorage:', error);
+    // }
     const [avatar, setAvatar] = useState('')
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [age, setAge] = useState('')
+    const [password, setPassword] = useState('')
+    const [vip, setVip] = useState(false)
     useEffect(() => {
-        setAvatar(getAvatarFromLocalStorage());
+        setAvatar(getUserFromLocalStorage()?.avatar);
+        setName(getUserFromLocalStorage()?.name)
+        setAge(getUserFromLocalStorage()?.age)
+        setEmail(getUserFromLocalStorage()?.email)
+        for (let i = 0; i < getUserFromLocalStorage()?.roles.length; i++) {
+            if (getUserFromLocalStorage()?.roles[i].role.name == 'ROLE_VIP') {
+                setVip(true)
+                break
+            }
+        }
     }, []);
     const [file, setFile] = useState()
     const handleFileChange = (event) => {
@@ -34,6 +51,34 @@ function Favorite() {
         };
         reader.readAsDataURL(selectedFile);
     }
+    const handleUpdate = () => {
+        let isChangePass = false
+        if (password.length >= 6) {
+            isChangePass = true
+        }
+        UserApi.UpdateUser(password, isChangePass, name, email, age).then(
+            res => {
+                if (res.status == 200) {
+                    alert('Update success')
+                    localStorage.setItem('filmInfo', JSON.stringify(res.data))
+                }
+            }
+        )
+        if (file != null) {
+            console.log('image')
+            UserApi.PostImage(file).then(
+                res => {
+                    UserApi.UpdateAvatar(res.data.url).then(
+                        res => {
+                            alert('Update avatar success')
+                            localStorage.setItem('filmInfo', JSON.stringify(res.data))
+                        }
+                    )
+                }
+            )
+        }
+    }
+
     useEffect(() => {
 
     }, [file])
@@ -53,32 +98,32 @@ function Favorite() {
                                 <div className="flex md:flex-row flex-col gap-4 w-full justify-center">
                                     <div className="flex flex-col gap-2 md:w-[45%]">
                                         <p style={{ fontFamily: '-moz-initial' }}>Tài khoản</p>
-                                        <input disabled value={"k58a01mmh"} type="text" placeholder="Tài khoản" className="p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 bg-gray-800 focus:border-transparent"></input>
+                                        <input disabled value={"Không hiển thị"} type="text" placeholder="Tài khoản" className="p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 bg-gray-800 focus:border-transparent"></input>
                                     </div>
                                     <div className="flex flex-col gap-2 md:w-[45%]">
                                         <p style={{ fontFamily: '-moz-initial' }}>Mật khẩu</p>
-                                        <input type="password" placeholder="Mật khẩu" className="p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 bg-gray-800 focus:border-transparent"></input>
+                                        <input value={password} onChange={(e) => { setPassword(e.target.value), console.log(e.target.value) }} type="password" placeholder="Mật khẩu mới" className="p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 bg-gray-800 focus:border-transparent"></input>
                                     </div>
                                 </div>
                                 <div className="flex md:flex-row flex-col gap-4 w-full justify-center">
                                     <div className="flex flex-col gap-2 md:w-[45%]">
                                         <p style={{ fontFamily: '-moz-initial' }}>Email</p>
-                                        <input type="Email" placeholder="Email" className="p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 bg-gray-800 focus:border-transparent"></input>
+                                        <input value={email} onChange={(e) => { setEmail(e.target.value) }} type="Email" placeholder="Email" className="p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 bg-gray-800 focus:border-transparent"></input>
                                     </div>
                                     <div className="flex flex-col gap-2 md:w-[45%]">
                                         <p style={{ fontFamily: '-moz-initial' }}>Họ tên</p>
-                                        <input type="text" placeholder="Họ tên" className="p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 bg-gray-800 focus:border-transparent"></input>
+                                        <input value={name} onChange={(e) => { setName(e.target.value) }} type="text" placeholder="Họ tên" className="p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 bg-gray-800 focus:border-transparent"></input>
                                     </div>
                                 </div>
                                 <div className="flex md:flex-row flex-col gap-4 w-full justify-center">
                                     <div className="flex flex-col gap-2 md:w-[45%]">
                                         <p style={{ fontFamily: '-moz-initial' }}>Tuổi</p>
-                                        <input type="text" placeholder="Tuổi" className="p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 bg-gray-800 focus:border-transparent"></input>
+                                        <input value={age} onChange={(e) => { if (Number.parseInt(e.target.value)) { setAge(Number.parseInt(e.target.value)) } else { setAge(0) } }} type="text" placeholder="Tuổi" className="p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 bg-gray-800 focus:border-transparent"></input>
                                     </div>
                                     <div className="flex flex-col gap-2 md:w-[45%]">
                                         <p style={{ fontFamily: '-moz-initial' }}>&nbsp;</p>
                                         <div className="flex justify-center md:justify-normal">
-                                            <button className="bg-orange-400 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:ring-opacity-50 rounded-md px-4 py-2">Cập nhật</button>
+                                            <button onClick={handleUpdate} className="bg-orange-400 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:ring-opacity-50 rounded-md px-4 py-2">Cập nhật</button>
                                         </div>
                                     </div>
 
@@ -98,13 +143,13 @@ function Favorite() {
                             <div aria-hidden="true" className="inset-0 absolute aspect-video border rounded-full -translate-y-1/2 group-hover:-translate-y-1/4 duration-300 bg-gradient-to-b from-green-400 to-white  blur-2xl opacity-25 dark:opacity-5 dark:group-hover:opacity-10"></div>
                             <div className="absolute  transform -translate-y-1/2 left-1/2 -translate-x-1/2 ">
                                 <label htmlFor="inputField" className="cursor-pointer">
-                                    <img src={avatar.length > 0 ? avatar : 'https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/08/hinh-nen-dien-thoai-anime-3.jpg'} className='cursor-pointer rounded-full w-36 h-36 md:w-40 md:h-40 hover:ring-2 hover:ring-blue-300 ring-1 ring-gray-300 object-cover hover:scale-105 transition-transform duration-500'></img>
+                                    <img src={avatar?.length > 0 ? avatar : 'https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/08/hinh-nen-dien-thoai-anime-3.jpg'} className='cursor-pointer rounded-full w-36 h-36 md:w-40 md:h-40 hover:ring-2 hover:ring-blue-300 ring-1 ring-gray-300 object-cover hover:scale-105 transition-transform duration-500'></img>
                                 </label>
                                 <input onChange={handleFileChange} type="file" id="inputField" name="inputField" className="hidden"></input>
                             </div>
                             <div className="text-white no_select top-24 relative flex flex-col items-center justify-center" style={{ fontFamily: 'Instagram' }}>
-                                <div className="text-xl md:text-3xl">Mai Minh Hoàng, 21</div>
-                                <div>k58a01.mmh@gmail.com</div>
+                                <div className="text-xl md:text-3xl">{name}, {age}</div>
+                                <div>{email}</div>
                                 <div>
                                     <div className=" px-16 text-2xl my-3 text-yellow-200 flex items-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -113,7 +158,7 @@ function Favorite() {
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
                                         </svg>
-                                        <span className="text-orange-400">Vip</span>
+                                        <span className="text-orange-400">{vip ? 'Vip' : 'Free'}</span>
 
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
@@ -129,36 +174,38 @@ function Favorite() {
                     </div>
                 </div>
             </div>
-            <MotionDiv
-                initial={{ y: 10, opacity: 0 }}
-                whileInView={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.5 }}
-                viewport={{ once: true }}
-            >
-                <div className="antialiased font-sans font-normal no_select text-sm text-white leading-6 relative items-center w-full rounded-md whitespace-pre-wrap flex justify-between px-4 rounded border border-solid bg-gray-800 border-orange-400 box-border flex-col md:flex-row min-h-[40px] mb-6">
-                    <div className="flex py-4 md:pr-10"><div className="flex items-center mr-4"><svg width="24" height="24" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.25107 3.34184C7.88662 3.79979 7.47772 4.50308 6.89105 5.51641L3.84439 10.7788C3.25563 11.7958 2.84775 12.5033 2.63131 13.0493C2.41671 13.5906 2.45384 13.8189 2.54002 13.9684C2.6262 14.1178 2.80514 14.2643 3.38114 14.3499C3.96212 14.4361 4.77877 14.4376 5.95387 14.4376H12.0472C13.2223 14.4376 14.0389 14.4361 14.6199 14.3499C15.1959 14.2643 15.3749 14.1178 15.461 13.9684C15.5472 13.8189 15.5844 13.5906 15.3698 13.0493C15.1533 12.5033 14.7454 11.7958 14.1567 10.7788L11.11 5.51642C10.5233 4.50308 10.1144 3.7998 9.74998 3.34184C9.38879 2.88798 9.17293 2.8064 9.00053 2.8064C8.82813 2.8064 8.61227 2.88798 8.25107 3.34184ZM7.37081 2.6413C7.80297 2.09826 8.3081 1.6814 9.00053 1.6814C9.69296 1.6814 10.1981 2.09826 10.6303 2.6413C11.053 3.17245 11.5028 3.94945 12.0591 4.91036L12.0836 4.95275L15.1303 10.2152L15.1548 10.2576L15.1548 10.2576L15.1548 10.2576C15.7132 11.2221 16.1647 12.0018 16.4156 12.6347C16.672 13.2816 16.7823 13.929 16.4357 14.5303C16.089 15.1316 15.4734 15.3605 14.7851 15.4627C14.1116 15.5626 13.2107 15.5626 12.0962 15.5626H12.0472H5.95387H5.90488C4.79039 15.5626 3.88944 15.5626 3.21594 15.4627C2.52763 15.3605 1.91209 15.1316 1.56541 14.5303C1.21872 13.929 1.32905 13.2816 1.58548 12.6347C1.8364 12.0018 2.28783 11.2221 2.84624 10.2576L2.87079 10.2152L5.91745 4.95275L5.94198 4.91037L5.94199 4.91035C6.49828 3.94945 6.94811 3.17245 7.37081 2.6413ZM9.00053 6.1876C9.31119 6.1876 9.56303 6.43944 9.56303 6.7501V9.7501C9.56303 10.0608 9.31119 10.3126 9.00053 10.3126C8.68987 10.3126 8.43803 10.0608 8.43803 9.7501V6.7501C8.43803 6.43944 8.68987 6.1876 9.00053 6.1876ZM9.00053 12.7501C9.41474 12.7501 9.75053 12.4143 9.75053 12.0001C9.75053 11.5859 9.41474 11.2501 9.00053 11.2501C8.58632 11.2501 8.25053 11.5859 8.25053 12.0001C8.25053 12.4143 8.58632 12.7501 9.00053 12.7501Z" className="fill-orange-400"></path></svg></div>
-                        <div className="flex-col">
-                            <div className="antialiased font-sans font-medium text-sm text-gray-400 leading-6">
-                                Bạn đang dùng tài khoản miễn phí
+            {!vip &&
+                <MotionDiv
+                    initial={{ y: 10, opacity: 0 }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.5 }}
+                    viewport={{ once: true }}
+                >
+                    <div className="antialiased font-sans font-normal no_select text-sm text-white leading-6 relative items-center w-full rounded-md whitespace-pre-wrap flex justify-between px-4 rounded border border-solid bg-gray-800 border-orange-400 box-border flex-col md:flex-row min-h-[40px] mb-6">
+                        <div className="flex py-4 md:pr-10"><div className="flex items-center mr-4"><svg width="24" height="24" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.25107 3.34184C7.88662 3.79979 7.47772 4.50308 6.89105 5.51641L3.84439 10.7788C3.25563 11.7958 2.84775 12.5033 2.63131 13.0493C2.41671 13.5906 2.45384 13.8189 2.54002 13.9684C2.6262 14.1178 2.80514 14.2643 3.38114 14.3499C3.96212 14.4361 4.77877 14.4376 5.95387 14.4376H12.0472C13.2223 14.4376 14.0389 14.4361 14.6199 14.3499C15.1959 14.2643 15.3749 14.1178 15.461 13.9684C15.5472 13.8189 15.5844 13.5906 15.3698 13.0493C15.1533 12.5033 14.7454 11.7958 14.1567 10.7788L11.11 5.51642C10.5233 4.50308 10.1144 3.7998 9.74998 3.34184C9.38879 2.88798 9.17293 2.8064 9.00053 2.8064C8.82813 2.8064 8.61227 2.88798 8.25107 3.34184ZM7.37081 2.6413C7.80297 2.09826 8.3081 1.6814 9.00053 1.6814C9.69296 1.6814 10.1981 2.09826 10.6303 2.6413C11.053 3.17245 11.5028 3.94945 12.0591 4.91036L12.0836 4.95275L15.1303 10.2152L15.1548 10.2576L15.1548 10.2576L15.1548 10.2576C15.7132 11.2221 16.1647 12.0018 16.4156 12.6347C16.672 13.2816 16.7823 13.929 16.4357 14.5303C16.089 15.1316 15.4734 15.3605 14.7851 15.4627C14.1116 15.5626 13.2107 15.5626 12.0962 15.5626H12.0472H5.95387H5.90488C4.79039 15.5626 3.88944 15.5626 3.21594 15.4627C2.52763 15.3605 1.91209 15.1316 1.56541 14.5303C1.21872 13.929 1.32905 13.2816 1.58548 12.6347C1.8364 12.0018 2.28783 11.2221 2.84624 10.2576L2.87079 10.2152L5.91745 4.95275L5.94198 4.91037L5.94199 4.91035C6.49828 3.94945 6.94811 3.17245 7.37081 2.6413ZM9.00053 6.1876C9.31119 6.1876 9.56303 6.43944 9.56303 6.7501V9.7501C9.56303 10.0608 9.31119 10.3126 9.00053 10.3126C8.68987 10.3126 8.43803 10.0608 8.43803 9.7501V6.7501C8.43803 6.43944 8.68987 6.1876 9.00053 6.1876ZM9.00053 12.7501C9.41474 12.7501 9.75053 12.4143 9.75053 12.0001C9.75053 11.5859 9.41474 11.2501 9.00053 11.2501C8.58632 11.2501 8.25053 11.5859 8.25053 12.0001C8.25053 12.4143 8.58632 12.7501 9.00053 12.7501Z" className="fill-orange-400"></path></svg></div>
+                            <div className="flex-col">
+                                <div className="antialiased font-sans font-medium text-sm text-gray-400 leading-6">
+                                    Bạn đang dùng tài khoản miễn phí
+                                </div>
+                                <span className=''>Nâng cấp để xem nhiều phim hơn</span>
                             </div>
-                            <span className=''>Nâng cấp để xem nhiều phim hơn</span>
                         </div>
+                        <div className="flex justify-center md:justify-end space-x-4 w-full md:w-auto md:my-4 mr-0 mb-4 ml-auto">
+                            <button onClick={() => setShowPay(!showPay)} className="text-gray-600   antialiased flex bg-orange-300 hover:bg-orange-500 font-sans font-medium text-sm  leading-6  py-1 px-4 border border-solid rounded whitespace-nowrap cursor-pointer border-orange-600 hover:bg-orange-25 justify-center min-w-[80px]" type="button">
+                                <span className="antialiased font-sans font-medium text-sm  leading-6 ">
+                                    Nâng cấp
+                                </span>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                                </svg>
+
+
+                            </button>
+                        </div>
+
                     </div>
-                    <div className="flex justify-center md:justify-end space-x-4 w-full md:w-auto md:my-4 mr-0 mb-4 ml-auto">
-                        <button onClick={() => setShowPay(!showPay)} className="text-gray-600   antialiased flex bg-orange-300 hover:bg-orange-500 font-sans font-medium text-sm  leading-6  py-1 px-4 border border-solid rounded whitespace-nowrap cursor-pointer border-orange-600 hover:bg-orange-25 justify-center min-w-[80px]" type="button">
-                            <span className="antialiased font-sans font-medium text-sm  leading-6 ">
-                                Nâng cấp
-                            </span>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
-                            </svg>
-
-
-                        </button>
-                    </div>
-
-                </div>
-            </MotionDiv>
+                </MotionDiv>
+            }
             <div className={`mt-12  no_select  grid grid-cols-1 md:grid-cols-3 gap-3 ${showPay ? "" : "hidden "} transition-none ease-in-out delay-350 duration-300`}>
                 <MotionDiv
                     initial={{ y: -10, opacity: 0 }}
