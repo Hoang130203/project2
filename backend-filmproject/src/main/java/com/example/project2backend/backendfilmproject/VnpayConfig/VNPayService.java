@@ -16,7 +16,10 @@ public class VNPayService {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String vnp_TxnRef = VNPayConfig.getRandomNumber(8);
-        String vnp_IpAddr = "127.0.0.1";
+//        String vnp_IpAddr = "127.0.0.1";
+        String serverIpAddress = "13.228.225.19"; // Thay thế bằng địa chỉ IP thực tế của máy chủ
+
+        String vnp_IpAddr = serverIpAddress;
         String vnp_TmnCode = VNPayConfig.vnp_TmnCode;
         String orderType = "order-type";
         
@@ -38,12 +41,15 @@ public class VNPayService {
         vnp_Params.put("vnp_ReturnUrl", urlReturn);
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
-        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+//        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+//        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Asia/Ho_Chi_Minh")); // Sử dụng múi giờ chính xác cho Việt Nam
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        formatter.setTimeZone(TimeZone.getTimeZone("Asia/Ho_Chi_Minh")); // Đảm bảo định dạng thời gian cũng theo múi giờ chính xác
         String vnp_CreateDate = formatter.format(cld.getTime());
         vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
 
-        cld.add(Calendar.MINUTE, 15);
+        cld.add(Calendar.MINUTE, 150);
         String vnp_ExpireDate = formatter.format(cld.getTime());
         vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
 
