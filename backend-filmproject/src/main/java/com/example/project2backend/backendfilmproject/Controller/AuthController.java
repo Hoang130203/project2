@@ -1,10 +1,11 @@
 package com.example.project2backend.backendfilmproject.Controller;
+import com.example.project2backend.backendfilmproject.Entity.EClass_Key.UserRoleKey;
+import com.example.project2backend.backendfilmproject.Entity.UserRole;
 import com.example.project2backend.backendfilmproject.Payload.Request.LoginUser;
 import com.example.project2backend.backendfilmproject.Payload.Request.ProviderRegister;
 import com.example.project2backend.backendfilmproject.Payload.Response.UserBaseInfo;
+import com.example.project2backend.backendfilmproject.Repository.UserRoleRepository;
 import com.example.project2backend.backendfilmproject.Security.CookieUtil;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import com.example.project2backend.backendfilmproject.Entity.EClass_Key.ERole;
@@ -19,7 +20,6 @@ import com.example.project2backend.backendfilmproject.Service.UserService;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,17 +31,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 //
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -52,17 +52,19 @@ public class AuthController {
     private final UserService userService;
     private final RoleService roleService;
     private final JwtProvider jwtProvider;
+    private final UserRoleRepository userRoleRepository;
     @Value("${jwt.accessTokenCookieName}")
     private String cookieName;
 
     @Autowired
     public AuthController(AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder,
-                          UserService userService, RoleService roleService, JwtProvider jwtProvider) {
+                          UserService userService, RoleService roleService, JwtProvider jwtProvider, UserRoleRepository userRoleRepository) {
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
         this.roleService = roleService;
         this.jwtProvider = jwtProvider;
+        this.userRoleRepository = userRoleRepository;
     }
     @Getter
     @Setter
@@ -175,6 +177,7 @@ public class AuthController {
 //        return ResponseEntity.ok(claims.getId()+" " + claims.getExpiration()+" "+claims.toString());
     }
     @PostMapping("/login")
+//    @Transactional
     public ResponseEntity<Object> login(HttpServletResponse httpServletResponse, @Valid @RequestBody LoginUser loginUser, BindingResult bidBindingResult){
         if(bidBindingResult.hasErrors())
             return new ResponseEntity<>(new Message("Xảy ra lỗi gì đó"), HttpStatus.BAD_REQUEST);
@@ -188,9 +191,25 @@ public class AuthController {
             Optional<User> userOptional= userService.getByAccount(loginUser.getAccount());
             UserBaseInfo userBaseInfo= modelMapper.map(userOptional.get(),UserBaseInfo.class);
             if(userOptional.isPresent()){
-                userBaseInfo.setRoles(roleService.getByUser(userOptional.get()));
+                List<UserRole> roles= roleService.getByUser(userOptional.get());
+                if(!isVip(roles)){
+                    int index=0;
+                    boolean isOldvip=false;
+                    for (UserRole userRole:roles
+                         ) {
+                        if(userRole.getRole().getName().equals(ERole.ROLE_VIP)){
+                            isOldvip=true;
+                            break;
+                        }
+                        index++;
+
+                    }
+                    if(isOldvip) roles.remove(index);
+                }
+                userBaseInfo.setRoles(roles);
                 return  ResponseEntity.ok(userBaseInfo);
             }
+
             return new ResponseEntity<>(jwt, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new Message("Lỗi rồi!"), HttpStatus.BAD_REQUEST);
@@ -224,6 +243,7 @@ public class AuthController {
         return new ResponseEntity<>(user,HttpStatus.CREATED);
     }
     @PostMapping("/providerAuth")
+    @Transactional
     public ResponseEntity<?> providerRegister(HttpServletResponse httpServletResponse,@RequestBody ProviderRegister providerRegister){
         Optional<User> user = userService.getById(providerRegister.getId());
         if(user.isPresent() && user.get().isHasProvider()==true){
@@ -239,7 +259,24 @@ public class AuthController {
             Optional<User> userOptional= userService.getById(providerRegister.getId());
             UserBaseInfo userBaseInfo= modelMapper.map(userOptional.get(),UserBaseInfo.class);
             if(userOptional.isPresent()){
-                userBaseInfo.setRoles(roleService.getByUser(userOptional.get()));
+                List<UserRole> roles= roleService.getByUser(userOptional.get());
+                if(!isVip(roles)){
+                    int index=0;
+                    boolean isOldvip=false;
+                    for (UserRole userRole:roles
+                    ) {
+                        if(userRole.getRole().getName().equals(ERole.ROLE_VIP)){
+                            isOldvip=true;
+                            break;
+                        }
+                        index++;
+
+                    }
+                    if(isOldvip) roles.remove(index);
+                }
+//                userBaseInfo.setRoles(roles);
+                userBaseInfo.setRoles(roles);
+//                userBaseInfo.setRoles(roleService.getByUser(userOptional.get()));
                 return  ResponseEntity.ok(userBaseInfo);
             }else{
                 return ResponseEntity.ok("Failed");
@@ -275,6 +312,34 @@ public class AuthController {
         return ResponseEntity.badRequest().body("error");
     }
 
+    private boolean isVip(List<UserRole> roles){
+        for (UserRole role:roles
+             ) {
+//            System.out.println(role.getRole().getName());
+//            System.out.println(role.getExpiry());
+
+            if(role.getRole().getName().equals(ERole.ROLE_VIP)){
+                System.out.println(1);
+                Date expiryTime = role.getExpiry();
+                System.out.println(expiryTime);
+                if(expiryTime.getTime()>System.currentTimeMillis()){
+                    System.out.println(expiryTime.getTime());
+                    System.out.println();
+                    System.out.println(role.getRole().getName());
+                    return true;
+                }else{
+
+                    roleService.deleleVipUser(role.getUser());
+
+                }
+            }else{
+                System.out.println(role.getRole().getName());
+            }
+//            System.out.println(role.getExpiry());
+
+        }
+        return false;
+    }
     @GetMapping("/details")
     public ResponseEntity<Object> getUserDetails(){
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()

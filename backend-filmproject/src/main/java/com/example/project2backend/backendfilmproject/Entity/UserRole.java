@@ -2,6 +2,7 @@ package com.example.project2backend.backendfilmproject.Entity;
 
 import com.example.project2backend.backendfilmproject.Entity.EClass_Key.UserRoleKey;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import java.sql.Date;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "user_role")
 @IdClass(UserRoleKey.class)
 public class UserRole {

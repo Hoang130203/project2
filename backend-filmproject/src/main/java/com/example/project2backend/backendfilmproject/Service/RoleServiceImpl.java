@@ -1,6 +1,7 @@
 package com.example.project2backend.backendfilmproject.Service;
 
 import com.example.project2backend.backendfilmproject.Entity.EClass_Key.ERole;
+import com.example.project2backend.backendfilmproject.Entity.EClass_Key.UserRoleKey;
 import com.example.project2backend.backendfilmproject.Entity.Role;
 import com.example.project2backend.backendfilmproject.Entity.User;
 import com.example.project2backend.backendfilmproject.Entity.UserRole;
@@ -22,7 +23,6 @@ public class RoleServiceImpl implements RoleService{
         this.userRoleRepository = userRoleRepository;
     }
 
-
     @Override
     public Optional<Role> getByName(ERole name) {
         return roleRepository.findByName(name);
@@ -31,5 +31,11 @@ public class RoleServiceImpl implements RoleService{
     @Override
     public List<UserRole> getByUser(User user) {
         return userRoleRepository.getUserRole(user);
+    }
+
+    @Override
+    public void deleleVipUser(User user) {
+        Role roleVIp= roleRepository.findByName(ERole.ROLE_VIP).get();
+        userRoleRepository.delete(userRoleRepository.findById(new UserRoleKey(user,roleVIp)).get());
     }
 }

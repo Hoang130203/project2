@@ -9,6 +9,7 @@ import java.util.List;
 public interface FilmService {
     Film addFilm(Film film);
     Film getFilm(int filmId);
+    List<Film> getTop12Views();
     Film delFilm(int filmId);
     Film updateFilm(Film film);
     Film advanceUpdate(Film film);

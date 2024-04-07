@@ -1,19 +1,26 @@
 package com.example.project2backend.backendfilmproject.Service;
 
+import com.example.project2backend.backendfilmproject.Entity.EClass_Key.ERole;
+import com.example.project2backend.backendfilmproject.Entity.EClass_Key.UserRoleKey;
+import com.example.project2backend.backendfilmproject.Entity.Role;
 import com.example.project2backend.backendfilmproject.Entity.Transaction;
 import com.example.project2backend.backendfilmproject.Entity.User;
+import com.example.project2backend.backendfilmproject.Entity.UserRole;
 import com.example.project2backend.backendfilmproject.Payload.Request.UserUpdateReq;
+import com.example.project2backend.backendfilmproject.Repository.RoleRepository;
 import com.example.project2backend.backendfilmproject.Repository.TransactionRepository;
 import com.example.project2backend.backendfilmproject.Repository.UserRepository;
+import com.example.project2backend.backendfilmproject.Repository.UserRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
 
 @Service
 @Transactional
@@ -22,12 +29,15 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TransactionRepository transactionRepository;
-
+    private final RoleRepository roleRepository;
+    private final UserRoleRepository userRoleRepository;
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, TransactionRepository transactionRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, TransactionRepository transactionRepository, RoleRepository roleRepository, UserRoleRepository userRoleRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.transactionRepository = transactionRepository;
+        this.roleRepository = roleRepository;
+        this.userRoleRepository = userRoleRepository;
     }
     @Override
     public Optional<User> getByAccount(String account) {
@@ -104,6 +114,41 @@ public class UserServiceImpl implements UserService{
                 if(timestamp1.after(timestamp2)){ System.out.println(timestamp1); continue; }
 //                System.out.println(amount);
                 transaction.setStatus("done");
+                LocalDateTime currentTime = LocalDateTime.now();
+                LocalDateTime expiryTime = currentTime.plusMonths(1);
+                int timeIncrement=0;
+                switch (amount.intValue()){
+                    case 100000:
+                        timeIncrement= 1;
+                        expiryTime = currentTime.plusMonths(1);
+                        break;
+                    case 250000:
+                        timeIncrement= 2;
+                        expiryTime = currentTime.plusMonths(3);
+                        break;
+                    case 400000:
+                        timeIncrement= 3;
+                        expiryTime = currentTime.plusMonths(6);
+                        break;
+                    default:break;
+                }
+                Set<Role> roles = user.getRoles();
+                Optional<Role> roleVip= roleRepository.findByName(ERole.ROLE_VIP);
+                Optional<UserRole> userRole= userRoleRepository.findById(new UserRoleKey(user,roleVip.get()));
+                if(userRole.isPresent()){
+                    Date expiry = userRole.get().getExpiry(); // Lấy ngày hết hạn hiện tại
+                    long currentExpiryTime = expiry.getTime(); // Lấy giá trị thời gian hiện tại của expiry
+                    expiry.setTime(currentExpiryTime + timeIncrement);
+                    UserRole userRole1=userRole.get();
+                    userRole1.setExpiry(new Date(Date.from(expiryTime.plusMonths(timeIncrement).atZone(ZoneId.systemDefault()).toInstant()).getTime()));
+                    userRoleRepository.save(userRole1);
+                }else{
+                    Date expiryDate = new Date( Date.from(expiryTime.atZone(ZoneId.systemDefault()).toInstant()).getTime());
+                    UserRole userRole1= new UserRole(user,roleVip.get(),expiryDate);
+                    userRoleRepository.save(userRole1);
+
+                }
+//                user.getRoles().add()
                 transactionRepository.save(transaction);
                 return true;
             }

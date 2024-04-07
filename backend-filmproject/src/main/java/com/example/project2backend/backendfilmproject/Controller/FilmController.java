@@ -3,9 +3,11 @@ package com.example.project2backend.backendfilmproject.Controller;
 import com.example.project2backend.backendfilmproject.Entity.Character;
 import com.example.project2backend.backendfilmproject.Entity.Episode;
 import com.example.project2backend.backendfilmproject.Entity.Film;
+import com.example.project2backend.backendfilmproject.Payload.Response.DetailFilmResponse;
 import com.example.project2backend.backendfilmproject.Service.FilmService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/film")
 public class FilmController {
+    @Autowired
+    private ModelMapper modelMapper;
+
     private final FilmService filmService;
 
     @Autowired
@@ -36,9 +41,13 @@ public class FilmController {
     @GetMapping("/info")
     public ResponseEntity<?> getFilmDetails(@RequestParam("filmId") int filmId)
     {
-//        System.out.println(filmId);
-        return ResponseEntity.ok(filmService.getFilm(filmId));
+        return ResponseEntity.ok(modelMapper.map(filmService.getFilm(filmId), DetailFilmResponse.class));
     }
+    @GetMapping("/top12views")
+    public ResponseEntity<?> getTop12Views(){
+        return ResponseEntity.ok(filmService.getTop12Views().stream().map(film -> modelMapper.map(film,DetailFilmResponse.class)));
+    }
+
     @DeleteMapping("")
     public ResponseEntity<?> deleteById(@RequestParam("filmId") int filmId)
     {

@@ -71,6 +71,7 @@ public class Film {
     private List<Review> reviews;
 
     @JsonIgnore
+    @Column(name = "views")
     private Long views;
 
     public Film(String name, String trailer, ECountry country, String description, boolean isMovie, String image, String background, String author, int year, int ageRequire) {
@@ -86,12 +87,12 @@ public class Film {
         this.ageRequire = ageRequire;
     }
 
-    public Long getViews() {
-        Long total = 0L;
-        for (Episode episode:this.episodes
-             ) {
-            total+=episode.getViews();
-        }
-       return total;
-    }
+//    public Long getViews() {
+//        Long total = 0L;
+//        for (Episode episode:this.episodes
+//             ) {
+//            total+=episode.getViews();
+//        }
+//       return total;
+//    }
 }

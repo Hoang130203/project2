@@ -74,7 +74,14 @@ public class FilmServiceImpl implements FilmService{
 
     @Override
     public Film getFilm(int filmId) {
+        System.out.println(filmRepository.findById(filmId).get().getViews());
+
         return filmRepository.findById(filmId).get();
+    }
+
+    @Override
+    public List<Film> getTop12Views() {
+        return filmRepository.findTop12ByOrderByViewsDesc();
     }
 
     @Override
