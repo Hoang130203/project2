@@ -7,7 +7,8 @@ const headers = {
     },
     "Access-Control-Allow-Origin": "*",
 }
-const base_api = 'http://localhost:8080'
+// const base_api = 'http://localhost:8080'
+const base_api = 'https://project2-97w5.onrender.com'
 class UserApi {
     PostImage(img) {
 
