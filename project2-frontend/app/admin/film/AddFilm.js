@@ -4,20 +4,31 @@ import NavBottom from "@/app/page/detail/NavBottom";
 import { Button, Checkbox, CheckboxGroup, Input, Radio, RadioGroup, Select, SelectItem, Textarea } from "@nextui-org/react";
 import * as XLSX from 'xlsx';
 import { Fragment, useEffect, useState } from "react";
+import UserApi from "@/app/api/UserApi";
 
 function AddFilm() {
     const [selected, setSelected] = useState([]);
     const [selected2, setSelected2] = useState()
     const [selected3, setSelected3] = useState('movie')
-
+    const [selected4, setSelected4] = useState(true)
     const [bg, setBg] = useState('https://images3.alphacoders.com/132/1328396.png')
     const [img, setImg] = useState('https://cdn.oneesports.vn/cdn-data/sites/4/2023/10/Anime-Naruto-avt.jpg')
+    const [fileBg, setFileBg] = useState(null)
+    const [fileImg, setFileImg] = useState(null)
     const [characterList, setCharacterList] = useState([{ name: "", image: "", role: "" }]);
     const [data, setData] = useState([]);
     const [nameMovie, setNameMovie] = useState('')
     const [imageMovie, setImageMovie] = useState('')
+    const [urlMovie, setUrlMovie] = useState('')
     const [dataEpisode, setDataEpisode] = useState([])
-    const [listEpisode, setListEpisode] = useState([{ serial: 1, description: '', image: '' }])
+    const [listEpisode, setListEpisode] = useState([{ serial: 1, description: '', image: '', vipRequire: 1, url: '' }])
+    const [name, setName] = useState('')
+    const [trailer, setTrailer] = useState('')
+    const [author, setAuthor] = useState('')
+    const [status, setStatus] = useState('')
+    const [year, setYear] = useState(null)
+    const [ageRequire, setAgeRequire] = useState(null)
+    const [description, setDescription] = useState('')
     const handleChangeMovieImg = (e) => {
         const file = e.target.files[0]
         const reader = new FileReader()
@@ -67,33 +78,32 @@ function AddFilm() {
     useEffect(() => {
         var episodes = []
         for (let i = 1; i < dataEpisode.length; i++) {
-            let question = { serial: dataEpisode[i][0], description: dataEpisode[i][1], image: dataEpisode[i][2] }
+            let question = { serial: Number.parseInt(dataEpisode[i][0]), description: dataEpisode[i][1], image: dataEpisode[i][2], vipRequire: dataEpisode[i][3] == '0' ? false : true, url: dataEpisode[i][4] }
             episodes.push(question)
         }
         setListEpisode(episodes)
     }, [dataEpisode])
 
     const types = [
-        { type: 'ACTION', name: 'Hành động' },
-        { type: 'ADVENTURE', name: 'Phiêu lưu' },
-        { type: 'COMEDY', name: 'Hài hước' },
-        { type: 'DRAMA', name: 'Lãng mạn' },
-        { type: 'FANTASY', name: 'Viễn tưởng' },
-        { type: 'HORROR', name: 'Kinh dị' },
-        { type: 'ROMATIC', name: 'Tình cảm' },
-        { type: 'COSTUME', name: 'Cổ trang' },
-        { type: 'ANIME', name: 'Anime' },
-        { type: 'WAR', name: 'Chiến tranh' }
+        { name: 'ACTION', show: 'Hành động' },
+        { name: 'ADVENTURE', show: 'Phiêu lưu' },
+        { name: 'COMEDY', show: 'Hài hước' },
+        { name: 'DRAMA', show: 'Lãng mạn' },
+        { name: 'FANTASY', show: 'Viễn tưởng' },
+        { name: 'HORROR', show: 'Kinh dị' },
+        { name: 'ROMATIC', show: 'Tình cảm' },
+        { name: 'COSTUME', show: 'Cổ trang' },
+        { name: 'ANIME', show: 'Anime' },
+        { name: 'WAR', show: 'Chiến tranh' }
     ]
     const countries = [
-        { type: 'JP', name: 'Nhật Bản' },
-        { type: 'KR', name: 'Hàn Quốc' },
-        { type: 'US', name: 'Mỹ' },
-        { type: 'CN', name: 'Trung Quốc' },
-        { type: 'VN', name: 'Việt Nam' },
-        { type: 'TH', name: 'Thái Lan' },
+        { type: 'JAPAN', name: 'Nhật Bản' },
+        { type: 'KOREA', name: 'Hàn Quốc' },
+        { type: 'USA', name: 'Mỹ' },
+        { type: 'CHINA', name: 'Trung Quốc' },
+        { type: 'VIETNAM', name: 'Việt Nam' },
+        { type: 'THAILAND', name: 'Thái Lan' },
     ]
-
     const handleChangBG = (e) => {
         const file = e.target.files[0]
         const reader = new FileReader()
@@ -101,6 +111,7 @@ function AddFilm() {
             setBg(reader.result)
         }
         reader.readAsDataURL(file)
+        setFileBg(file)
     }
     const handleChangIMG = (e) => {
         const file = e.target.files[0]
@@ -109,6 +120,7 @@ function AddFilm() {
             setImg(reader.result)
         }
         reader.readAsDataURL(file)
+        setFileImg(file)
     }
     const roles = [
         { value: 'main', label: 'Nhân vật chính' },
@@ -164,6 +176,78 @@ function AddFilm() {
             setCharacterList(updatedList);
         }
     };
+
+    const handleUpfilm = async () => {
+        var background = bg
+        var image = img
+        if (fileBg != null) {
+            await UserApi.PostImage(fileBg).then(res => {
+                if (res.status == 200) {
+                    background = res.data.url
+                }
+            })
+        }
+        if (fileImg != null) {
+            await UserApi.PostImage(fileImg).then(res => {
+                if (res.status == 200) {
+                    image = res.data.url
+                }
+            })
+        }
+        var typs = []
+        for (let index = 0; index < selected.length; index++) {
+            typs.push({ name: selected[index] })
+        }
+        if (selected3 == false) {
+            await UserApi.PostFilm({
+                name: name,
+                trailer: trailer,
+                description: description,
+                country: selected2,
+                movie: selected3,
+                ageRequire: ageRequire,
+                image: image,
+                background: background,
+                author: author,
+                types: typs,
+                year: year,
+                episodes: listEpisode,
+                characters: characterList
+
+            }).then(res => {
+                if (res.status == 200) {
+                    alert('Thêm phim thành công')
+                }
+            })
+        } else {
+            let movieImg = imageMovie
+
+            await UserApi.PostFilm({
+                name: name,
+                trailer: trailer,
+                description: description,
+                country: selected2,
+                movie: selected3,
+                ageRequire: ageRequire,
+                image: image,
+                background: background,
+                author: author,
+                types: typs,
+                year: year,
+                episodes: [
+                    { "description": nameMovie, "serial": 0, "image": image, "vipRequire": selected4, url: urlMovie }
+
+                ],
+                characters: characterList
+
+            }).then(res => {
+                if (res.status == 200) {
+                    alert('Thêm phim thành công')
+                }
+            })
+        }
+
+    }
     return (
         <div onClick={(e) => e.stopPropagation()} className="w-[700px] max-w-[90%] h-[90%] z-40 bg-slate-900 rounded-lg overflow-y-auto">
             <div className="h-[450px] md:h-[350px] relative text-white">
@@ -187,8 +271,8 @@ function AddFilm() {
                             viewport={{ once: true }}
                         >
                             <div className="flex flex-col gap-3">
-                                <Input variant="bordered" label="Tên" size="lg" className="text-green-400" style={{ fontSize: '20px', paddingTop: '10px' }} />
-                                <Input variant="bordered" label="Tác giả/ Studio" type="text" size="lg" className="text-green-400" style={{ fontSize: '20px', paddingTop: '10px' }} />
+                                <Input value={name} onChange={(e) => { setName(e.target.value) }} variant="bordered" label="Tên" size="lg" className="text-green-400" style={{ fontSize: '20px', paddingTop: '10px' }} />
+                                <Input value={author} onChange={(e) => { setAuthor(e.target.value) }} variant="bordered" label="Tác giả/ Studio" type="text" size="lg" className="text-green-400" style={{ fontSize: '20px', paddingTop: '10px' }} />
                                 <div className="flex items-center justify-center sm:justify-start">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-yellow-400 ml-1 hover:scale-110 cursor-pointer transition-transform">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
@@ -218,7 +302,7 @@ function AddFilm() {
                                 onValueChange={setSelected}
                             >
                                 {types.map((type, index) => (
-                                    <Checkbox key={index} value={type.type} className="mr-2">{type.name}</Checkbox>
+                                    <Checkbox key={index} value={type.name} className="mr-2">{type.show}</Checkbox>
                                 ))}
                             </CheckboxGroup>
                         </div>
@@ -238,18 +322,20 @@ function AddFilm() {
                             </RadioGroup>
                         </div>
                         <div>Năm</div>
-                        <Input variant="bordered" className="col-span-2 w-24"></Input>
+                        <Input value={year} onChange={(e) => { if (Number.parseInt(e.target.value)) { setYear(Number.parseInt(e.target.value)) } else { setYear(0) } }} variant="bordered" className="col-span-2 w-24"></Input>
                         <div>Tuổi yêu cầu</div>
-                        <div className="col-span-2"><Input variant="bordered" className="col-span-2 w-24"></Input>
+                        <div className="col-span-2"><Input value={ageRequire} onChange={(e) => { if (Number.parseInt(e.target.value)) { setAgeRequire(Number.parseInt(e.target.value)) } else { setAgeRequire(0) } }} variant="bordered" className="col-span-2 w-24"></Input>
                         </div>
-                        <div>Lượt xem</div>
-                        <div className="col-span-2">x.xxx.xxx.xxx</div>
+                        <div>Trailer</div>
+                        <div className="col-span-2"><Input value={trailer} onChange={(e) => { setTrailer(e.target.value) }} variant="bordered" className="col-span-2 w-48"></Input></div>
                     </div>
                 </MotionDiv>
             </div>
             <div className="pb-3  md:px-16 px-5">
                 <div className="py-2">Tóm tắt phim</div>
                 <Textarea
+                    value={description}
+                    onChange={(e) => { setDescription(e.target.value) }}
                     placeholder="Nhập tóm tắt phim.."
                     className="max-w-full"
                     minRows={5}
@@ -318,24 +404,25 @@ function AddFilm() {
                         value={selected3}
                         onValueChange={setSelected3}
                     >
-                        <Radio value={'movie'} className="mr-2">
+                        <Radio value={true} className="mr-2">
                             {'Phim lẻ'}
                         </Radio>
-                        <Radio value={'series'} className="mr-2">
+                        <Radio value={false} className="mr-2">
                             {'Phim bộ'}
                         </Radio>
                     </RadioGroup>
                 </div>
                 <div className="py-2">
-                    {selected3 == 'series' ? <Fragment> Danh sách tập phim
+                    {selected3 == false ? <Fragment> Danh sách tập phim
                         <div className="text-slate-400">Nhập file excel chứa các tập phim</div>
                         <input type="file" accept=".xlsx" onChange={handleFileEpisodeChange}></input>
                         {listEpisode.map((episode, index) => (
-
-                            <div key={index} className="grid grid-cols-6 items-center gap-4 py-1">
+                            <div key={index} className="relative grid grid-cols-6 items-center gap-4 py-1">
                                 <Input className="col-span-1" disabled value={`Tập ${episode?.serial}`}></Input>
                                 <Textarea className="col-span-3" disabled value={` ${episode?.description}`}></Textarea>
                                 <div className="col-span-2 h-full rounded-md" disabled value={` ${episode?.time}`} style={{ backgroundImage: `url(${episode.image || img})`, backgroundPosition: 'center center', backgroundSize: 'cover' }}></div>
+                                <div className="absolute top-8  text-blue-400 text-xl" style={{ fontFamily: 'Hazu' }}>{episode.vipRequire ? 'Vip' : 'Free'}</div>
+                                <div className="col-span-6">{episode.url}</div>
                             </div>
                         )
                         )
@@ -350,6 +437,26 @@ function AddFilm() {
                                 value={nameMovie}
                                 onChange={(e) => setNameMovie(e.target.value)}
                             />
+                            <Input
+                                variant="bordered"
+                                placeholder="Nhập url nhúng"
+                                value={urlMovie}
+                                onChange={(e) => setUrlMovie(e.target.value)}
+                            />
+                            <RadioGroup
+                                color="primary"
+                                orientation="horizontal"
+                                value={selected4}
+                                onValueChange={setSelected4}
+                            >
+                                <Radio value={false} className="mr-2">
+                                    {'Free'}
+                                </Radio>
+                                <Radio value={true} className="mr-2">
+                                    {'Vip'}
+                                </Radio>
+                            </RadioGroup>
+
                             <div >Ảnh tập phim</div>
                             <div className=" w-full relative  h-[200px] rounded-md ">
                                 <label htmlFor='imgMovie' className=" cursor-pointer">
@@ -371,7 +478,7 @@ function AddFilm() {
                 </div>
             </div>
             <div className="flex justify-center py-2">
-                <Button className=" text-white text-xl" color="primary">Thêm phim</Button>
+                <Button onClick={handleUpfilm} className=" text-white text-xl" color="primary">Thêm phim</Button>
             </div>
         </div>
     );

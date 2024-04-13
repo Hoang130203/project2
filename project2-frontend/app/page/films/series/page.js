@@ -8,10 +8,10 @@ function Series() {
         <div className="w-full">
             <div className="w-full flex justify-center items-center p-7 no_select">
                 <div className="flex-1 h-0" style={{ borderTop: '1px solid #333' }}></div>
-                <div className="mx-2 text-2xl md:text-4xl " style={{ fontFamily: 'west' }}>Phim bộ </div>
+                <div className="mx-2 text-2xl md:text-4xl " style={{ fontFamily: 'Hazu' }}>Phim bộ </div>
                 <div className="flex-1 h-0" style={{ borderTop: '1px solid #333' }}></div>
             </div>
-            <div className="space-y-2 w-full h-max justify-start " style={{ fontFamily: 'flame' }}>
+            <div className="space-y-2 w-full h-max justify-start " style={{ fontFamily: 'Hazu' }}>
                 <div id="controls-carousel" classNames="relative w-full " data-carousel="static">
                     <MotionDiv
                         initial={{ y: 10, opacity: 0 }}
@@ -24,7 +24,7 @@ function Series() {
                 </div>
             </div>
             <div className="w-full items-center p-3 no_select">
-                <div className="mx-1 md:mx-2 text-xl md:text-3xl font-serif" style={{ fontFamily: 'west' }}>Tập phim  mới cập nhật</div>
+                <div className="mx-1 md:mx-2 text-xl md:text-3xl font-serif" style={{ fontFamily: 'Hazu' }}>Tập phim  mới cập nhật</div>
                 <div className="grid grid-cols-3 md:grid-cols-5 gap-4 pt-8 2xl:grid-cols-6">
                     {newData.map((item, index) => (
                         <MotionDiv key={index}

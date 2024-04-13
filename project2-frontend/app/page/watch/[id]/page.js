@@ -9,7 +9,7 @@ function Watch({ params }) {
     const id = params.id;
     const [comment, setComment] = useState('')
     const list = [
-        { id: 1, episode: 'https://www.youtube.com/embed/LD8G3oC0X2g?si=015U-CcfDX7E5--h' },
+        { id: 1, episode: 'https://www.youtube.com/embed/-SBBef-OEiE?si=sq43zy1sqdqJKyhi' },
         { id: 2, episode: 'https://vip.opstream17.com/share/d736bb10d83a904aefc1d6ce93dc54b8' },
         { id: 3, episode: 'https://vip.opstream17.com/share/82b8a3434904411a9fdc43ca87cee70c' },
         { id: 4, episode: 'https://1080.opstream4.com/share/eaf72c29ea749db9d115947ff9caa86f' },

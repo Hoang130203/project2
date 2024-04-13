@@ -1,4 +1,4 @@
-'use client'
+"use client"
 import { Avatar } from "@nextui-org/react";
 import Link from "next/link";
 import styles from '../component/component.module.css'
@@ -6,12 +6,44 @@ import { useRouter } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { MotionDiv } from "../component/OtherComponent/MotionDiv";
+import { signOut, useSession } from "next-auth/react";
 function LayoutAdmin({ children }) {
     const router = useRouter();
     const [active, setActive] = useState(0)
     const [click, setClick] = useState(false)
     const [showMenu, setShowMenu] = useState(false)
+    const [avatar, setAvatar] = useState('')
+    const { data: session } = useSession();
+
+    const nav = () => {
+        window.location.href = '/page/login'
+    }
+
+    let avatar2 = ''
+    const getAvatarFromLocalStorage = () => {
+        try {
+            avatar2 = JSON.parse(localStorage.getItem('filmInfo'))?.avatar;
+            return avatar2.length > 0 ? avatar2 : '';
+        } catch (error) {
+            console.error('Error retrieving avatar from localStorage:', error);
+            return '';
+        }
+    };
+    const handleLogout = async () => {
+        localStorage.removeItem('filmInfo')
+        if (session && session.user) {
+            localStorage.removeItem('film_user')
+            localStorage.removeItem('film_avatar')
+            await signOut({ redirect: false })
+            await nav()
+        } else {
+            nav()
+        }
+
+    }
     useEffect(() => {
+        setAvatar(getAvatarFromLocalStorage());
+        // alert(avatar)
         setActive(() => {
             console.log(window.location.href)
             if (window.location.href.endsWith('/admin')) return 0
@@ -63,7 +95,6 @@ function LayoutAdmin({ children }) {
                 </svg>
         },
     ]
-    var avatar = ''
     return (
         <div className="flex max-w-[100%] pt-7 md:pt-0" admin={true}>
             <div className=" right-1 absolute p-3 pt-0 md:hidden" onClick={() => { setShowMenu(true) }}>
@@ -136,7 +167,7 @@ function LayoutAdmin({ children }) {
                     <div className="flex flex-row-reverse group hover:bg-slate-900 cursor-pointer hover:text-green-400 justify-between items-center" style={{ padding: '10px', paddingLeft: '40px' }}>
                         <img src={avatar.length > 0 ? avatar : 'https://genk.mediacdn.vn/2019/12/11/photo-4-15760338752791880880837.jpg'} className='cursor-pointer rounded-full w-10 h-10 sm:w-12 sm:h-12 hover:ring-2 hover:ring-blue-300 ring-1 ring-gray-300 object-cover'></img>
                         <div className="flex text-xl cursor-pointer items-center group" style={{ fontFamily: 'sans-serif', fontWeight: '600' }}>
-                            <div className="group-hover:p-1 duration-250 flex items-center">
+                            <div className="group-hover:p-1 duration-250 flex items-center" onClick={() => { handleLogout() }}>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" transform="rotate(90)" className="w-8 h-8">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m0-3-3-3m0 0-3 3m3-3v11.25m6-2.25h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
                                 </svg>

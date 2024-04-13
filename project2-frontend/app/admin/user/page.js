@@ -1,5 +1,5 @@
 'use client'
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
     Table,
     TableHeader,
@@ -21,9 +21,10 @@ import { PlusIcon } from "../film/PlusIcon";
 import { VerticalDotsIcon } from "../film/VerticalDotsIcon";
 import { SearchIcon } from "../film/SearchIcon";
 import { ChevronDownIcon } from "../film/ChevronDownIcon";
-import { columns, users, statusOptions } from "./data";
+import { columns, statusOptions } from "./data";
 import { capitalize } from "../film/utils";
 import { MotionDiv } from "@/app/component/OtherComponent/MotionDiv";
+import AdminApi from "@/app/api/AdminApi";
 
 const statusColorMap = {
     normal: "success",
@@ -33,6 +34,14 @@ const statusColorMap = {
 
 const INITIAL_VISIBLE_COLUMNS = ["name", "totalmoney", "status", "actions"];
 function Users() {
+    const [users, setUsers] = useState([]);
+    useEffect(() => {
+        AdminApi.GetAllUser().then((res) => {
+            setUsers(res.data);
+        }).catch((err) => {
+            console.log(err);
+        });
+    }, []);
     const [filterValue, setFilterValue] = useState("");
     const [selectedKeys, setSelectedKeys] = useState(new Set([]));
     const [visibleColumns, setVisibleColumns] = useState(new Set(INITIAL_VISIBLE_COLUMNS));
@@ -57,7 +66,7 @@ function Users() {
 
         if (hasSearchFilter) {
             filteredUsers = filteredUsers.filter((user) =>
-                user.name.toLowerCase().includes(filterValue.toLowerCase()),
+                user?.name?.toLowerCase().includes(filterValue.toLowerCase()),
             );
         }
         if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {

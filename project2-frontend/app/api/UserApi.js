@@ -7,8 +7,9 @@ const headers = {
     },
     "Access-Control-Allow-Origin": "*",
 }
-// const base_api = 'http://localhost:8080'
-const base_api = 'https://project2-97w5.onrender.com'
+export const base_api = 'http://localhost:8080'
+
+// const base_api = 'https://project2-97w5.onrender.com'
 class UserApi {
     PostImage(img) {
 
@@ -61,5 +62,11 @@ class UserApi {
     VnPay(totalMoney, orderInfo) {
         return axios.post(`${base_api}/vnpay/submitOrder?amount=${totalMoney}&orderInfo=${orderInfo}`, {}, headers)
     }
+
+    PostFilm(film) {
+        return axios.post(`${base_api}/api/film/film`, film, headers)
+    }
+
+
 }
 export default new UserApi()

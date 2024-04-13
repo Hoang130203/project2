@@ -1,5 +1,5 @@
 'use client'
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
     Table,
     TableHeader,
@@ -21,10 +21,12 @@ import { PlusIcon } from "./PlusIcon";
 import { VerticalDotsIcon } from "./VerticalDotsIcon";
 import { SearchIcon } from "./SearchIcon";
 import { ChevronDownIcon } from "./ChevronDownIcon";
-import { columns, user, statusOptions } from "./data";
+import { columns, statusOptions } from "./data";
 import { capitalize } from "./utils";
 import { MotionDiv } from "@/app/component/OtherComponent/MotionDiv";
 import AddFilm from "./AddFilm";
+import AdminApi from "@/app/api/AdminApi";
+import AddFilmByApi from "./AddFilmByApi";
 
 const statusColorMap = {
     active: "success",
@@ -40,8 +42,17 @@ function Page() {
     const [statusFilter, setStatusFilter] = useState("all");
     const [rowsPerPage, setRowsPerPage] = useState(6);
     const [listRemove, setListRemove] = useState([]);
-    const [users, setUsers] = useState(user);
+    // const [users, setUsers] = useState(user);
     const [showAddFilm, setShowAddFilm] = useState(false);
+    const [showAddFilmByApi, setShowAddFilmByApi] = useState(false);
+    const [users, setUsers] = useState([]);
+    useEffect(() => {
+        AdminApi.GetALlFilm().then((res) => {
+            setUsers(res.data);
+        }).catch((err) => {
+            console.log(err);
+        });
+    }, []);
     const [sortDescriptor, setSortDescriptor] = useState({
         column: "id",
         direction: "ascending",
@@ -239,6 +250,7 @@ function Page() {
                         </Button>
                     </div>
                 </div>
+                <div className="w-full float-right"><Button onClick={() => { setShowAddFilmByApi(true) }} className="float-right text-white" color="warning" endContent={<PlusIcon />}>Thêm bằng API</Button></div>
                 <div className="flex justify-between items-center">
                     <span className="text-default-400 text-small">Tổng {users.length} phim</span>
                     <label className="flex items-center text-default-400 text-small">
@@ -298,6 +310,9 @@ function Page() {
         <div className="p-3 pt-8 md:p-9 text-white">
             <div onClick={() => { setShowAddFilm(false) }} className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-[30] w-full h-full max-w-[100%]" style={{ backgroundColor: '#4343439e', display: `${showAddFilm ? '' : 'none'}` }}>
                 <AddFilm />
+            </div>
+            <div onClick={() => { setShowAddFilmByApi(false) }} className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-[30] w-full h-full max-w-[100%]" style={{ backgroundColor: '#4343439e', display: `${showAddFilmByApi ? '' : 'none'}` }}>
+                <AddFilmByApi></AddFilmByApi>
             </div>
             <MotionDiv
                 initial={{ y: 15, opacity: 0 }}

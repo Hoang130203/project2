@@ -13,7 +13,7 @@ function PageFilmLayout({ children }) {
             <div className="min-h-24 md:w-96 shrink-0 no_select max-w-full z-[2]">
                 <div className="min-h-[200px] pt-10 pl-3 md:pl-5 text-xl md:text-2xl " >
                     <div style={{ fontFamily: 'Hazu' }}>
-                        Tìm kiếm
+                        <div>Tìm kiếm</div>
                         <Search data={users}></Search>
                     </div>
                     <div className="text-3xl pt-4" style={{ fontFamily: 'Hazu' }}>Năm phát hành</div>

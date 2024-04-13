@@ -19,13 +19,17 @@ function SocialButton() {
                 localStorage.setItem('filmInfo', JSON.stringify(res.data))
                 console.log(res.data)
                 let roles = res.data.roles
-                for (let index = 0; index < roles.length; index++) {
+                let size = roles.length
+                let isAdmin = false
+                for (let index = 0; index < size; index++) {
                     if (roles[index].role.name == 'ROLE_ADMIN') {
                         window.location.href = '/admin'
+                        isAdmin = true
                         break
                     }
                 }
-                window.location.href = '/page/account/info'
+                if (!isAdmin) window.location.href = '/page/account/info'
+
             }
 
         })

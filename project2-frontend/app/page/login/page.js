@@ -43,13 +43,17 @@ function Login() {
                         }
                         console.log(res.data)
                         let roles = res.data.roles
+                        let isAdmin = false
                         for (let index = 0; index < roles.length; index++) {
                             if (roles[index].role.name == 'ROLE_ADMIN') {
-                                window.location.href = '/admin'
+                                // localStorage.setItem('length', roles.length)
+                                isAdmin = true
+                                // localStorage.setItem('index', index)
+                                window.location.replace('/admin')
                                 break
                             }
                         }
-                        window.location.href = '/page/account/info'
+                        if (!isAdmin) window.location.href = '/page/account/info'
                     }
                 }
             ).catch(() => {
