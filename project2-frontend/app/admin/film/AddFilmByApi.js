@@ -35,7 +35,7 @@ function AddFilmByApi() {
 
     const isSelected = (tab) => activeTab.name === tab.name;
 
-    const mapCategoryToType = (categoryName) => {
+    const mapCategoryToType = (categoryName, type) => {
         switch (categoryName) {
             case 'Hành Động':
             case 'hanh-dong':
@@ -68,7 +68,7 @@ function AddFilmByApi() {
             case 'chien-tranh':
                 return 'WAR';
             default:
-                return 'ACTION';
+                return type == 'hoathinh' ? 'ANIME' : 'ACTION';
         }
     };
     async function fetchDataFromExternalAPI() {
@@ -103,7 +103,7 @@ function AddFilmByApi() {
             year: dataFromExternalAPI.movie.year,
             status: dataFromExternalAPI.movie.status,
             ageRequire: dataFromExternalAPI.movie.age_require || null, // Giả sử không có trường tuổi yêu cầu
-            types: dataFromExternalAPI.movie.category.map(category => ({ name: mapCategoryToType(category.slug) })),
+            types: dataFromExternalAPI.movie.category.map(category => ({ name: mapCategoryToType(category.slug, dataFromExternalAPI.movie.type) })),
             episodes: dataFromExternalAPI.episodes[0].server_data.map(episode => ({
                 description: episode.filename,
                 serial: parseInt(episode.slug.replace(/\D/g, '')), // Chuyển slug thành số
@@ -329,6 +329,13 @@ function AddFilmByApi() {
                         <div className="px-2">
                             <Input value={api2} onChange={(e) => { setApi2(e.target.value) }} placeholder="Nhập api ophim1 hoặc phimkk" variant="underlined" className="col-span-2 w-full text-green-300"></Input>
                             <div>Có tổng cộng {number} phim</div>
+                            {films?.map((film, index) => (
+                                <div key={index} className="grid grid-cols-2 gap-4 py-1">
+                                    <div>{film.name}</div>
+                                    <div>{film.slug}</div>
+                                </div>
+                            ))
+                            }
                             <div className="flex justify-center py-2">
                                 <Button onClick={handleUpfilm2} className=" text-white text-xl" color="primary">Thêm phim</Button>
                             </div>

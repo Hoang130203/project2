@@ -3,14 +3,23 @@ import UserApi from "@/app/api/UserApi";
 import CardScroll from "@/app/component/OtherComponent/CardScroll";
 import { MotionDiv } from "@/app/component/OtherComponent/MotionDiv";
 import Link from "next/link";
+import { Pagination } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 function Series() {
     const [films, setFilms] = useState([]);
+    const [totalPages, setTotalPages] = useState(1); // Thêm state để lưu tổng số trang
+    const [currentPage, setCurrentPage] = useState(1);
+
     useEffect(() => {
-        UserApi.GetSeries().then(res => {
-            setFilms(res.data);
-        })
-    }, [])
+        fetchData(currentPage);
+    }, [currentPage]); // Sử dụng useEffect để gọi API khi trang thay đổi
+
+    const fetchData = (page) => {
+        UserApi.GetSeries(page - 1).then(res => {
+            setFilms(res.data?.content);
+            setTotalPages(res.data?.totalPages); // Cập nhật tổng số trang từ API
+        });
+    }
     const data = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }]
     const newData = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }, { id: 7 }, { id: 8 }, { id: 9 }, { id: 10 }, { id: 11 }, { id: 12 }, { id: 13 }, { id: 14 }, { id: 15 }, { id: 16 }, { id: 17 }, { id: 18 }, { id: 19 }, { id: 20 }]
     return (
@@ -63,6 +72,18 @@ function Series() {
                     )
                     )}
                 </div>
+            </div>
+            <div>
+                <Pagination
+                    loop
+                    showControls
+                    color="success"
+                    page={currentPage}
+                    total={totalPages}
+                    initialPage={1}
+                    onChange={(page) => { setCurrentPage(page) }}
+                    className="float-right"
+                />
             </div>
         </div>
     );

@@ -35,7 +35,7 @@ function Overview({ data }) {
                         <div>Số tập</div>
                         <div>{data?.episodes?.length}</div>
                         <div>Lượt xem</div>
-                        <div>{data?.view}</div>
+                        <div>{data?.views}</div>
                     </div>
                 </div>
                 <div>

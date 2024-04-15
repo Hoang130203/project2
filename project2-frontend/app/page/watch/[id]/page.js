@@ -11,6 +11,7 @@ function Watch({ params }) {
     const [comment, setComment] = useState('')
     const [episode, setEpisode] = useState(0)
     const [list, setList] = useState([])
+    const [name, setName] = useState('')
     const [listComment, setListComment] = useState([
         { id: 1, name: 'Uzumaki Naruto', comment: 'Phim này hay quá', date: '20-3-2024', avatar: 'https://cdn.popsww.com/blog/sites/2/2022/02/naruto-co-bao-nhieu-tap.jpg' },
         { id: 2, name: 'Uchiha Sasuke', comment: 'Phim cảm động ghê', date: '19-3-2024', avatar: 'https://gamek.mediacdn.vn/133514250583805952/2020/7/6/photo-1-15940093634781712523938.png' },
@@ -26,6 +27,7 @@ function Watch({ params }) {
             setListComment(res.data.comments)
             setEpisode(res.data)
             setList(JSON.parse(localStorage.getItem('currentFilm')))
+            setName(localStorage.getItem('currentName'))
         })
 
     }, []);
@@ -72,7 +74,7 @@ function Watch({ params }) {
                 </div>
                 <div>
                     <div style={{ fontFamily: 'west' }} className="px-2 py-1 mt-2">
-                        <p className="md:text-4xl text-2xl" >{ }</p>
+                        <p className="md:text-4xl text-2xl" >{name}</p>
                         <p className="md:text-2xl text-xl text-slate-400">Tập {episode.serial}</p>
                     </div>
                 </div>

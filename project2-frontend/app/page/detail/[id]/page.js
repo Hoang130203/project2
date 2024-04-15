@@ -28,6 +28,7 @@ function Detail({ params }) {
             setListReview(res.data.reviews);
             setFilm(res.data)
             localStorage.setItem('currentFilm', JSON.stringify(res.data.episodes))
+            localStorage.setItem('currentName', res.data.name)
         })
     }, [])
     const sendReview = () => {

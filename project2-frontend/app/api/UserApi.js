@@ -66,11 +66,11 @@ class UserApi {
     PostFilm(film) {
         return axios.post(`${base_api}/api/film/film`, film, headers)
     }
-    GetMovies() {
-        return axios.get(`${base_api}/api/film/movies`, headers)
+    GetMovies(page) {
+        return axios.get(`${base_api}/api/film/movies?page=${page}&size=30`, headers)
     }
-    GetSeries() {
-        return axios.get(`${base_api}/api/film/series`, headers)
+    GetSeries(page) {
+        return axios.get(`${base_api}/api/film/series?page=${page}&size=30`, headers)
     }
     GetFilmDetail(id) {
         return axios.get(`${base_api}/api/film/info?filmId=${id}`, headers)
