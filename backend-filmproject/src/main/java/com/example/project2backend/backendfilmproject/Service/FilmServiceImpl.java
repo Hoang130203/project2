@@ -1,15 +1,22 @@
 package com.example.project2backend.backendfilmproject.Service;
 
 import com.example.project2backend.backendfilmproject.Entity.Character;
+import com.example.project2backend.backendfilmproject.Entity.EClass_Key.ECountry;
+import com.example.project2backend.backendfilmproject.Entity.EClass_Key.EType;
 import com.example.project2backend.backendfilmproject.Entity.Episode;
 import com.example.project2backend.backendfilmproject.Entity.Film;
 import com.example.project2backend.backendfilmproject.Entity.Type;
+import com.example.project2backend.backendfilmproject.Payload.Response.FilmBasicInfo;
 import com.example.project2backend.backendfilmproject.Repository.CharacterRepository;
 import com.example.project2backend.backendfilmproject.Repository.EpisodeRepository;
 import com.example.project2backend.backendfilmproject.Repository.FilmRepository;
 import com.example.project2backend.backendfilmproject.Repository.TypeRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +26,8 @@ import java.util.List;
 @Service
 @Transactional
 public class FilmServiceImpl implements FilmService{
+    @Autowired
+    private ModelMapper modelMapper;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -63,7 +72,7 @@ public class FilmServiceImpl implements FilmService{
         }
         for (Episode episode:film.getEpisodes()
              ) {
-            Episode episode1= new Episode(episode.getDescription(),episode.getSerial(),0L,episode.getImage(),film1,episode.isVipRequire());
+            Episode episode1= new Episode(episode.getDescription(),episode.getSerial(),0L,episode.getImage(),film1,episode.isVipRequire(),episode.getUrl());
             episodes.add(episode1);
         }
         film1.setCharacters(characters);
@@ -77,6 +86,11 @@ public class FilmServiceImpl implements FilmService{
         System.out.println(filmRepository.findById(filmId).get().getViews());
 
         return filmRepository.findById(filmId).get();
+    }
+
+    @Override
+    public List<Film> getAllFilm() {
+        return filmRepository.findAll();
     }
 
     @Override
@@ -159,7 +173,7 @@ public class FilmServiceImpl implements FilmService{
         List<Episode> list= film1.getEpisodes();
         for (Episode episode:episodes
              ) {
-            Episode episode1= new Episode(episode.getDescription(),episode.getSerial(),0L,episode.getImage(),film1,episode.isVipRequire());
+            Episode episode1= new Episode(episode.getDescription(),episode.getSerial(),0L,episode.getImage(),film1,episode.isVipRequire(),episode.getUrl());
             list.add(episode1);
         }
         film1.setEpisodes(list);
@@ -215,4 +229,63 @@ public class FilmServiceImpl implements FilmService{
 
         return  characters;
     }
+
+    @Override
+    public List<Episode> getTopNewestEpisode() {
+        return episodeRepository.findTop12ByOrderByIdDesc();
+    }
+
+    @Override
+    public FilmBasicInfo convertToBasic(Film film) {
+        return modelMapper.map(film,FilmBasicInfo.class);
+    }
+
+    @Override
+    public Episode getEpisodeById(Long id) {
+        return episodeRepository.findById(id)
+                .orElseThrow(()->new RuntimeException("Episode not found"));
+    }
+
+    @Override
+    public Film update(Film film) {
+
+        return filmRepository.save(film);
+    }
+
+    @Override
+    public Episode update(Episode episode) {
+
+        return episodeRepository.save(episode);
+    }
+
+    @Override
+    public List<Film> findAllByType(EType eType) {
+        Type type= typeRepository.findByName(eType);
+        return filmRepository.findAllByTypesContains(type);
+    }
+
+    @Override
+    public List<Film> findAllByCountry(ECountry eCountry) {
+        return filmRepository.findAllByCountry(eCountry);
+    }
+
+    @Override
+    public List<Film> findAllByYear(int year) {
+        if(year==2010){
+            return filmRepository.findAllByYear2();
+        }
+        return filmRepository.findAllByYear(year);
+    }
+
+    @Override
+    public Page<Film> findAllByMovie(boolean movie, Pageable pageable) {
+        return filmRepository.findAllByIsMovie(movie,pageable);
+    }
+
+    @Override
+    public List<Film> findAllByMovieView(boolean movie) {
+        return filmRepository.findTop5ByAndIsMovieOrderByViewsDescIdDesc(movie);
+    }
+
+
 }

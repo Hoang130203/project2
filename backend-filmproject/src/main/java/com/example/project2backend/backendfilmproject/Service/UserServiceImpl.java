@@ -156,6 +156,11 @@ public class UserServiceImpl implements UserService{
         return false;
     }
 
+    @Override
+    public List<User> getAll() {
+        return userRepository.findAll();
+    }
+
     public String randomString(){
         int length=15;
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

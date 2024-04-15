@@ -23,13 +23,16 @@ public class Film {
     @Column(name = "film_name",columnDefinition = "nvarchar(1000)")
     private String name;
 
+    @JsonIgnore
     @Column(name = "trailer_url",columnDefinition = "varchar(max)")
     private String trailer;
 
+    @JsonIgnore
     @Column(name = "country")
     @Enumerated(EnumType.STRING)
     private ECountry country;
 
+    @JsonIgnore
     @Column(name = "film_description",columnDefinition = "nvarchar(max)")
     private String description;
 
@@ -39,9 +42,11 @@ public class Film {
     @Column(name = "image_url",columnDefinition = "varchar(max)")
     private String image;
 
+    @JsonIgnore
     @Column(name = "background_image",columnDefinition = "varchar(max)")
     private String background;
 
+    @JsonIgnore
     @Column(name = "film_author",columnDefinition = "nvarchar(500)")
     private String author;
 
@@ -51,18 +56,22 @@ public class Film {
     @Column(name = "age_require")
     private int ageRequire;
 
+//    @Column(name = "status")
+//    private boolean status=true;
+
 //    @ManyToMany(fetch = FetchType.EAGER,mappedBy = "films")
 //    private List<Type> types;
-//    @JsonIgnore
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "film_type",joinColumns = @JoinColumn(name = "film_id"),
             inverseJoinColumns = @JoinColumn(name = "type_id"))
     private List<Type> types;
 
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "film",fetch = FetchType.EAGER)
     private List<Character> characters;
 
-
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "film")
     private List<Episode> episodes;
 

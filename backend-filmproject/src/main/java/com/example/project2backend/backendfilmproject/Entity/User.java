@@ -67,6 +67,9 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "film_id"))
     private List<Film> favorites;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<Transaction>transactions;
 
     public User(@NotNull String userName, @NotNull String email, @NotNull String password) {
         this.account = userName;
@@ -86,4 +89,6 @@ public class User {
                 ", roles=" + roles +
                 '}';
     }
+
+
 }

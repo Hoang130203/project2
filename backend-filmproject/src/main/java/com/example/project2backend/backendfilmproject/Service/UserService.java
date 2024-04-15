@@ -3,6 +3,7 @@ package com.example.project2backend.backendfilmproject.Service;
 import com.example.project2backend.backendfilmproject.Entity.User;
 import com.example.project2backend.backendfilmproject.Payload.Request.UserUpdateReq;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
@@ -14,4 +15,5 @@ public interface UserService {
     User updateAvt(String avatar,String userId);
     void createTransaction(User user, Long amount,String info);
     boolean completeTransaction(User user, Long amount);
+    List<User> getAll();
 }
