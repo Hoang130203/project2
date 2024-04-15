@@ -66,7 +66,17 @@ class UserApi {
     PostFilm(film) {
         return axios.post(`${base_api}/api/film/film`, film, headers)
     }
-
-
+    GetMovies() {
+        return axios.get(`${base_api}/api/film/movies`, headers)
+    }
+    GetSeries() {
+        return axios.get(`${base_api}/api/film/series`, headers)
+    }
+    GetFilmDetail(id) {
+        return axios.get(`${base_api}/api/film/info?filmId=${id}`, headers)
+    }
+    GetEpisode(id) {
+        return axios.get(`${base_api}/api/film/episode?episodeId=${id}`, headers)
+    }
 }
 export default new UserApi()

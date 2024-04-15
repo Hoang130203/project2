@@ -1,24 +1,16 @@
 'use client'
+import UserApi from "@/app/api/UserApi";
 import { MotionDiv } from "@/app/component/OtherComponent/MotionDiv";
 import { SendIcon } from "@/icons/icon";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 function Watch({ params }) {
     const id = params.id;
     const [comment, setComment] = useState('')
-    const list = [
-        { id: 1, episode: 'https://www.youtube.com/embed/-SBBef-OEiE?si=sq43zy1sqdqJKyhi' },
-        { id: 2, episode: 'https://vip.opstream17.com/share/d736bb10d83a904aefc1d6ce93dc54b8' },
-        { id: 3, episode: 'https://vip.opstream17.com/share/82b8a3434904411a9fdc43ca87cee70c' },
-        { id: 4, episode: 'https://1080.opstream4.com/share/eaf72c29ea749db9d115947ff9caa86f' },
-        { id: 5, episode: 'https://1080.opstream4.com/share/ef8ff3bb5f926198d139c3e9750a3739' },
-        { id: 6, episode: 'https://1080.opstream4.com/share/e4e13c3ff0c5a77ff11d6cb979ba7187' },
-        { id: 7, episode: 'https://1080.opstream4.com/share/491fdb54cfd7bf75bc55e23a31dfbf2b' },
-        { id: 8, episode: 'https://1080.opstream4.com/share/e75a95d82865db19dd4917794e8ffed1' }
-    ]
-    const listFilm = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    const [episode, setEpisode] = useState(0)
+    const [list, setList] = useState([])
     const [listComment, setListComment] = useState([
         { id: 1, name: 'Uzumaki Naruto', comment: 'Phim này hay quá', date: '20-3-2024', avatar: 'https://cdn.popsww.com/blog/sites/2/2022/02/naruto-co-bao-nhieu-tap.jpg' },
         { id: 2, name: 'Uchiha Sasuke', comment: 'Phim cảm động ghê', date: '19-3-2024', avatar: 'https://gamek.mediacdn.vn/133514250583805952/2020/7/6/photo-1-15940093634781712523938.png' },
@@ -28,6 +20,31 @@ function Watch({ params }) {
         { id: 6, name: 'Uzumaki Himawari', comment: 'Hay quá đi', date: '15-3-2024', avatar: 'https://cdn.popsww.com/blog/sites/2/2023/07/himawari.jpg' },
 
     ])
+    const fetchData = useCallback(() => {
+
+        UserApi.GetEpisode(id).then(res => {
+            setListComment(res.data.comments)
+            setEpisode(res.data)
+            setList(JSON.parse(localStorage.getItem('currentFilm')))
+        })
+
+    }, []);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData])
+    // const list = [
+    //     { id: 1, episode: 'https://www.youtube.com/embed/-SBBef-OEiE?si=sq43zy1sqdqJKyhi' },
+    //     { id: 2, episode: 'https://vip.opstream17.com/share/d736bb10d83a904aefc1d6ce93dc54b8' },
+    //     { id: 3, episode: 'https://vip.opstream17.com/share/82b8a3434904411a9fdc43ca87cee70c' },
+    //     { id: 4, episode: 'https://1080.opstream4.com/share/eaf72c29ea749db9d115947ff9caa86f' },
+    //     { id: 5, episode: 'https://1080.opstream4.com/share/ef8ff3bb5f926198d139c3e9750a3739' },
+    //     { id: 6, episode: 'https://1080.opstream4.com/share/e4e13c3ff0c5a77ff11d6cb979ba7187' },
+    //     { id: 7, episode: 'https://1080.opstream4.com/share/491fdb54cfd7bf75bc55e23a31dfbf2b' },
+    //     { id: 8, episode: 'https://1080.opstream4.com/share/e75a95d82865db19dd4917794e8ffed1' }
+    // ]
+    const listFilm = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
     const handleSend = () => {
         if (comment != '') {
             setListComment((prev) => [{ id: 0, name: 'Mai Minh Hoàng', comment: comment, date: 'vừa xong', avatar: 'https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/08/hinh-nen-dien-thoai-anime-3.jpg' }, ...prev])
@@ -45,7 +62,7 @@ function Watch({ params }) {
                 <div className="relative h-0 rounded-md" style={{ paddingTop: '56.25%' }}>
                     <iframe
                         className="absolute top-0 left-0 w-full h-full rounded-md"
-                        src={`${list[id - 1].episode}`}
+                        src={`${episode.url}`}
                         frameBorder="0"
                         allowTransparency="true"
                         allowFullScreen="true"
@@ -55,8 +72,8 @@ function Watch({ params }) {
                 </div>
                 <div>
                     <div style={{ fontFamily: 'west' }} className="px-2 py-1 mt-2">
-                        <p className="md:text-4xl text-2xl" >Sweet home</p>
-                        <p className="md:text-2xl text-xl text-slate-400">Tập {id}</p>
+                        <p className="md:text-4xl text-2xl" >{ }</p>
+                        <p className="md:text-2xl text-xl text-slate-400">Tập {episode.serial}</p>
                     </div>
                 </div>
                 <div className="grid grid-cols-6 py-5 sm:grid-cols-9 md:grid-cols-12 px-2 gap-y-3 md:gap-y-5 md:px-3 md:pr-10 2xl:max-w-[80%]">
@@ -64,7 +81,7 @@ function Watch({ params }) {
                         list.map((item, index) => (
                             <Link key={index} href={`/page/watch/${item.id}`} style={{ fontFamily: 'west' }}>
                                 <div className="md:w-14 md:h-14 w-12 h-12  p-1 pt-2 bg-slate-600 hover:text-yellow-300 rounded-full flex justify-center items-center cursor-pointer hover:bg-slate-500 hover:ring-2 hover:ring-slate-400 hover:text-xl hover:scale-105 duration-300 transition-transform">
-                                    {item.id}
+                                    {item.serial}
                                 </div>
                             </Link>
                         ))

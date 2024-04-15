@@ -1,5 +1,5 @@
 'use client'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from './detailfilm.module.css'
 import { AnimatePresence, motion } from "framer-motion";
 import Character from "./Characters";
@@ -25,7 +25,8 @@ function NavBottom({ data }) {
     };
 
     const isSelected = (tab) => activeTab.name === tab.name;
-
+    useEffect(() => {
+    }, [data])
     return (
         <div>
             <div className={styles.detailstabs}>
@@ -59,12 +60,12 @@ function NavBottom({ data }) {
                     >
 
                         {activeTab && activeTab.name === "Tổng quan" &&
-                            <Overview></Overview>
+                            <Overview data={data}></Overview>
                         }
                         {activeTab.name === "Nhân vật" && (
                             <div className={styles.characters}>
-                                <h3 className={styles.relationsheading}>Nhân vật trong Naruto</h3>
-                                <Character data={data?.characters?.edges} />
+                                <h3 className={styles.relationsheading}>Nhân vật trong {data.name}</h3>
+                                <Character data={data?.characters} />
                             </div>
                         )}
                     </motion.div>
