@@ -72,11 +72,41 @@ class UserApi {
     GetSeries(page) {
         return axios.get(`${base_api}/api/film/series?page=${page}&size=30`, headers)
     }
+    GetMoviesTop() {
+        return axios.get(`${base_api}/api/film/moviesTop`, headers)
+    }
+    GetSeriesTop() {
+        return axios.get(`${base_api}/api/film/seriesTop`, headers)
+    }
+    GetByType(type, page) {
+        return axios.get(`${base_api}/api/film/film?type=${type}&page=${page}&size=30`, headers)
+    }
+    GetByCountry(country, page) {
+        return axios.get(`${base_api}/api/film/country?country=${country}&page=${page}&size=30`, headers)
+    }
+    GetByYear(year, page) {
+        return axios.get(`${base_api}/api/film/year?year=${year}&page=${page}&size=30`, headers)
+    }
+    GetByKeyWord(key, page = 0, size = 10) {
+        return axios.get(`${base_api}/api/film/keyword?key=${key}&page=${page}&size=${size}`, headers)
+    }
     GetFilmDetail(id) {
         return axios.get(`${base_api}/api/film/info?filmId=${id}`, headers)
     }
     GetEpisode(id) {
         return axios.get(`${base_api}/api/film/episode?episodeId=${id}`, headers)
+    }
+    GetTopView() {
+        return axios.get(`${base_api}/api/film/top12views`, headers)
+    }
+    GetTopNew() {
+        return axios.get(`${base_api}/api/film/top12FilmNew`, headers)
+    }
+    GetTopEpisodeNew() {
+        return axios.get(`${base_api}/api/film/top12Newests`, headers)
+    }
+    GetFilmByEpisode(id) {
+        return axios.get(`${base_api}/api/film/filmByEpisode?id=${id}`, headers)
     }
 }
 export default new UserApi()

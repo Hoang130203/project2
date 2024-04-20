@@ -83,6 +83,7 @@ public class Film {
     @Column(name = "views")
     private Long views;
 
+
     public Film(String name, String trailer, ECountry country, String description, boolean isMovie, String image, String background, String author, int year, int ageRequire) {
         this.name = name;
         this.trailer = trailer;

@@ -6,6 +6,7 @@ import { SessionProvider } from "next-auth/react";
 import Provider from "./Providers";
 import { Fragment } from "react";
 import Wrap from "./wrap";
+import { FilmContextProvider } from "./page/films/context";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,9 +24,11 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/icon?<generated>" type="image/<generated>" sizes="<generated>"></link>
       </head>
       <body className=" dark:bg-black bg-white">
-        <Provider>
-          <Wrap>{children}</Wrap>
-        </Provider>
+        <FilmContextProvider>
+          <Provider>
+            <Wrap>{children}</Wrap>
+          </Provider>
+        </FilmContextProvider>
       </body>
     </html>
   );

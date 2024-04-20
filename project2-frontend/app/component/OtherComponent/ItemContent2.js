@@ -53,15 +53,15 @@ function ItemContent2({ anime, cardid }) {
             </div>
             <div className="hidden xl:flex h-[85%] w-[100%] rounded absolute hover:bg-gradient-to-t from-black/90 to-transparent z-7 opacity-0 hover:opacity-100 transition-all duration-300 ease  justify-center">
                 <div className="bottom-4 absolute text-xs font-light flex flex-wrap items-center justify-center gap-[.3rem] z-10">
-                    <span className="uppercase">{anime.format || "?"}</span> <span className='text-[10px]'>&#8226;</span>
-                    <span className={anime.status === 'đang ra' ? 'text-green-400 font-normal' : anime.status === 'NOT_YET_RELEASED' ? 'text-red-600 font-normal' : 'text-white font-normal'}>
-                        {anime.status}
+                    <span className="text-yellow-300">{anime.movie ? 'Phim lẻ' : 'Phim bộ'}</span> <span className='text-[10px]'>&#8226;</span>
+                    <span className={anime.status === 'đang ra' ? 'text-green-400 font-normal' : anime.status === 'NOT_YET_RELEASED' ? 'text-red-600 font-normal' : 'text-blue-400 font-normal'}>
+                        {anime.title}
                     </span>
                     <span className='text-[10px]'>&#8226;</span>
                     {cardid === 'Tập mới' ? (
                         <span>Tập {anime?.totalEpisodes || anime?.currentEpisode || '?'}</span>
                     ) : (
-                        <span>Ep {anime?.episodes || anime?.nextAiringEpisode?.episode - 1 || '?'}</span>
+                        <span className='text-yellow-300'>{anime?.views} lượt xem</span>
                     )}
                 </div>
             </div>

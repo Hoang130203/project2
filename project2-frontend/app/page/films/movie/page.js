@@ -12,7 +12,13 @@ function Movie() {
     const [films, setFilms] = useState([]);
     const [totalPages, setTotalPages] = useState(1); // Thêm state để lưu tổng số trang
     const [currentPage, setCurrentPage] = useState(1);
+    const [data, setData] = useState([])
 
+    useEffect(() => {
+        UserApi.GetMoviesTop().then(res => {
+            setData(res.data);
+        });
+    }, []);
     useEffect(() => {
         fetchData(currentPage);
     }, [currentPage]); // Sử dụng useEffect để gọi API khi trang thay đổi
@@ -23,13 +29,19 @@ function Movie() {
             setTotalPages(res.data?.totalPages); // Cập nhật tổng số trang từ API
         });
     }
-    const data = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }]
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    }
+
     const newData = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }, { id: 7 }, { id: 8 }, { id: 9 }, { id: 10 }, { id: 11 }, { id: 12 }, { id: 13 }, { id: 14 }, { id: 15 }, { id: 16 }, { id: 17 }, { id: 18 }, { id: 19 }, { id: 20 }]
     return (
         <div className="w-full">
             <div className="w-full flex justify-center items-center p-7 no_select">
                 <div className="flex-1 h-0" style={{ borderTop: '1px solid #333' }}></div>
-                <div className="mx-2 text-2xl md:text-4xl " style={{ fontFamily: 'Hazu' }}>Phim lẻ </div>
+                <div className="mx-2 text-2xl md:text-4xl " style={{ fontFamily: 'Hazu' }}>Phim lẻ nổi bật</div>
                 <div className="flex-1 h-0" style={{ borderTop: '1px solid #333' }}></div>
             </div>
             <div className="space-y-2 w-full h-max justify-start " style={{ fontFamily: 'flame' }}>
@@ -45,7 +57,7 @@ function Movie() {
                 </div>
             </div>
             <div className="w-full items-center p-3 no_select">
-                <div className="mx-1 md:mx-2 text-xl md:text-3xl font-serif" style={{ fontFamily: 'Hazu' }}>Phim lẻ mới cập nhật</div>
+                <div className="mx-1 md:mx-2 text-xl md:text-3xl font-serif" style={{ fontFamily: 'Hazu' }}>Danh sách phim lẻ</div>
                 <div className="grid grid-cols-3 md:grid-cols-5 gap-4 pt-8 2xl:grid-cols-6">
                     {films.map((item, index) => (
                         <MotionDiv key={index}
@@ -82,7 +94,7 @@ function Movie() {
                     page={currentPage}
                     total={totalPages}
                     initialPage={1}
-                    onChange={(page) => { setCurrentPage(page) }}
+                    onChange={(page) => { setCurrentPage(page), scrollToTop() }}
                     className="float-right"
                 />
             </div>

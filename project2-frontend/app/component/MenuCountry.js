@@ -5,7 +5,7 @@ import Link from 'next/link';
 function MenuCountry({ isVisible }) {
     const [show, setShow] = useState(isVisible);
     const types = [1, 2, 3, 4, 5, 6]
-    const countries = [{ id: 1, name: 'Việt Nam' }, { id: 2, name: 'Nhật Bản' }, { id: 3, name: 'Hàn Quốc' }, { id: 4, name: 'Trung Quốc' }, { id: 5, name: 'Thái Lan' }, { id: 6, name: 'Mỹ' }]
+    const countries = [{ id: 'VIETNAM', name: 'Việt Nam' }, { id: 'JAPAN', name: 'Nhật Bản' }, { id: 'KOREA', name: 'Hàn Quốc' }, { id: 'CHINA', name: 'Trung Quốc' }, { id: 'THAILAND', name: 'Thái Lan' }, { id: 'USA', name: 'Mỹ' }]
 
     useEffect(() => {
         setShow(isVisible);

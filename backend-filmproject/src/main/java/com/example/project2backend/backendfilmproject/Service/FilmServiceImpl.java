@@ -7,10 +7,7 @@ import com.example.project2backend.backendfilmproject.Entity.Episode;
 import com.example.project2backend.backendfilmproject.Entity.Film;
 import com.example.project2backend.backendfilmproject.Entity.Type;
 import com.example.project2backend.backendfilmproject.Payload.Response.FilmBasicInfo;
-import com.example.project2backend.backendfilmproject.Repository.CharacterRepository;
-import com.example.project2backend.backendfilmproject.Repository.EpisodeRepository;
-import com.example.project2backend.backendfilmproject.Repository.FilmRepository;
-import com.example.project2backend.backendfilmproject.Repository.TypeRepository;
+import com.example.project2backend.backendfilmproject.Repository.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.modelmapper.ModelMapper;
@@ -22,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -35,11 +33,15 @@ public class FilmServiceImpl implements FilmService{
     private final EpisodeRepository episodeRepository;
     private final TypeRepository typeRepository;
     private final CharacterRepository characterRepository;
-    public FilmServiceImpl(FilmRepository filmRepository, EpisodeRepository episodeRepository, TypeRepository typeRepository, CharacterRepository characterRepository) {
+    private final FavoriteRepository favoriteRepository;
+    private final SavedRepository savedRepository;
+    public FilmServiceImpl(FilmRepository filmRepository, EpisodeRepository episodeRepository, TypeRepository typeRepository, CharacterRepository characterRepository, FavoriteRepository favoriteRepository, SavedRepository savedRepository) {
         this.filmRepository = filmRepository;
         this.episodeRepository = episodeRepository;
         this.typeRepository = typeRepository;
         this.characterRepository = characterRepository;
+        this.favoriteRepository = favoriteRepository;
+        this.savedRepository = savedRepository;
     }
 
     @Override
@@ -99,6 +101,12 @@ public class FilmServiceImpl implements FilmService{
     }
 
     @Override
+    public List<Film> getTop12New() {
+        return filmRepository.findTop12ByOrderByIdDesc();
+    }
+
+    @Transactional
+    @Override
     public Film delFilm(int filmId) {
         Film film   = filmRepository.findById(filmId).get();
 //        for (Type type:film.getTypes()
@@ -107,12 +115,21 @@ public class FilmServiceImpl implements FilmService{
 //            type1.getFilms().remove(film);
 //            typeRepository.save(type1);
 //        }
+        deleteFavorite(film);
+        filmRepository.save(film);
+
         film.setTypes(null);
+//        film.setFavorites(null);
         filmRepository.save(film);
         filmRepository.delete(film);
+
         return film;
     }
-
+    @Transactional
+    void deleteFavorite(Film film){
+        favoriteRepository.deleteAllByFilm(film);
+        savedRepository.deleteAllByFilm(film);
+    }
     @Override
     public Film updateFilm(Film film) {
         Film film1= filmRepository.findById(film.getId())
@@ -232,7 +249,7 @@ public class FilmServiceImpl implements FilmService{
 
     @Override
     public List<Episode> getTopNewestEpisode() {
-        return episodeRepository.findTop12ByOrderByIdDesc();
+        return episodeRepository.findTop12ByOrderByIdDesc().stream().limit(12).collect(Collectors.toList());
     }
 
     @Override
@@ -259,22 +276,30 @@ public class FilmServiceImpl implements FilmService{
     }
 
     @Override
-    public List<Film> findAllByType(EType eType) {
+    public Page<Film> findAllByKeyword(String keyword, Pageable pageable) {
+        return filmRepository.findAllByNameContainingIgnoreCase(keyword, pageable);
+    }
+
+    @Override
+    public Page<Film> findAllByType(EType eType, Pageable pageable) {
         Type type= typeRepository.findByName(eType);
-        return filmRepository.findAllByTypesContains(type);
+        return filmRepository.findAllByTypesContains(type,pageable);
     }
 
     @Override
-    public List<Film> findAllByCountry(ECountry eCountry) {
-        return filmRepository.findAllByCountry(eCountry);
+    public Page<Film> findAllByCountry(ECountry eCountry,Pageable pageable) {
+        return filmRepository.findAllByCountry(eCountry,pageable);
     }
 
     @Override
-    public List<Film> findAllByYear(int year) {
+    public Page<Film> findAllByYear(int year,Pageable pageable) {
         if(year==2010){
-            return filmRepository.findAllByYear2();
+            return filmRepository.findAllByYear2(pageable);
         }
-        return filmRepository.findAllByYear(year);
+        if(year==0){
+            return filmRepository.findAll(pageable);
+        }
+        return filmRepository.findAllByYear(year,pageable);
     }
 
     @Override
@@ -284,7 +309,15 @@ public class FilmServiceImpl implements FilmService{
 
     @Override
     public List<Film> findAllByMovieView(boolean movie) {
-        return filmRepository.findTop5ByAndIsMovieOrderByViewsDescIdDesc(movie);
+        return filmRepository.findTop10ByAndIsMovieOrderByViewsDescIdDesc(movie);
+    }
+
+    @Override
+    public Film findByEpisode(Long episodeId) {
+        Episode episode= episodeRepository.findById(episodeId)
+                .orElseThrow(()->new RuntimeException("film not found"));
+
+        return episode.getFilm();
     }
 
 

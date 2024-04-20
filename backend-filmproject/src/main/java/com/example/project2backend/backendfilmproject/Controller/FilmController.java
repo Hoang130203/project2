@@ -5,10 +5,7 @@ import com.example.project2backend.backendfilmproject.Entity.Character;
 import com.example.project2backend.backendfilmproject.Entity.EClass_Key.ECountry;
 import com.example.project2backend.backendfilmproject.Entity.EClass_Key.ERole;
 import com.example.project2backend.backendfilmproject.Entity.EClass_Key.EType;
-import com.example.project2backend.backendfilmproject.Payload.Response.DetailFilmResponse;
-import com.example.project2backend.backendfilmproject.Payload.Response.EpisodeBasicInfo;
-import com.example.project2backend.backendfilmproject.Payload.Response.FilmBasicInfo;
-import com.example.project2backend.backendfilmproject.Payload.Response.Message;
+import com.example.project2backend.backendfilmproject.Payload.Response.*;
 import com.example.project2backend.backendfilmproject.Repository.EpisodeRepository;
 import com.example.project2backend.backendfilmproject.Service.FilmService;
 import com.example.project2backend.backendfilmproject.Service.UserService;
@@ -19,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -61,22 +59,26 @@ public class FilmController {
         return ResponseEntity.ok(modelMapper.map(filmService.getFilm(filmId), DetailFilmResponse.class));
     }
     @GetMapping("/film")
-    public ResponseEntity<?> getAllByTyp(@RequestParam("type")EType type){
-        return ResponseEntity.ok(filmService.findAllByType(type));
+    public ResponseEntity<?> getAllByTyp(@RequestParam("type")EType type,Pageable pageable){
+        return ResponseEntity.ok(filmService.findAllByType(type,pageable));
     }
     @GetMapping("/country")
-    public ResponseEntity<?> getAllByCountry(@RequestParam("country") ECountry eCountry){
-        return ResponseEntity.ok(filmService.findAllByCountry(eCountry));
+    public ResponseEntity<?> getAllByCountry(@RequestParam("country") ECountry eCountry,Pageable pageable){
+        return ResponseEntity.ok(filmService.findAllByCountry(eCountry,pageable));
     }
     @GetMapping("/year")
-    public ResponseEntity<?> getAllByYear(@RequestParam("year") int year)
+    public ResponseEntity<?> getAllByYear(@RequestParam("year") int year,Pageable pageable)
     {
-        return ResponseEntity.ok(filmService.findAllByYear(year));
+        return ResponseEntity.ok(filmService.findAllByYear(year,pageable));
     }
     @GetMapping("/movies")
     public ResponseEntity<?> getAllByMovie(Pageable pageable)
     {
         return ResponseEntity.ok(filmService.findAllByMovie(true,pageable));
+    }
+    @GetMapping("/keyword")
+    public ResponseEntity<?> getAllByKey(String key,Pageable pageable){
+        return ResponseEntity.ok(filmService.findAllByKeyword(key, pageable));
     }
 //    @GetMapping("/movies")
 //    public ResponseEntity<?> getAllByMovie(Pageable pageable) {
@@ -91,7 +93,7 @@ public class FilmController {
     @GetMapping("/moviesTop")
     public ResponseEntity<?> getAllByMovieTopView()
     {
-        return ResponseEntity.ok(filmService.findAllByMovieView(true));
+        return ResponseEntity.ok(filmService.findAllByMovieView(true).stream().map(film -> modelMapper.map(film,FilmMediumInfo.class)));
     }
     @GetMapping("/series")
     public ResponseEntity<?> getAllBySeries(Pageable pageable)
@@ -101,15 +103,24 @@ public class FilmController {
     @GetMapping("/seriesTop")
     public ResponseEntity<?> getAllBySerieTopView()
     {
-        return ResponseEntity.ok(filmService.findAllByMovieView(false));
+        return ResponseEntity.ok(filmService.findAllByMovieView(false).stream().map(film -> modelMapper.map(film, FilmMediumInfo.class)));
     }
     @GetMapping("/top12views")
     public ResponseEntity<?> getTop12Views(){
         return ResponseEntity.ok(filmService.getTop12Views().stream().map(film -> modelMapper.map(film, FilmBasicInfo.class)));
     }
+    @GetMapping("/top12FilmNew")
+    public ResponseEntity<?> getTop12NewFilm(){
+        return ResponseEntity.ok(filmService.getTop12New().stream().map(film -> modelMapper.map(film, FilmBasicInfo.class)));
+    }
     @GetMapping("/top12Newests")
     public ResponseEntity<?> getTop12New(){
         return ResponseEntity.ok(filmService.getTopNewestEpisode().stream().map(episode -> modelMapper.map(episode, EpisodeBasicInfo.class)));
+    }
+    @GetMapping("/filmByEpisode")
+    public ResponseEntity<?> getFilmByEpisode(@RequestParam Long id)
+    {
+        return ResponseEntity.ok(modelMapper.map(filmService.findByEpisode(id),DetailFilmResponse.class));
     }
     @GetMapping("/episode")
     public ResponseEntity<?> getEpisode(@RequestParam("episodeId") Long id){
@@ -145,10 +156,19 @@ public class FilmController {
         filmService.update(film);
         return ResponseEntity.ok( episode);
     }
+    @Async
     @DeleteMapping("")
     public ResponseEntity<?> deleteById(@RequestParam("filmId") int filmId)
     {
-        return ResponseEntity.ok(filmService.delFilm(filmId));
+        Film film=null;
+        try {
+             film=filmService.delFilm(filmId);
+             filmService.delFilm(filmId);
+        }catch (Exception exception){
+
+        }
+
+        return ResponseEntity.ok(film!=null?film:null);
     }
 
     @PutMapping("/basicinfo")

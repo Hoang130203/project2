@@ -1,5 +1,5 @@
 "use client"
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './Animecard.module.css';
 import { useDraggable } from 'react-use-draggable-scroll';
 import Link from 'next/link';
@@ -11,7 +11,26 @@ function CardScroll({ data, cardid, show = true, type }) {
     const { events } = useDraggable(containerRef);
     const [isLeftArrowActive, setIsLeftArrowActive] = useState(false);
     const [isRightArrowActive, setIsRightArrowActive] = useState(false);
-
+    const [isVip, setIsVip] = useState(false);
+    const getUserFromLocalStorage = () => {
+        try {
+            // avatar2 = localStorage.getItem('film_avatar');
+            userInfo = JSON.parse(localStorage.getItem('filmInfo'))
+            console.log(userInfo)
+            return userInfo
+        } catch (error) {
+            console.error('Error retrieving avatar from localStorage:', error);
+            return '';
+        }
+    };
+    useEffect(() => {
+        for (let i = 0; i < getUserFromLocalStorage()?.roles?.length; i++) {
+            if (getUserFromLocalStorage()?.roles[i].role.name == 'ROLE_VIP') {
+                setIsVip(true)
+                break
+            }
+        }
+    }, [])
     function handleScroll() {
         const container = containerRef.current;
         const scrollPosition = container.scrollLeft;
@@ -106,17 +125,19 @@ function CardScroll({ data, cardid, show = true, type }) {
                             cardid === 'Tập mới' ? (
                                 data?.map((item) => {
                                     const anime = {
-                                        id: item?.node?.id || '',
-                                        coverImage: item?.node?.coverImage?.extraLarge || 'https://cdn.sforum.vn/sforum/wp-content/uploads/2024/01/hinh-nen-anime-17.jpg',
-                                        title: item?.node?.title || 'Solo leveling',
-                                        status: item?.node?.status || 'đang ra',
-                                        format: item?.node?.format || 'Solo leveling',
+                                        id: item?.id || '',
+                                        coverImage: item?.image || item?.film?.image || 'https://i.pinimg.com/736x/4f/73/c4/4f73c41542e1de0305b84261bd7de2dd.jpg',
+                                        title: item?.film?.name || '',
+                                        status: item?.node?.status || '',
+                                        serial: item?.serial || '',
                                         episodes: item?.node?.episodes || '2',
                                         nextAiringEpisode: item?.node?.nextAiringEpisode || 'd',
-                                        relationType: item?.relationType || '5'
+                                        relationType: item?.relationType || '5',
+                                        movie: item?.film?.movie || '',
+                                        vipRequire: item?.vipRequire || false,
                                     };
                                     return (
-                                        <Link href={`/page/detail/1`} key={anime.id}>
+                                        <Link href={(item.vipRequire && !isVip) ? '#' : `/page/watch/${item?.id}`} key={anime.id}>
                                             {type ? <ItemContent2 anime={anime} cardid={cardid}></ItemContent2> : <ItemContent anime={anime} cardid={cardid} />}
                                         </Link>
                                     );
@@ -125,16 +146,17 @@ function CardScroll({ data, cardid, show = true, type }) {
                                 data?.map((item) => {
                                     const anime = {
                                         id: item.id || '',
-                                        coverImage: item?.coverImage?.extraLarge || item?.coverImage?.large || 'https://i.pinimg.com/736x/4f/73/c4/4f73c41542e1de0305b84261bd7de2dd.jpg',
-                                        title: item.title || '',
+                                        coverImage: item?.background || item?.image || 'https://i.pinimg.com/736x/4f/73/c4/4f73c41542e1de0305b84261bd7de2dd.jpg',
+                                        title: item.name || '',
                                         status: item.status || '',
                                         format: item.format || '',
                                         episodes: item?.episodes || '',
-                                        nextAiringEpisode: item?.nextAiringEpisode || '',
+                                        movie: item?.movie || '',
+                                        views: item?.views || '',
                                     };
 
                                     return (
-                                        <Link href={`/page/detail/1`} key={anime.id}>
+                                        <Link href={`/page/detail/${item.id}`} key={anime.id}>
                                             {type ? <ItemContent2 anime={anime} cardid={cardid}></ItemContent2> : <ItemContent anime={anime} cardid={cardid} />}
                                         </Link>
                                     );

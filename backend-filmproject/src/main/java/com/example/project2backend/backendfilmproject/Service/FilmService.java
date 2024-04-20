@@ -16,6 +16,7 @@ public interface FilmService {
     Film getFilm(int filmId);
     List<Film> getAllFilm();
     List<Film> getTop12Views();
+    List<Film> getTop12New();
     Film delFilm(int filmId);
     Film updateFilm(Film film);
     Film advanceUpdate(Film film);
@@ -28,9 +29,12 @@ public interface FilmService {
     Episode getEpisodeById(Long id);
     Film update(Film film);
     Episode update(Episode episode);
-    List<Film> findAllByType(EType eType);
-    List<Film> findAllByCountry(ECountry eCountry);
-    List<Film> findAllByYear(int year);
+    Page<Film> findAllByKeyword(String keyword,Pageable pageable);
+    Page<Film> findAllByType(EType eType,Pageable pageable);
+    Page<Film> findAllByCountry(ECountry eCountry,Pageable pageable);
+    Page<Film> findAllByYear(int year,Pageable pageable);
     Page<Film> findAllByMovie(boolean movie, Pageable pageable);
     List<Film> findAllByMovieView(boolean movie);
+    Film findByEpisode(Long episodeId);
+
 }
