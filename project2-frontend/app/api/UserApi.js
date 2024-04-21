@@ -3,12 +3,14 @@ import axios from "axios";
 const headers = {
     withCredentials: true,
     headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        // "ngrok-skip-browser-warning": "69420",
+
     },
     "Access-Control-Allow-Origin": "*",
 }
-export const base_api = 'http://localhost:8080'
-
+// export const base_api = 'http://localhost:8080'
+export const base_api = 'https://blessed-absolute-dragon.ngrok-free.app'
 // const base_api = 'https://project2-97w5.onrender.com'
 class UserApi {
     PostImage(img) {
@@ -107,6 +109,24 @@ class UserApi {
     }
     GetFilmByEpisode(id) {
         return axios.get(`${base_api}/api/film/filmByEpisode?id=${id}`, headers)
+    }
+    GetFavorites() {
+        return axios.get(`${base_api}/api/user/favorite`, headers)
+    }
+    PostFavorite(filmId) {
+        return axios.post(`${base_api}/api/user/favorite?filmId=${filmId}`, {}, headers)
+    }
+    DeleteFavorite(filmId) {
+        return axios.delete(`${base_api}/api/user/favorite?filmId=${filmId}`, headers)
+    }
+    GetSaved() {
+        return axios.get(`${base_api}/api/user/saved`, headers)
+    }
+    PostSaved(filmId) {
+        return axios.post(`${base_api}/api/user/saved?episodeId=${filmId}`, {}, headers)
+    }
+    DeleteSaved(filmId) {
+        return axios.delete(`${base_api}/api/user/saved?episodeId=${filmId}`, headers)
     }
 }
 export default new UserApi()

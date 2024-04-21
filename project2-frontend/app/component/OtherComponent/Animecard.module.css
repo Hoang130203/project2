@@ -16,7 +16,7 @@
   background-color: white;
 }
 .headtitle {
-  font-size: 24px;
+  font-size: 35px;
   font-weight: 500;
   margin: 15px 0;
   color: white;
@@ -160,7 +160,7 @@
     padding: 0 0.75rem;
   }
   .headtitle {
-    font-size: 21px;
+    font-size: 30px;
   }
   .carditem {
     width: 155px;
@@ -248,6 +248,6 @@
     margin: 3px 0;
   }
   .headtitle {
-    font-size: 19px;
+    font-size: 25px;
   }
 }

@@ -14,6 +14,8 @@ function InfoHeader({ isVisible }) {
 
     const handleLogout = async () => {
         localStorage.removeItem('filmInfo')
+        localStorage.removeItem('listSaved')
+        localStorage.removeItem('listLiked')
         if (session && session.user) {
             localStorage.removeItem('film_user')
             localStorage.removeItem('film_avatar')
@@ -24,12 +26,43 @@ function InfoHeader({ isVisible }) {
         }
 
     }
-
+    const [isAdmin, setIsAdmin] = useState(false)
+    let userInfo
+    const getUserFromLocalStorage = () => {
+        try {
+            // avatar2 = localStorage.getItem('film_avatar');
+            userInfo = JSON.parse(localStorage.getItem('filmInfo'))
+            return userInfo
+        } catch (error) {
+            console.error('Error retrieving avatar from localStorage:', error);
+            return '';
+        }
+    };
+    useEffect(() => {
+        for (let i = 0; i < getUserFromLocalStorage()?.roles.length; i++) {
+            if (getUserFromLocalStorage()?.roles[i].role.name == 'ROLE_ADMIN') {
+                setIsAdmin(true)
+                break
+            }
+        }
+    }, [])
     useEffect(() => {
         setShow(isVisible);
     }, [isVisible]);
     return (
         <div className={styles.info_header} style={{ display: `${show ? '' : 'none'}` }}>
+            {isAdmin ? <Link href='/admin'>
+                <div className={styles.info_item}>
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 13.5V3.75m0 9.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 3.75V16.5m12-3V3.75m0 9.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 3.75V16.5m-6-9V3.75m0 3.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 9.75V10.5" />
+                        </svg>
+
+                    </div>
+                    &nbsp;Trang admin
+                </div>
+            </Link> : ''
+            }
             <Link href='/page/account/info'>
                 <div className={styles.info_item}>
                     <div>

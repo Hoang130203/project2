@@ -2,6 +2,7 @@
 import UserApi from "@/app/api/UserApi";
 import { MotionDiv } from "@/app/component/OtherComponent/MotionDiv";
 import { SendIcon } from "@/icons/icon";
+import { Input } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
@@ -12,6 +13,7 @@ function Watch({ params }) {
     const [episode, setEpisode] = useState(0)
     const [list, setList] = useState([])
     const [name, setName] = useState('')
+    const [saved, setSaved] = useState(false)
     const [listComment, setListComment] = useState([
         { id: 1, name: 'Uzumaki Naruto', comment: 'Phim này hay quá', date: '20-3-2024', avatar: 'https://cdn.popsww.com/blog/sites/2/2022/02/naruto-co-bao-nhieu-tap.jpg' },
         { id: 2, name: 'Uchiha Sasuke', comment: 'Phim cảm động ghê', date: '19-3-2024', avatar: 'https://gamek.mediacdn.vn/133514250583805952/2020/7/6/photo-1-15940093634781712523938.png' },
@@ -21,6 +23,7 @@ function Watch({ params }) {
         { id: 6, name: 'Uzumaki Himawari', comment: 'Hay quá đi', date: '15-3-2024', avatar: 'https://cdn.popsww.com/blog/sites/2/2023/07/himawari.jpg' },
 
     ])
+    const [loading, setLoading] = useState(true)
     const fetchData = useCallback(() => {
 
         UserApi.GetEpisode(id).then(res => {
@@ -28,11 +31,38 @@ function Watch({ params }) {
             setEpisode(res.data)
             setList(JSON.parse(localStorage.getItem('currentFilm')))
             setName(localStorage.getItem('currentName'))
+            setLoading(false)
         })
 
     }, []);
 
     useEffect(() => {
+        let trueCurrent = true
+        if (localStorage.getItem('currentFilm') == null) {
+            trueCurrent = false
+        }
+        if (trueCurrent) {
+            let hasepisode = false
+            for (let i = 0; i < JSON.parse(localStorage.getItem('currentFilm')).length; i++) {
+                if (JSON.parse(localStorage.getItem('currentFilm'))[i].id == id) {
+                    hasepisode = true
+                    break
+                }
+            }
+            if (!hasepisode) {
+                UserApi.GetFilmByEpisode(id).then(res => {
+                    localStorage.setItem('currentFilm', JSON.stringify(res.data.episodes))
+                    localStorage.setItem('currentName', res.data.name)
+                }
+                );
+            }
+        } else {
+            UserApi.GetFilmByEpisode(id).then(res => {
+                localStorage.setItem('currentFilm', JSON.stringify(res.data.episodes))
+                localStorage.setItem('currentName', res.data.name)
+            }
+            );
+        }
         fetchData();
     }, [fetchData])
     // const list = [
@@ -58,29 +88,112 @@ function Watch({ params }) {
             handleSend()
         }
     };
+    let userInfo
+    const getSavedFromLocalStorage = () => {
+        try {
+            // avatar2 = localStorage.getItem('film_avatar');
+            userInfo = JSON.parse(localStorage.getItem('listSaved'))
+            console.log(userInfo)
+            return userInfo
+        } catch (error) {
+            console.error('Error retrieving avatar from localStorage:', error);
+            return '';
+        }
+    };
+    const handleSaved = () => {
+        if (saved) {
+            setSaved(false)
+            let list = getSavedFromLocalStorage()
+            for (let i = 0; i < list.length; i++) {
+                if (list[i].id == episode.id) {
+                    list.splice(i, 1)
+                    break
+                }
+            }
+            localStorage.setItem('listSaved', JSON.stringify(list))
+            UserApi.DeleteSaved(episode.id).then(res => {
+                localStorage.setItem('listSaved', JSON.stringify(res.data))
+            })
+        } else {
+            setSaved(true)
+            let list = getSavedFromLocalStorage()
+            UserApi.PostSaved(episode.id).then(res => {
+                localStorage.setItem('listSaved', JSON.stringify(res.data))
+            })
+        }
+    }
+    useEffect(() => {
+        let save = false
+        if (getSavedFromLocalStorage()) {
+            for (let i = 0; i < getSavedFromLocalStorage().length; i++) {
+                if (getSavedFromLocalStorage()[i].id == id) {
+                    save = true
+                    break
+                }
+            }
+        } else {
+            UserApi.GetSaved().then(res => {
+                localStorage.setItem('listSaved', JSON.stringify(res.data))
+                for (let i = 0; i < res.data.length; i++) {
+                    if (res.data[i].id == id) {
+                        save = true
+                        break
+                    }
+                }
+            })
+        }
+        setSaved(save)
+    }, [])
+    const handleFilter = (e) => {
+        if (e.target.value == '' || e.target.value.length == 0) {
+            setList(JSON.parse(localStorage.getItem('currentFilm')))
+            return
+        }
+        setList(
+            JSON.parse(localStorage.getItem('currentFilm')).filter(item => {
+                // Chuyển đổi e.target.value thành một số bằng cách sử dụng parseInt
+                const giaTriNhapVao = parseInt(e.target.value);
+                // Chuyển đổi item.serial thành chuỗi trước khi so sánh
+                const serialChuoi = item.serial.toString();
+                // Kiểm tra xem serialChuoi có chứa giá trị nhập vào không
+                // và xem serialChuoi có phải là một số không
+                return serialChuoi.includes(giaTriNhapVao.toString()) && /^\d+$/.test(serialChuoi);
+            })
+        );
+    }
     return (
         <div className="py-20 md:px-10 px-3 flex justify-between text-white no_select">
             <div className="xl:w-[75%] w-full ">
                 <div className="relative h-0 rounded-md" style={{ paddingTop: '56.25%' }}>
-                    <iframe
-                        className="absolute top-0 left-0 w-full h-full rounded-md"
-                        src={`${episode.url}`}
-                        frameBorder="0"
-                        allowTransparency="true"
-                        allowFullScreen="true"
-                        scrolling="no"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    ></iframe>
+                    {!loading &&
+                        <iframe
+                            className="absolute top-0 left-0 w-full h-full rounded-md"
+                            src={`${episode.url}`}
+                            frameBorder="0"
+                            allowTransparency="true"
+                            allowFullScreen="true"
+                            scrolling="no"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        ></iframe>
+                    }
                 </div>
-                <div>
-                    <div style={{ fontFamily: 'west' }} className="px-2 py-1 mt-2">
+                <div className="grid grid-cols-8">
+                    <div style={{ fontFamily: 'west' }} className="px-2 py-1 mt-2 md:col-span-7 col-span-8">
                         <p className="md:text-4xl text-2xl" >{name}</p>
                         <p className="md:text-2xl text-xl text-slate-400">Tập {episode.serial}</p>
                     </div>
+                    <div className="col-span-1 px-2 py-1 mt-2">
+                        <div onClick={() => { handleSaved() }} className={["md:ml-1 rounded-full px-3 py-1 md:px-4 md:pr-5 bg-gray-700 w-max cursor-pointer flex items-center hover:ring-1 hover:ring-blue-400 hover:text-blue-300 hover:bg-gray-600", saved ? "ring-blue-400 text-blue-300 ring-1" : ""].join(' ')}>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="md:w-6 md:h-6 w-4 h-4">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+                            </svg>
+                            {saved ? <div className="h-full items-center md:text-[20px] text-[15px]">Đã Lưu</div> : <div className="h-full items-center md:text-[20px] text-[15px]">Lưu</div>}
+                        </div>
+                    </div>
                 </div>
-                <div className="grid grid-cols-6 py-5 sm:grid-cols-9 md:grid-cols-12 px-2 gap-y-3 md:gap-y-5 md:px-3 md:pr-10 2xl:max-w-[80%]">
+                <div className="grid grid-cols-6 py-5 sm:grid-cols-9 md:grid-cols-12 px-2 gap-y-3 md:gap-y-5 md:px-3 xl:hidden md:pr-10 2xl:max-w-[80%]">
                     {
-                        list.map((item, index) => (
+                        list?.map((item, index) => (
                             <Link key={index} href={`/page/watch/${item.id}`} style={{ fontFamily: 'west' }}>
                                 <div className="md:w-14 md:h-14 w-12 h-12  p-1 pt-2 bg-slate-600 hover:text-yellow-300 rounded-full flex justify-center items-center cursor-pointer hover:bg-slate-500 hover:ring-2 hover:ring-slate-400 hover:text-xl hover:scale-105 duration-300 transition-transform">
                                     {item.serial}
@@ -135,50 +248,23 @@ function Watch({ params }) {
                 </div>
             </div>
             <div className="w-[22%] min-w-[300px] hidden xl:block">
-                <div className="bg-gray-950  pt-5 px-2 rounded-lg">
-                    <div className="flex text-2xl md:text-3xl" >
-                        <div className="card_bar"></div>
-                        <div style={{ fontFamily: 'west' }}>
-                            Đề cử
-                        </div>
-                    </div>
-                    <div>
-                        {listFilm.map((item, index) => {
-                            return (
-                                <MotionDiv key={index}
-                                    initial={{ y: 15, opacity: 0 }}
-                                    whileInView={{ y: 0, opacity: 1 }}
-                                    transition={{ duration: 0.5 }}
-                                    viewport={{ once: true }}
-                                >
-                                    <div className="relative flex my-3 group bg-gray-900 hover:bg-gray-800 h-24 cursor-pointer rounded-md">
-                                        <div className="h-full w-[72px] flex bg-slate-300 overflow-hidden rounded-md relative" >
-                                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_m8cav_i37AVLD6fGhHS78IZ0fbhmC6VIHg&usqp=CAU" className="w-full h-full object-cover group-hover:scale-110 rounded-md transition-transform duration-300" ></img>
-                                        </div>
-                                        <div className="px-3 md:px-5 flex flex-col h-full justify-between py-2 max-w-full text-gray-400" style={{ width: '75%' }}>
-                                            <div className="text text-nowrap max-w-full overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer group-hover:text-yellow-300 text-xl" style={{ fontFamily: 'impact' }}>
-                                                Solo leveling
-                                            </div>
-                                            <div className="text-lg flex items-center relative" >
-                                                {Array.from({ length: 5 }).map((item, index) => {
-
-                                                    return (
-                                                        <svg key={index} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-yellow-400 ml-1 hover:scale-110 cursor-pointer transition-transform">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
-                                                        </svg>
-                                                    )
-                                                }
-                                                )}
-                                                <div className="right-1 absolute text-blue-400 hover:scale-105 transition-transform cursor-pointer" style={{ fontFamily: 'flame' }}>
-                                                    Phim bộ
-                                                </div>
-                                            </div>
-                                        </div>
+                <div className="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
+                    </svg>
+                    <Input variant="underlined" placeholder="Nhập tập phim " onChange={handleFilter}></Input>
+                </div>
+                <div className="bg-gray-950  pt-5 px-2 rounded-lg flex justify-center max-h-[800px] overflow-auto">
+                    <div className="grid grid-cols-3 py-5 sm:grid-cols-3 gap-x-3 md:grid-cols-4 gap-y-3 ">
+                        {
+                            list?.map((item, index) => (
+                                <Link key={index} href={`/page/watch/${item.id}`} style={{ fontFamily: 'Hazu' }}>
+                                    <div className="md:w-[62px] md:h-10 w-12 h-9 col-span-1 p-1 pt-2 text-[20px] bg-slate-600 hover:text-yellow-300 rounded-2xl flex justify-center items-center cursor-pointer hover:bg-slate-500 hover:ring-2 hover:ring-slate-400 hover:text-xl hover:scale-105 duration-300 transition-transform">
+                                        Tập {item.serial}
                                     </div>
-                                </MotionDiv>
-                            )
+                                </Link>
+                            ))
                         }
-                        )}
                     </div>
                 </div>
             </div>

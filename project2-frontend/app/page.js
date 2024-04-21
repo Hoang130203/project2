@@ -38,10 +38,10 @@ export default function Home() {
           </div>
         </div>
         <div className="block px-5 py-4 md:px-20 w-full no_select">
-          <div className="space-y-2 w-full h-max justify-start" style={{ fontFamily: 'flame' }}>
+          <div className="space-y-2 w-full h-max justify-start" style={{ fontFamily: 'Hazu' }}>
             <SlideFilm />
           </div>
-          <div className="space-y-2 w-full h-max justify-start" style={{ fontFamily: 'flame' }}>
+          <div className="space-y-2 w-full h-max justify-start" style={{ fontFamily: 'Hazu' }}>
             <NewEposide />
           </div>
           <div className="flex flex-col md:flex-row w-full md:space-x-28 space-y-5 md:space-y-0">

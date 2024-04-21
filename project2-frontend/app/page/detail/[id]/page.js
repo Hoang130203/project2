@@ -10,8 +10,10 @@ import UserApi from "@/app/api/UserApi";
 function Detail({ params }) {
     const bg = 'https://images3.alphacoders.com/132/1328396.png'
     const img = 'https://cdn.oneesports.vn/cdn-data/sites/4/2023/10/Anime-Naruto-avt.jpg'
+    const [isVip, setIsVip] = useState(false)
     const epdata = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
     const [film, setFilm] = useState({})
+    const [liked, setLiked] = useState(false)
     const [listReview, setListReview] = useState([
         { id: 1, name: 'Uzumaki Naruto', comment: 'Phim này hay quá', date: '20-3-2024', avatar: 'https://cdn.popsww.com/blog/sites/2/2022/02/naruto-co-bao-nhieu-tap.jpg' },
         { id: 2, name: 'Uchiha Sasuke', comment: 'Phim cảm động ghê', date: '19-3-2024', avatar: 'https://gamek.mediacdn.vn/133514250583805952/2020/7/6/photo-1-15940093634781712523938.png' },
@@ -22,6 +24,29 @@ function Detail({ params }) {
 
     ])
     const [review, setReview] = useState('')
+    let userInfo
+    const getUserFromLocalStorage = () => {
+        try {
+            // avatar2 = localStorage.getItem('film_avatar');
+            userInfo = JSON.parse(localStorage.getItem('filmInfo'))
+            console.log(userInfo)
+            return userInfo
+        } catch (error) {
+            console.error('Error retrieving avatar from localStorage:', error);
+            return '';
+        }
+    };
+    const getLikedFromLocalStorage = () => {
+        try {
+            // avatar2 = localStorage.getItem('film_avatar');
+            userInfo = JSON.parse(localStorage.getItem('listLiked'))
+            console.log(userInfo)
+            return userInfo
+        } catch (error) {
+            console.error('Error retrieving avatar from localStorage:', error);
+            return '';
+        }
+    };
     useEffect(() => {
         const id = params.id
         UserApi.GetFilmDetail(id).then(res => {
@@ -30,6 +55,32 @@ function Detail({ params }) {
             localStorage.setItem('currentFilm', JSON.stringify(res.data.episodes))
             localStorage.setItem('currentName', res.data.name)
         })
+        for (let i = 0; i < getUserFromLocalStorage()?.roles?.length; i++) {
+            if (getUserFromLocalStorage()?.roles[i].role.name == 'ROLE_VIP') {
+                setIsVip(true)
+                break
+            }
+        }
+        let like = false
+        if (getLikedFromLocalStorage()) {
+            for (let i = 0; i < getLikedFromLocalStorage().length; i++) {
+                if (getLikedFromLocalStorage()[i].id == id) {
+                    like = true
+                    break
+                }
+            }
+        } else {
+            UserApi.GetFavorites().then(res => {
+                localStorage.setItem('listLiked', JSON.stringify(res.data))
+                for (let i = 0; i < res.data.length; i++) {
+                    if (res.data[i].id == id) {
+                        like = true
+                        break
+                    }
+                }
+            })
+        }
+        setLiked(like)
     }, [])
     const sendReview = () => {
         if (review != '') {
@@ -42,6 +93,29 @@ function Detail({ params }) {
             sendReview()
         }
     };
+    const handleFavorite = () => {
+        if (liked) {
+            setLiked(false)
+            let list = getLikedFromLocalStorage()
+            for (let i = 0; i < list.length; i++) {
+                if (list[i].id == film.id) {
+                    list.splice(i, 1)
+                    break
+                }
+            }
+            localStorage.setItem('listLiked', JSON.stringify(list))
+            UserApi.DeleteFavorite(film.id).then(res => {
+                localStorage.setItem('listLiked', JSON.stringify(res.data))
+            })
+        } else {
+            setLiked(true)
+            let list = getLikedFromLocalStorage()
+            list.push(film)
+            UserApi.PostFavorite(film.id).then(res => {
+                localStorage.setItem('listLiked', JSON.stringify(res.data))
+            })
+        }
+    }
     return (
         <div className="w-full min-h-[800px] no_select">
             <div className="h-[500px]">
@@ -80,11 +154,11 @@ function Detail({ params }) {
                                             <div className="h-full items-center text-[15px]">Không có tập phim</div>
                                         )}
                                     </div>
-                                    <div className="ml-1 rounded-full px-2 py-1 md:px-4 md:pr-5   bg-gray-700 w-max cursor-pointer flex items-center hover:ring-1 hover:ring-pink-400 hover:text-pink-300 hover:bg-gray-600">
+                                    <div onClick={() => { handleFavorite() }} className={["ml-1 rounded-full px-2 py-1 md:px-4 md:pr-5   bg-gray-700 w-max cursor-pointer flex items-center hover:ring-1 hover:ring-pink-400 hover:text-pink-300 hover:bg-gray-600", liked ? "ring-pink-400 text-pink-300 ring-1" : ""].join(' ')}>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 mr-1 md:w-5 md:h-5">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
                                         </svg>
-                                        <div className="h-full items-center text-[15px] ">Yêu thích</div>
+                                        {liked ? <div className="h-full items-center text-[15px] ">Đã yêu thích</div> : <div className="h-full items-center text-[15px] ">Yêu thích</div>}
                                     </div>
                                 </div>
                             </MotionDiv>
@@ -108,7 +182,7 @@ function Detail({ params }) {
                 {film.episodes?.map((episode, index) => {
                     return (
                         <Link
-                            href={`/page/watch/${episode?.id}`}
+                            href={(episode.vipRequire && !isVip) ? '#' : `/page/watch/${episode?.id}`}
                             key={index}
                             className={`relative group`}
                         >
@@ -121,9 +195,18 @@ function Detail({ params }) {
                                 <div className={`relative w-full flex-1 rounded-lg overflow-hidden bg-[#18181b] aspect-video`}>
                                     <Image src={episode?.image || film?.background || film?.image || 'https://cdn.popsww.com/blog/sites/2/2022/02/naruto-co-bao-nhieu-tap.jpg'} width={200} height={200} alt={episode?.title} className="bg-[#18181b] h-full w-full object-cover aspect-w-16 aspect-h-9 rounded-lg transition-all duration-300 transform group-hover:scale-105 group-hover:opacity-60" quality={100} />
                                     <div className="absolute inset-0 flex items-center justify-center">
-                                        <div className="hidden group-hover:flex items-center justify-center opacity-0 bg-white bg-opacity-40 hover:bg-[#4d148c] rounded-full shadow group-hover:opacity-90 w-12 h-12">
-                                            <svg xmlns="http://www.w3.org/2000/svg" className='play-buttonicon w-5 h-5' viewBox="0 0 24 24"><path fill="currentColor" d="M21.409 9.353a2.998 2.998 0 0 1 0 5.294L8.597 21.614C6.534 22.737 4 21.277 4 18.968V5.033c0-2.31 2.534-3.769 4.597-2.648z" /></svg>
-                                        </div>
+                                        {(episode.vipRequire && !isVip) ?
+                                            <div onClick={(e) => { alert("vip require") }} className="hidden group-hover:flex items-center justify-center opacity-0 bg-white bg-opacity-40 hover:bg-[#4d148c] rounded-full shadow group-hover:opacity-90 w-12 h-12">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                                                </svg>
+
+                                            </div>
+                                            :
+                                            <div className="hidden group-hover:flex items-center justify-center opacity-0 bg-white bg-opacity-40 hover:bg-[#4d148c] rounded-full shadow group-hover:opacity-90 w-12 h-12">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className='play-buttonicon w-5 h-5' viewBox="0 0 24 24"><path fill="currentColor" d="M21.409 9.353a2.998 2.998 0 0 1 0 5.294L8.597 21.614C6.534 22.737 4 21.277 4 18.968V5.033c0-2.31 2.534-3.769 4.597-2.648z" /></svg>
+                                            </div>
+                                        }
                                     </div>
                                 </div>
                                 <span className="absolute bottom-2 left-2 bg-black bg-opacity-60 px-[6px] py-[3px] text-xs rounded-md">{"Tập " + (index + 1)}</span>

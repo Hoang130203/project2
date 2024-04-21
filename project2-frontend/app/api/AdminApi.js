@@ -3,7 +3,9 @@ import { base_api } from "./UserApi.js";
 const headers = {
     withCredentials: true,
     headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        // "ngrok-skip-browser-warning": "69420",
+
     },
     "Access-Control-Allow-Origin": "*",
 }

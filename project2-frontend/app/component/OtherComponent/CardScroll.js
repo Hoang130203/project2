@@ -11,6 +11,7 @@ function CardScroll({ data, cardid, show = true, type }) {
     const { events } = useDraggable(containerRef);
     const [isLeftArrowActive, setIsLeftArrowActive] = useState(false);
     const [isRightArrowActive, setIsRightArrowActive] = useState(false);
+    let userInfo
     const [isVip, setIsVip] = useState(false);
     const getUserFromLocalStorage = () => {
         try {

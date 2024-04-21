@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { MotionDiv } from "./MotionDiv";
+import UserApi from "@/app/api/UserApi";
 
 const { default: ItemRank } = require("./ItemRank");
 
@@ -9,9 +10,13 @@ function Rank({ type }) {
     const [rank, setRank] = useState([]);
     useEffect(() => {
         if (type == 1) {
-            setRank([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+            UserApi.GetTopNew().then(res => {
+                setRank(res.data);
+            })
         } else if (type == 2) {
-            setRank([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+            UserApi.GetTopView().then(res => {
+                setRank(res.data);
+            })
         }
     }, [type])
     return (
@@ -24,7 +29,7 @@ function Rank({ type }) {
                         transition={{ duration: 0.5 }}
                         viewport={{ once: true }}
                     >
-                        <ItemRank index={index} type={type}></ItemRank>
+                        <ItemRank index={index} type={type} data={item}></ItemRank>
                     </MotionDiv>
                 )
             }
