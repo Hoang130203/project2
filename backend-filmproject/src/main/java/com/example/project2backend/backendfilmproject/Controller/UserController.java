@@ -3,10 +3,10 @@ package com.example.project2backend.backendfilmproject.Controller;
 import com.example.project2backend.backendfilmproject.Entity.Episode;
 import com.example.project2backend.backendfilmproject.Entity.Film;
 import com.example.project2backend.backendfilmproject.Entity.User;
+import com.example.project2backend.backendfilmproject.Payload.Request.CommentReq;
+import com.example.project2backend.backendfilmproject.Payload.Request.ReviewReq;
 import com.example.project2backend.backendfilmproject.Payload.Request.UserUpdateReq;
-import com.example.project2backend.backendfilmproject.Payload.Response.Message;
-import com.example.project2backend.backendfilmproject.Payload.Response.UserBaseInfo;
-import com.example.project2backend.backendfilmproject.Payload.Response.UserInfoForAdmin;
+import com.example.project2backend.backendfilmproject.Payload.Response.*;
 import com.example.project2backend.backendfilmproject.Service.FilmService;
 import com.example.project2backend.backendfilmproject.Service.RoleService;
 import com.example.project2backend.backendfilmproject.Service.UserService;
@@ -54,6 +54,14 @@ public class UserController {
             return ResponseEntity.ok(modelMapper.map(user, UserBaseInfo.class));
         }
         return ResponseEntity.badRequest().body(new Message("error"));
+    }
+    @GetMapping("/favorite")
+    public ResponseEntity<?> getFavorite(){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        User user= userService.getById(getUserId(userDetails))
+                .orElseThrow(()->new RuntimeException("User not found"));
+        return ResponseEntity.ok(user.getFavorites());
     }
     @PostMapping("/favorite")
     public ResponseEntity<?> postFavorite(@RequestParam("filmId") int filmId)
@@ -106,7 +114,14 @@ public class UserController {
         userService.save(user);
         return ResponseEntity.ok(favorites);
     }
-
+    @GetMapping("/saved")
+    public ResponseEntity<?> getSaved(){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        User user= userService.getById(getUserId(userDetails))
+                .orElseThrow(()->new RuntimeException("User not found"));
+        return ResponseEntity.ok(user.getSaveds().stream().map(episode-> modelMapper.map(episode, EpisodeBasicInfo.class)));
+    }
     @PostMapping("/saved")
     public ResponseEntity<?> postSaved(@RequestParam("episodeId") Long episodeId)
     {
@@ -119,8 +134,8 @@ public class UserController {
         if(!saveds.isEmpty() && saveds.size()>=1){
             for (Episode episode1:saveds
             ) {
-                if(episode1.getId()==episodeId){
-                    return ResponseEntity.ok(saveds);
+                if(episode1.getId().equals(episodeId)){
+                    return ResponseEntity.ok(saveds.stream().map(episodee-> modelMapper.map(episodee, EpisodeBasicInfo.class)));
                 }
             }
         }
@@ -128,7 +143,7 @@ public class UserController {
         saveds.add(episode);
         user.setSaveds(saveds);
         userService.save(user);
-        return ResponseEntity.ok(saveds);
+        return ResponseEntity.ok(saveds.stream().map(episodee-> modelMapper.map(episodee, EpisodeBasicInfo.class)));
     }
 
     @DeleteMapping("/saved")
@@ -144,7 +159,7 @@ public class UserController {
         if(!saveds.isEmpty() && saveds.size()>=1){
             for (Episode episode1:saveds
             ) {
-                if(episode1.getId()==episodeId){
+                if(episode1.getId().equals(episodeId)){
                     hasfilm=true;
                     break;
                 }
@@ -156,9 +171,42 @@ public class UserController {
         }
         user.setSaveds(saveds);
         userService.save(user);
-        return ResponseEntity.ok(saveds);
+        return ResponseEntity.ok(saveds.stream().map(episodee-> modelMapper.map(episodee, EpisodeBasicInfo.class)));
     }
 
+    @GetMapping("/reviews")
+    public ResponseEntity<?> getReviews(@RequestParam("filmId") int filmid){
+        Film film= filmService.getFilm(filmid);
+        return ResponseEntity.ok(filmService.getReview(film).stream().map(review -> modelMapper.map(review, ReviewRes.class)));
+    }
+
+    @PostMapping("/review")
+    public ResponseEntity<?> postReview(@RequestBody ReviewReq reviewReq){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        User user= userService.getById(getUserId(userDetails))
+                .orElseThrow(()->new RuntimeException("User not found"));
+        Film film= filmService.getFilm(reviewReq.getFilmId());
+        return ResponseEntity.ok(userService.postReview(user,film,reviewReq.getContent()));
+
+    }
+
+    @GetMapping("/comments")
+    public ResponseEntity<?> getComments(@RequestParam("episodeId") Long episodeId){
+        Episode episode= filmService.getEpisodeById(episodeId);
+        return ResponseEntity.ok(filmService.getComment(episode).stream().map(comment -> modelMapper.map(comment, ReviewRes.class)));
+    }
+
+    @PostMapping("/comment")
+    public ResponseEntity<?> postComment(@RequestBody CommentReq commentReq){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        User user= userService.getById(getUserId(userDetails))
+                .orElseThrow(()->new RuntimeException("User not found"));
+        Episode episode= filmService.getEpisodeById(commentReq.getEpisodeId());
+        return ResponseEntity.ok(userService.postComment(user,episode,commentReq.getContent()));
+
+    }
     @GetMapping("/allusers")
     public ResponseEntity<?> getAllUsers(){
         return ResponseEntity.ok(userService.getAll().stream().map(user -> modelMapper.map(user, UserInfoForAdmin.class)));

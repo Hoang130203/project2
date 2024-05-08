@@ -1,5 +1,6 @@
 package com.example.project2backend.backendfilmproject.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ public class Review {
     @Column(name = "id")
     private String id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "film_id")
     private Film film;
@@ -33,4 +35,11 @@ public class Review {
 
     @Column(columnDefinition = "nvarchar(max)")
     private String content;
+
+    public Review(Film film, User user, Timestamp time, String content) {
+        this.film = film;
+        this.user = user;
+        this.time = time;
+        this.content = content;
+    }
 }

@@ -2,7 +2,7 @@
 import UserApi from "@/app/api/UserApi";
 import { MotionDiv } from "@/app/component/OtherComponent/MotionDiv";
 import { SendIcon } from "@/icons/icon";
-import { Input } from "@nextui-org/react";
+import { Input, User } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
@@ -15,12 +15,6 @@ function Watch({ params }) {
     const [name, setName] = useState('')
     const [saved, setSaved] = useState(false)
     const [listComment, setListComment] = useState([
-        { id: 1, name: 'Uzumaki Naruto', comment: 'Phim này hay quá', date: '20-3-2024', avatar: 'https://cdn.popsww.com/blog/sites/2/2022/02/naruto-co-bao-nhieu-tap.jpg' },
-        { id: 2, name: 'Uchiha Sasuke', comment: 'Phim cảm động ghê', date: '19-3-2024', avatar: 'https://gamek.mediacdn.vn/133514250583805952/2020/7/6/photo-1-15940093634781712523938.png' },
-        { id: 3, name: 'Haruno Sakura', comment: 'Ok', date: '18-3-2024', avatar: 'https://kilala.vn/data/upload/article/4589/cac%20nang%20sakura%20(4).jpg' },
-        { id: 4, name: 'Hatake Kakashi', comment: 'Hmm', date: '17-3-2024', avatar: 'https://cdn.oneesports.vn/cdn-data/sites/4/2023/02/Naruto-Kakashi-1-63ed2500d4625.jpg' },
-        { id: 5, name: 'Uzumaki Boruto', comment: 'Hehe', date: '16-3-2024', avatar: 'https://cdn.popsww.com/blog/sites/2/2023/02/cac-nhan-vat-trong-boruto-2.jpg' },
-        { id: 6, name: 'Uzumaki Himawari', comment: 'Hay quá đi', date: '15-3-2024', avatar: 'https://cdn.popsww.com/blog/sites/2/2023/07/himawari.jpg' },
 
     ])
     const [loading, setLoading] = useState(true)
@@ -32,11 +26,13 @@ function Watch({ params }) {
             setList(JSON.parse(localStorage.getItem('currentFilm')))
             setName(localStorage.getItem('currentName'))
             setLoading(false)
+            setListComment(res.data.comments?.reverse())
         })
 
     }, []);
 
     useEffect(() => {
+
         let trueCurrent = true
         if (localStorage.getItem('currentFilm') == null) {
             trueCurrent = false
@@ -78,10 +74,16 @@ function Watch({ params }) {
     const listFilm = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
     const handleSend = () => {
+        UserApi.PostComment(id, comment).then(res => {
+            console.log(res.data)
+        }).catch(err => {
+            console.log(err)
+        })
         if (comment != '') {
-            setListComment((prev) => [{ id: 0, name: 'Mai Minh Hoàng', comment: comment, date: 'vừa xong', avatar: 'https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/08/hinh-nen-dien-thoai-anime-3.jpg' }, ...prev])
+            setListComment((prev) => [{ id: 0, user: { name: nameUser, avatar: avatar }, content: comment, time: 'vừa xong' }, ...prev])
             setComment('')
         }
+
     }
     const handleKeyDown = (event) => {
         if (event.key === 'Enter') {
@@ -100,6 +102,23 @@ function Watch({ params }) {
             return '';
         }
     };
+    let userInfo2
+    const getUserFromLocalStorage = () => {
+        try {
+            // avatar2 = localStorage.getItem('film_avatar');
+            userInfo2 = JSON.parse(localStorage.getItem('filmInfo'))
+            return userInfo2
+        } catch (error) {
+            console.error('Error retrieving avatar from localStorage:', error);
+            return '';
+        }
+    };
+    const [avatar, setAvatar] = useState('')
+    const [nameUser, setNameUser] = useState('')
+    useEffect(() => {
+        setAvatar(getUserFromLocalStorage()?.avatar)
+        setNameUser(getUserFromLocalStorage()?.name)
+    }, [])
     const handleSaved = () => {
         if (saved) {
             setSaved(false)
@@ -163,7 +182,8 @@ function Watch({ params }) {
     }
     return (
         <div className="py-20 md:px-10 px-3 flex justify-between text-white no_select">
-            <div className="xl:w-[75%] w-full ">
+            <div style={{ zIndex: 0, position: 'fixed', top: '0px', left: '0px', height: '100%', width: '100%', backgroundImage: `url('https://gcs.tripi.vn/public-tripi/tripi-feed/img/474077MhZ/anh-nen-4k-cho-desktop_105907396.jpg')`, backgroundPosition: 'center', opacity: 0.13, backgroundRepeat: 'no-repeat' }}></div>
+            <div className="xl:w-[75%] w-full z-10">
                 <div className="relative h-0 rounded-md" style={{ paddingTop: '56.25%' }}>
                     {!loading &&
                         <iframe
@@ -207,14 +227,16 @@ function Watch({ params }) {
                     <div className="pt-2 md:pt-3 md:flex md:items-center">
                         <div className="flex items-end gap-x-3 ">
                             <div className="hover:ring-2 hover:ring-blue-300 ring-1 ring-gray-300 rounded-full w-10 h-10 sm:w-12 sm:h-12 overflow-hidden">
-                                <img src='https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/08/hinh-nen-dien-thoai-anime-3.jpg' className='cursor-pointer rounded-full w-10 h-10 sm:w-12 sm:h-12  object-cover hover:scale-110'></img>
+                                <img src={avatar ?? 'https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/08/hinh-nen-dien-thoai-anime-3.jpg'} className='cursor-pointer rounded-full w-10 h-10 sm:w-12 sm:h-12  object-cover hover:scale-110'></img>
                             </div>
-                            <p className="md:hidden text-xl text-blue-200" style={{ fontFamily: 'Instagram' }}>Mai Minh Hoàng</p>
+                            <p className="md:hidden text-xl text-blue-200" style={{ fontFamily: 'Instagram' }}>{nameUser}</p>
                         </div>
                         <div className="flex items-center pt-2 md:w-[90%] md:pl-5">
                             <input type="text" placeholder="Nhập bình luận" onKeyDown={handleKeyDown} value={comment} onChange={(e) => setComment(e.target.value)} className="bg-slate-900 w-full h-10 md:h-11 px-2 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500"></input>
-                            <div className="cursor-pointer flex  w-[28px]  ml-4 hover:scale-110 hover" onClick={handleSend}>
-                                <SendIcon />
+                            <div className="cursor-pointer flex  w-[28px]  ml-4 hover:scale-110 hover" >
+                                <button onClick={handleSend} className="px-5 py-1 bg-blue-500 flex items-center justify-center text-white rounded-md">
+                                    Gửi
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -231,13 +253,13 @@ function Watch({ params }) {
                                     >
                                         <div >
                                             <div className="flex items-center mt-4">
-                                                <Image width={100} height={100} src={item.avatar} className='cursor-pointer rounded-full w-10 h-10 sm:w-12 sm:h-12 hover:ring-2 hover:ring-blue-300 ring-1 ring-gray-300 object-cover'></Image>
-                                                <div className="pl-3 md:pl-5">
-                                                    <p className="text-lg text-gray-200 " style={{ fontFamily: 'west' }}>{item.name}</p>
-                                                    <p className="text-sm text-gray-400">{item.date}</p>
+                                                <Image width={100} height={100} src={item?.user?.avatar ?? ""} alt="avatar" className='cursor-pointer rounded-full w-10 h-10 sm:w-12 sm:h-12 hover:ring-2 hover:ring-blue-300 ring-1 ring-gray-300 object-cover'></Image>
+                                                <div className="pl-3">
+                                                    <p className="text-lg text-gray-200 " style={{ fontFamily: 'west' }}>{item?.user?.name}</p>
+                                                    <p className="text-sm text-gray-400">{item?.time?.length > 10 ? item?.time?.slice(0, 10) : item?.time}</p>
                                                 </div>
                                             </div>
-                                            <div className="pl-14 pt-2  md:pl-16 ">{item.comment}</div>
+                                            <div className="pl-14 pt-2 ">{item.content}</div>
                                         </div>
                                     </MotionDiv>
                                 )
@@ -247,7 +269,7 @@ function Watch({ params }) {
                     </div>
                 </div>
             </div>
-            <div className="w-[22%] min-w-[300px] hidden xl:block">
+            <div className="w-[22%] min-w-[300px] hidden xl:block z-10">
                 <div className="flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />

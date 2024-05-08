@@ -77,6 +77,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
 //                        .requestMatchers(HttpMethod.POST,"/api/film/")
                         .requestMatchers("/vnpay/**").permitAll()
+                        .requestMatchers("/payos/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling((exceptions) -> exceptions.authenticationEntryPoint(jwtException))

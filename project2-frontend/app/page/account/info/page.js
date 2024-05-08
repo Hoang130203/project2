@@ -2,8 +2,11 @@
 import { MotionDiv } from "@/app/component/OtherComponent/MotionDiv";
 import { useEffect, useState } from "react";
 import UserApi from "@/app/api/UserApi";
+import { Radio, RadioGroup } from "@nextui-org/react";
+import Provider from "@/app/Providers";
 function Favorite() {
     const [showPay, setShowPay] = useState(false)
+    const [provider, setProvider] = useState('payos')
     const getUserFromLocalStorage = () => {
         try {
             // avatar2 = localStorage.getItem('film_avatar');
@@ -79,21 +82,31 @@ function Favorite() {
         }
     }
     const getVip = (money) => {
-        UserApi.VnPay(money, 'Nâng cấp vip').then(
-            res => {
-                if (res.status == 200) {
-                    console.log(res.data)
-                    window.location.replace(res.data)
+        if (provider == 'vnpay')
+            UserApi.VnPay(money, 'Nâng cấp vip ' + (money == 100000 ? '1 tháng' : money == 250000 ? '3 tháng' : '6 tháng')).then(
+                res => {
+                    if (res.status == 200) {
+                        console.log(res.data)
+                        window.location.replace(res.data)
+                    }
                 }
-            }
-        )
+            )
+        else if (provider == 'payos')
+            UserApi.PayOs(money, 'Nâng cấp vip ' + (money == 100000 ? '1 tháng' : money == 250000 ? '3 tháng' : '6 tháng')).then(
+                res => {
+                    if (res.status == 200) {
+                        console.log(res.data)
+                        window.location.replace(res.data)
+                    }
+                }
+            )
     }
     useEffect(() => {
 
     }, [file])
     return (
         <div className="px-4 md:px-10 py-20 min-h-[900px] md:pt-28">
-            <div style={{ zIndex: 0, position: 'fixed', top: '0px', left: '0px', height: '100%', width: '100%', backgroundImage: `url('https://wallpapercave.com/wp/wp11337851.png')`, backgroundPosition: 'center', opacity: 0.2, backgroundRepeat: 'no-repeat' }}></div>
+            <div style={{ zIndex: 0, position: 'fixed', top: '0px', left: '0px', height: '100%', width: '100%', backgroundImage: `url('https://mega.com.vn/media/news/0106_hinh-nen-may-tinh-full-hd62.jpg')`, backgroundPosition: 'center', opacity: 0.15, backgroundRepeat: 'no-repeat' }}></div>
             <div className="flex sm:flex-row flex-col-reverse justify-start sm:justify- pb-12 mt-10 gap-y-2">
                 <div className="sm:w-[60%] md:w-[70%] md:pr-3 no_select relative group">
                     <div className="p-3 min-h-64 bg-opacity-65 bg-slate-950 rounded-xl text-white gap-4">
@@ -215,6 +228,16 @@ function Favorite() {
                     </div>
                 </MotionDiv>
             }
+            <div className={`${showPay ? "" : "hidden "} flex justify-center items-center`}>
+                <h2 className="text-3xl pr-4" style={{ fontFamily: 'Hazu' }}>Chọn phương thức thanh toán</h2>
+                <RadioGroup
+                    defaultValue="payos"
+                    orientation="horizontal"
+                >
+                    <Radio value="vnpay" onClick={() => { setProvider('vnpay') }}>VnPay</Radio>
+                    <Radio value="payos" onClick={(e) => { setProvider('payos') }}>PayOS</Radio>
+                </RadioGroup>
+            </div>
             <div className={`mt-12  no_select  grid grid-cols-1 md:grid-cols-3 gap-3 ${showPay ? "" : "hidden "} transition-none ease-in-out delay-350 duration-300`}>
                 <MotionDiv
                     initial={{ y: -10, opacity: 0 }}
@@ -242,6 +265,7 @@ function Favorite() {
                                     </svg>
                                     <span className="text-xl">Mua</span>
                                 </div>
+
                             </div>
 
 

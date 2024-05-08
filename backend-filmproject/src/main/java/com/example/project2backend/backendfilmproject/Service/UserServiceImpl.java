@@ -1,16 +1,10 @@
 package com.example.project2backend.backendfilmproject.Service;
 
+import com.example.project2backend.backendfilmproject.Entity.*;
 import com.example.project2backend.backendfilmproject.Entity.EClass_Key.ERole;
 import com.example.project2backend.backendfilmproject.Entity.EClass_Key.UserRoleKey;
-import com.example.project2backend.backendfilmproject.Entity.Role;
-import com.example.project2backend.backendfilmproject.Entity.Transaction;
-import com.example.project2backend.backendfilmproject.Entity.User;
-import com.example.project2backend.backendfilmproject.Entity.UserRole;
 import com.example.project2backend.backendfilmproject.Payload.Request.UserUpdateReq;
-import com.example.project2backend.backendfilmproject.Repository.RoleRepository;
-import com.example.project2backend.backendfilmproject.Repository.TransactionRepository;
-import com.example.project2backend.backendfilmproject.Repository.UserRepository;
-import com.example.project2backend.backendfilmproject.Repository.UserRoleRepository;
+import com.example.project2backend.backendfilmproject.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,13 +25,17 @@ public class UserServiceImpl implements UserService{
     private final TransactionRepository transactionRepository;
     private final RoleRepository roleRepository;
     private final UserRoleRepository userRoleRepository;
+    private final ReviewRepository reviewRepository;
+    private final CommentRepository commentRepository;
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, TransactionRepository transactionRepository, RoleRepository roleRepository, UserRoleRepository userRoleRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, TransactionRepository transactionRepository, RoleRepository roleRepository, UserRoleRepository userRoleRepository, ReviewRepository reviewRepository, CommentRepository commentRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.transactionRepository = transactionRepository;
         this.roleRepository = roleRepository;
         this.userRoleRepository = userRoleRepository;
+        this.reviewRepository = reviewRepository;
+        this.commentRepository = commentRepository;
     }
     @Override
     public Optional<User> getByAccount(String account) {
@@ -159,6 +157,20 @@ public class UserServiceImpl implements UserService{
     @Override
     public List<User> getAll() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public Review postReview(User user, Film film, String content) {
+        Review review = new Review(film, user, new Timestamp(System.currentTimeMillis()), content);
+        reviewRepository.save(review);
+        return review;
+    }
+
+    @Override
+    public Comment postComment(User user, Episode episode, String content) {
+        Comment comment = new Comment(episode,user,new Timestamp(System.currentTimeMillis()),content);
+        commentRepository.save(comment);
+        return comment;
     }
 
     public String randomString(){

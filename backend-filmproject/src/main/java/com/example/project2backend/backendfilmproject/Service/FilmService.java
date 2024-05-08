@@ -1,10 +1,9 @@
 package com.example.project2backend.backendfilmproject.Service;
 
+import com.example.project2backend.backendfilmproject.Entity.*;
 import com.example.project2backend.backendfilmproject.Entity.Character;
 import com.example.project2backend.backendfilmproject.Entity.EClass_Key.ECountry;
 import com.example.project2backend.backendfilmproject.Entity.EClass_Key.EType;
-import com.example.project2backend.backendfilmproject.Entity.Episode;
-import com.example.project2backend.backendfilmproject.Entity.Film;
 import com.example.project2backend.backendfilmproject.Payload.Response.FilmBasicInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,5 +35,6 @@ public interface FilmService {
     Page<Film> findAllByMovie(boolean movie, Pageable pageable);
     List<Film> findAllByMovieView(boolean movie);
     Film findByEpisode(Long episodeId);
-
+    List<Review> getReview(Film film);
+    List<Comment> getComment(Episode episode);
 }

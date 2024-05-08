@@ -1,6 +1,6 @@
 package com.example.project2backend.backendfilmproject.Service;
 
-import com.example.project2backend.backendfilmproject.Entity.User;
+import com.example.project2backend.backendfilmproject.Entity.*;
 import com.example.project2backend.backendfilmproject.Payload.Request.UserUpdateReq;
 
 import java.util.List;
@@ -16,4 +16,6 @@ public interface UserService {
     void createTransaction(User user, Long amount,String info);
     boolean completeTransaction(User user, Long amount);
     List<User> getAll();
+    Review postReview(User user, Film film, String content);
+    Comment postComment(User user, Episode episode,String content);
 }

@@ -15,15 +15,11 @@ function Detail({ params }) {
     const [film, setFilm] = useState({})
     const [liked, setLiked] = useState(false)
     const [listReview, setListReview] = useState([
-        { id: 1, name: 'Uzumaki Naruto', comment: 'Phim này hay quá', date: '20-3-2024', avatar: 'https://cdn.popsww.com/blog/sites/2/2022/02/naruto-co-bao-nhieu-tap.jpg' },
-        { id: 2, name: 'Uchiha Sasuke', comment: 'Phim cảm động ghê', date: '19-3-2024', avatar: 'https://gamek.mediacdn.vn/133514250583805952/2020/7/6/photo-1-15940093634781712523938.png' },
-        { id: 3, name: 'Haruno Sakura', comment: 'Ok', date: '18-3-2024', avatar: 'https://kilala.vn/data/upload/article/4589/cac%20nang%20sakura%20(4).jpg' },
-        { id: 4, name: 'Hatake Kakashi', comment: 'Hmm', date: '17-3-2024', avatar: 'https://cdn.oneesports.vn/cdn-data/sites/4/2023/02/Naruto-Kakashi-1-63ed2500d4625.jpg' },
-        { id: 5, name: 'Uzumaki Boruto', comment: 'Hehe', date: '16-3-2024', avatar: 'https://cdn.popsww.com/blog/sites/2/2023/02/cac-nhan-vat-trong-boruto-2.jpg' },
-        { id: 6, name: 'Uzumaki Himawari', comment: 'Hay quá đi', date: '15-3-2024', avatar: 'https://cdn.popsww.com/blog/sites/2/2023/07/himawari.jpg' },
 
     ])
     const [review, setReview] = useState('')
+    const [avatar, setAvatar] = useState('')
+    const [name, setName] = useState('')
     let userInfo
     const getUserFromLocalStorage = () => {
         try {
@@ -48,12 +44,17 @@ function Detail({ params }) {
         }
     };
     useEffect(() => {
+        setName(getUserFromLocalStorage()?.name)
+        setAvatar(getUserFromLocalStorage()?.avatar)
         const id = params.id
         UserApi.GetFilmDetail(id).then(res => {
             setListReview(res.data.reviews);
             setFilm(res.data)
             localStorage.setItem('currentFilm', JSON.stringify(res.data.episodes))
             localStorage.setItem('currentName', res.data.name)
+        })
+        UserApi.GetReviews(id).then(res => {
+            setListReview(res.data)
         })
         for (let i = 0; i < getUserFromLocalStorage()?.roles?.length; i++) {
             if (getUserFromLocalStorage()?.roles[i].role.name == 'ROLE_VIP') {
@@ -83,9 +84,15 @@ function Detail({ params }) {
         setLiked(like)
     }, [])
     const sendReview = () => {
+        UserApi.PostReview(film.id, review).then(res => {
+            console.log(res.data)
+        }).catch(err => {
+            console.log(err)
+        })
         if (review != '') {
-            setListReview((prev) => [{ id: 0, name: 'Mai Minh Hoàng', comment: review, date: 'vừa xong', avatar: 'https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/08/hinh-nen-dien-thoai-anime-3.jpg' }, ...prev])
+            setListReview((prev) => [{ id: 0, user: { name: name, avatar: avatar }, content: review, time: 'vừa xong' }, ...prev])
             setReview('')
+            console.log(listReview)
         }
     }
     const handleKeyDown = (event) => {
@@ -118,6 +125,7 @@ function Detail({ params }) {
     }
     return (
         <div className="w-full min-h-[800px] no_select">
+            <div style={{ zIndex: 0, position: 'fixed', top: '0px', left: '0px', height: '100%', width: '100%', backgroundImage: `url('https://mega.com.vn/media/news/0106_hinh-nen-may-tinh-full-hd62.jpg')`, backgroundPosition: 'center', opacity: 0.03, backgroundRepeat: 'no-repeat' }}></div>
             <div className="h-[500px]">
                 <div className="h-[350px] relative text-white">
                     <div className="w-full " style={{ backgroundImage: `url(${film.background})`, backgroundPosition: 'center center', backgroundSize: 'cover', height: '100%' }}>
@@ -218,19 +226,21 @@ function Detail({ params }) {
                     );
                 })}
             </div>
-            <div className="min-h-[300px]  rounded-xl w-full p-4 mt-9 px-4 sm:px-20 pb-7 text-white">
+            <div className="min-h-[300px]  rounded-xl w-full p-4 mt-9 px-4 sm:px-20 pb-7 text-white z-[12] relative">
                 <div className=" text-2xl sm:text-3xl py-4 pt-6 " style={{ fontFamily: 'west' }}>Review</div>
                 <div className="pt-2 md:pt-3 md:flex md:items-center">
                     <div className="flex items-end gap-x-3 ">
                         <div className="hover:ring-2 hover:ring-blue-300 ring-1 ring-gray-300 rounded-full w-10 h-10 sm:w-12 sm:h-12 overflow-hidden">
-                            <img src='https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/08/hinh-nen-dien-thoai-anime-3.jpg' className='cursor-pointer rounded-full w-10 h-10 sm:w-12 sm:h-12  object-cover hover:scale-110'></img>
+                            <img src={avatar ?? 'https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/08/hinh-nen-dien-thoai-anime-3.jpg'} className='cursor-pointer rounded-full w-10 h-10 sm:w-12 sm:h-12  object-cover hover:scale-110'></img>
                         </div>
-                        <p className="md:hidden text-xl text-blue-200" style={{ fontFamily: 'Instagram' }}>Mai Minh Hoàng</p>
+                        <p className="md:hidden text-xl text-blue-200" style={{ fontFamily: 'Instagram' }}>{name}</p>
                     </div>
                     <div className="flex items-center pt-2 md:w-[90%] md:pl-5">
                         <input type="text" placeholder="Nhập review" onKeyDown={handleKeyDown} value={review} onChange={(e) => setReview(e.target.value)} className="bg-slate-900 w-full h-10 md:h-11 px-2 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500"></input>
-                        <div className="cursor-pointer flex  w-[28px]  ml-4 hover:scale-110 hover" onClick={sendReview}>
-                            <SendIcon />
+                        <div className="cursor-pointer flex  w-[28px]  ml-4 hover:scale-110 hover">
+                            <button onClick={sendReview} className="px-5 py-1 bg-blue-500 flex items-center justify-center text-white rounded-md">
+                                Gửi
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -247,13 +257,13 @@ function Detail({ params }) {
                                 >
                                     <div >
                                         <div className="flex items-center mt-4">
-                                            <Image width={100} height={100} src={item.avatar} className='cursor-pointer rounded-full w-10 h-10 sm:w-12 sm:h-12 hover:ring-2 hover:ring-blue-300 ring-1 ring-gray-300 object-cover'></Image>
+                                            <Image width={100} height={100} src={item?.user?.avatar ?? ""} alt="avatar" className='cursor-pointer rounded-full w-10 h-10 sm:w-12 sm:h-12 hover:ring-2 hover:ring-blue-300 ring-1 ring-gray-300 object-cover'></Image>
                                             <div className="pl-3">
-                                                <p className="text-lg text-gray-200 " style={{ fontFamily: 'west' }}>{item.name}</p>
-                                                <p className="text-sm text-gray-400">{item.date}</p>
+                                                <p className="text-lg text-gray-200 " style={{ fontFamily: 'west' }}>{item?.user?.name}</p>
+                                                <p className="text-sm text-gray-400">{item?.time.length > 10 ? item?.time.slice(0, 10) : item?.time}</p>
                                             </div>
                                         </div>
-                                        <div className="pl-14 pt-2 ">{item.comment}</div>
+                                        <div className="pl-14 pt-2 ">{item.content}</div>
                                     </div>
                                 </MotionDiv>
                             )

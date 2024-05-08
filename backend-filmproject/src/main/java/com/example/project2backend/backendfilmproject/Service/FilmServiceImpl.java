@@ -1,11 +1,9 @@
 package com.example.project2backend.backendfilmproject.Service;
 
+import com.example.project2backend.backendfilmproject.Entity.*;
 import com.example.project2backend.backendfilmproject.Entity.Character;
 import com.example.project2backend.backendfilmproject.Entity.EClass_Key.ECountry;
 import com.example.project2backend.backendfilmproject.Entity.EClass_Key.EType;
-import com.example.project2backend.backendfilmproject.Entity.Episode;
-import com.example.project2backend.backendfilmproject.Entity.Film;
-import com.example.project2backend.backendfilmproject.Entity.Type;
 import com.example.project2backend.backendfilmproject.Payload.Response.FilmBasicInfo;
 import com.example.project2backend.backendfilmproject.Repository.*;
 import jakarta.persistence.EntityManager;
@@ -35,13 +33,17 @@ public class FilmServiceImpl implements FilmService{
     private final CharacterRepository characterRepository;
     private final FavoriteRepository favoriteRepository;
     private final SavedRepository savedRepository;
-    public FilmServiceImpl(FilmRepository filmRepository, EpisodeRepository episodeRepository, TypeRepository typeRepository, CharacterRepository characterRepository, FavoriteRepository favoriteRepository, SavedRepository savedRepository) {
+    private final ReviewRepository reviewRepository;
+    private final CommentRepository commentRepository;
+    public FilmServiceImpl(FilmRepository filmRepository, EpisodeRepository episodeRepository, TypeRepository typeRepository, CharacterRepository characterRepository, FavoriteRepository favoriteRepository, SavedRepository savedRepository, ReviewRepository reviewRepository, CommentRepository commentRepository) {
         this.filmRepository = filmRepository;
         this.episodeRepository = episodeRepository;
         this.typeRepository = typeRepository;
         this.characterRepository = characterRepository;
         this.favoriteRepository = favoriteRepository;
         this.savedRepository = savedRepository;
+        this.reviewRepository = reviewRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Override
@@ -318,6 +320,16 @@ public class FilmServiceImpl implements FilmService{
                 .orElseThrow(()->new RuntimeException("film not found"));
 
         return episode.getFilm();
+    }
+
+    @Override
+    public List<Review> getReview(Film film) {
+        return reviewRepository.findAllByFilm(film);
+    }
+
+    @Override
+    public List<Comment> getComment(Episode episode) {
+        return commentRepository.findAllByEpisode(episode);
     }
 
 

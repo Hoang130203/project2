@@ -5,12 +5,11 @@ const headers = {
     headers: {
         'Content-Type': 'application/json',
         // "ngrok-skip-browser-warning": "69420",
-
     },
     "Access-Control-Allow-Origin": "*",
 }
-// export const base_api = 'http://localhost:8080'
-export const base_api = 'https://blessed-absolute-dragon.ngrok-free.app'
+export const base_api = 'http://localhost:8080'
+// export const base_api = 'https://blessed-absolute-dragon.ngrok-free.app'
 // const base_api = 'https://project2-97w5.onrender.com'
 class UserApi {
     PostImage(img) {
@@ -63,6 +62,10 @@ class UserApi {
 
     VnPay(totalMoney, orderInfo) {
         return axios.post(`${base_api}/vnpay/submitOrder?amount=${totalMoney}&orderInfo=${orderInfo}`, {}, headers)
+    }
+
+    PayOs(totalMoney, orderInfo) {
+        return axios.post(`${base_api}/payos/create-payment-link?amount=${totalMoney}&orderInfo=${orderInfo}`, {}, headers)
     }
 
     PostFilm(film) {
@@ -127,6 +130,18 @@ class UserApi {
     }
     DeleteSaved(filmId) {
         return axios.delete(`${base_api}/api/user/saved?episodeId=${filmId}`, headers)
+    }
+    GetReviews(filmId) {
+        return axios.get(`${base_api}/api/user/reviews?filmId=${filmId}`, headers)
+    }
+    PostReview(filmId, content) {
+        return axios.post(`${base_api}/api/user/review`, { filmId: filmId, content: content }, headers)
+    }
+    GetComments(episodeId) {
+        return axios.get(`${base_api}/api/user/comments?episodeId=${episodeId}`, headers)
+    }
+    PostComment(episodeId, content) {
+        return axios.post(`${base_api}/api/user/comment`, { episodeId: episodeId, content: content }, headers)
     }
 }
 export default new UserApi()

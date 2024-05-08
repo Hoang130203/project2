@@ -63,7 +63,7 @@ function Login() {
     }
 
     return (
-        <div className="flex flex-col md:flex-row pt-16 text-white justify-between items-center space-x-2 animate-slide-up">
+        <div className="flex flex-col md:flex-row pt-36 text-white justify-between items-center space-x-2 animate-slide-up">
             <div className="p-8 w-full space-y-6 md:ring-2 md:ring-gray-500 md:ml-16 rounded-2xl md:mb-20 flex-shrink-0" style={{ maxWidth: '480px' }}>
                 <div style={{ fontFamily: 'flame' }}>
                     <p className="text-orange-400 text-2xl md:text-3xl">Đăng nhập</p>
@@ -98,7 +98,7 @@ function Login() {
             </div>
             <div className="hidden md:block relative" style={{ maxWidth: '60%' }}>
                 <div className="image_login"></div>
-                <img src="https://wibutime-seven.vercel.app/_next/image?url=%2Fimages%2Fauth.webp&w=1920&q=75"></img>
+                <img src="https://i.pinimg.com/originals/d0/e3/05/d0e30570ca9da96da2911219687acccc.jpg"></img>
             </div>
         </div>
     );
