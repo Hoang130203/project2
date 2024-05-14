@@ -4,14 +4,18 @@ import com.example.project2backend.backendfilmproject.Entity.*;
 import com.example.project2backend.backendfilmproject.Entity.Character;
 import com.example.project2backend.backendfilmproject.Entity.EClass_Key.ECountry;
 import com.example.project2backend.backendfilmproject.Entity.EClass_Key.EType;
+//import com.example.project2backend.backendfilmproject.Payload.Response.DetailFilmResponse;
+import com.example.project2backend.backendfilmproject.Payload.Response.DetailFilmResponse;
 import com.example.project2backend.backendfilmproject.Payload.Response.FilmBasicInfo;
 import com.example.project2backend.backendfilmproject.Repository.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +25,8 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class FilmServiceImpl implements FilmService{
+@EnableCaching
+public class FilmServiceImpl  implements FilmService{
     @Autowired
     private ModelMapper modelMapper;
 
@@ -35,7 +40,11 @@ public class FilmServiceImpl implements FilmService{
     private final SavedRepository savedRepository;
     private final ReviewRepository reviewRepository;
     private final CommentRepository commentRepository;
-    public FilmServiceImpl(FilmRepository filmRepository, EpisodeRepository episodeRepository, TypeRepository typeRepository, CharacterRepository characterRepository, FavoriteRepository favoriteRepository, SavedRepository savedRepository, ReviewRepository reviewRepository, CommentRepository commentRepository) {
+    public FilmServiceImpl(FilmRepository filmRepository, EpisodeRepository episodeRepository,
+                           TypeRepository typeRepository, CharacterRepository characterRepository,
+                           FavoriteRepository favoriteRepository, SavedRepository savedRepository,
+                           ReviewRepository reviewRepository, CommentRepository commentRepository
+                           ) {
         this.filmRepository = filmRepository;
         this.episodeRepository = episodeRepository;
         this.typeRepository = typeRepository;
@@ -44,6 +53,7 @@ public class FilmServiceImpl implements FilmService{
         this.savedRepository = savedRepository;
         this.reviewRepository = reviewRepository;
         this.commentRepository = commentRepository;
+
     }
 
     @Override
@@ -85,11 +95,25 @@ public class FilmServiceImpl implements FilmService{
         return film1;
     }
 
+//    @Override
+//    @Cacheable(value = "filmId")
+//    public DetailFilmResponse getDetail(int filmId) {
+//        return modelMapper.map(getFilm(filmId),DetailFilmResponse.class);
+//    }
+
+    @Override
+//    @Cacheable(value = "film",key = "#filmId")
+    public DetailFilmResponse getDetail(int filmId)
+    {
+        return modelMapper.map(getFilm(filmId),DetailFilmResponse.class);
+    }
+    @Cacheable(cacheNames = "film", key = "#filmId", unless = "#result == null")
     @Override
     public Film getFilm(int filmId) {
-        System.out.println(filmRepository.findById(filmId).get().getViews());
-
-        return filmRepository.findById(filmId).get();
+//        System.out.println(filmRepository.findById(filmId).get().getViews());
+        Film film =filmRepository.findById(filmId).get();
+        System.out.println(film);
+        return film;
     }
 
     @Override
@@ -98,11 +122,13 @@ public class FilmServiceImpl implements FilmService{
     }
 
     @Override
+    @Cacheable(cacheNames = "top", key = "'views'")
     public List<Film> getTop12Views() {
         return filmRepository.findTop12ByOrderByViewsDesc();
     }
 
     @Override
+    @Cacheable(cacheNames = "top", key = "'news'")
     public List<Film> getTop12New() {
         return filmRepository.findTop12ByOrderByIdDesc();
     }
@@ -133,6 +159,8 @@ public class FilmServiceImpl implements FilmService{
         savedRepository.deleteAllByFilm(film);
     }
     @Override
+//    @CacheEvict(cacheNames = "film", key = "#film.filmId")
+    @CacheEvict
     public Film updateFilm(Film film) {
         Film film1= filmRepository.findById(film.getId())
                 .orElseThrow(()->new RuntimeException("Film not found"));
@@ -153,7 +181,7 @@ public class FilmServiceImpl implements FilmService{
         film1.setCountry(film.getCountry());
         film1.setAgeRequire(film.getAgeRequire());
         filmRepository.save(film1);
-
+//        clearCacheFilm(film1);
 
         return film1;
     }
@@ -186,6 +214,14 @@ public class FilmServiceImpl implements FilmService{
     }
 
     @Override
+    @Caching(
+        evict = {
+            @CacheEvict(cacheNames = "film",key = "#filmId"),
+//            @CacheEvict(cacheNames = "category", allEntries = true ),
+            @CacheEvict(cacheNames = "top", allEntries = true),
+//            @CacheEvict(cacheNames = "type",allEntries = true)
+        }
+    )
     public List<Episode> addEpisode(List<Episode> episodes, int filmId) {
         Film film1= filmRepository.findById(filmId)
                 .orElseThrow(()->new RuntimeException("Film not found"));
@@ -197,10 +233,20 @@ public class FilmServiceImpl implements FilmService{
         }
         film1.setEpisodes(list);
         filmRepository.save(film1);
+
         return film1.getEpisodes();
     }
 
     @Override
+//    @CacheEvict(cacheNames = "film", key = "#filmId")
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "film",key = "#filmId"),
+//            @CacheEvict(cacheNames = "category", allEntries = true ),
+                    @CacheEvict(cacheNames = "top", allEntries = true),
+//            @CacheEvict(cacheNames = "type",allEntries = true)
+            }
+    )
     public List<Episode> removeEpisode(List<Episode> episodes, int filmId) {
         Film film1= filmRepository.findById(filmId)
                 .orElseThrow(()->new RuntimeException("Film not found"));
@@ -217,6 +263,7 @@ public class FilmServiceImpl implements FilmService{
     }
 
     @Override
+    @CacheEvict(cacheNames = "film", key = "#filmId")
     public List<Character> addCharacters(List<Character> characters, int filmId) {
         Film film1= filmRepository.findById(filmId)
                 .orElseThrow(()->new RuntimeException("Film not found"));
@@ -232,6 +279,7 @@ public class FilmServiceImpl implements FilmService{
     }
 
     @Override
+    @CacheEvict(cacheNames = "film", key = "#filmId")
     public List<Character> removeCharacters(List<Character> characters, int filmId) {
         Film film1= filmRepository.findById(filmId)
                 .orElseThrow(()->new RuntimeException("Film not found"));
@@ -250,6 +298,7 @@ public class FilmServiceImpl implements FilmService{
     }
 
     @Override
+    @Cacheable(cacheNames = "top",key = "'newestEpisode'")
     public List<Episode> getTopNewestEpisode() {
         return episodeRepository.findTop12ByOrderByIdDesc().stream().limit(12).collect(Collectors.toList());
     }
@@ -260,6 +309,7 @@ public class FilmServiceImpl implements FilmService{
     }
 
     @Override
+//    @Cacheable(cacheNames = "episode",key = "#id.toString()")
     public Episode getEpisodeById(Long id) {
         return episodeRepository.findById(id)
                 .orElseThrow(()->new RuntimeException("Episode not found"));
@@ -267,11 +317,11 @@ public class FilmServiceImpl implements FilmService{
 
     @Override
     public Film update(Film film) {
-
         return filmRepository.save(film);
     }
 
     @Override
+//    @CacheEvict(cacheNames = "episode",key = "#episode.getId().toString()")
     public Episode update(Episode episode) {
 
         return episodeRepository.save(episode);
@@ -283,7 +333,9 @@ public class FilmServiceImpl implements FilmService{
     }
 
     @Override
+    @Cacheable(cacheNames = "category", key = "#eType.toString()+#pageable.pageNumber")
     public Page<Film> findAllByType(EType eType, Pageable pageable) {
+        doLongRunningTask();
         Type type= typeRepository.findByName(eType);
         return filmRepository.findAllByTypesContains(type,pageable);
     }
@@ -305,11 +357,14 @@ public class FilmServiceImpl implements FilmService{
     }
 
     @Override
+    @Cacheable (cacheNames = "type", key = "#movie?1:0+#pageable.pageNumber")
     public Page<Film> findAllByMovie(boolean movie, Pageable pageable) {
         return filmRepository.findAllByIsMovie(movie,pageable);
     }
 
+
     @Override
+    @Cacheable (cacheNames = "type", key = "#movie?'1':'0'+'top'")
     public List<Film> findAllByMovieView(boolean movie) {
         return filmRepository.findTop10ByAndIsMovieOrderByViewsDescIdDesc(movie);
     }
@@ -322,6 +377,7 @@ public class FilmServiceImpl implements FilmService{
         return episode.getFilm();
     }
 
+
     @Override
     public List<Review> getReview(Film film) {
         return reviewRepository.findAllByFilm(film);
@@ -333,4 +389,18 @@ public class FilmServiceImpl implements FilmService{
     }
 
 
+
+    @Override
+    @CacheEvict(cacheNames = "film",allEntries = true)
+    @Scheduled(fixedRate = 3600000)
+    public void evictAllProductsCache() {
+        System.out.println("Clearing films cache");
+    }
+    private void doLongRunningTask() {
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

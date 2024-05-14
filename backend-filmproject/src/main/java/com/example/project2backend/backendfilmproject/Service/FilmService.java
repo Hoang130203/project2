@@ -4,14 +4,18 @@ import com.example.project2backend.backendfilmproject.Entity.*;
 import com.example.project2backend.backendfilmproject.Entity.Character;
 import com.example.project2backend.backendfilmproject.Entity.EClass_Key.ECountry;
 import com.example.project2backend.backendfilmproject.Entity.EClass_Key.EType;
+import com.example.project2backend.backendfilmproject.Payload.Response.DetailFilmResponse;
 import com.example.project2backend.backendfilmproject.Payload.Response.FilmBasicInfo;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.List;
 
 public interface FilmService {
     Film addFilm(Film film);
+    DetailFilmResponse getDetail(int filmId);
     Film getFilm(int filmId);
     List<Film> getAllFilm();
     List<Film> getTop12Views();
@@ -35,6 +39,11 @@ public interface FilmService {
     Page<Film> findAllByMovie(boolean movie, Pageable pageable);
     List<Film> findAllByMovieView(boolean movie);
     Film findByEpisode(Long episodeId);
+
     List<Review> getReview(Film film);
     List<Comment> getComment(Episode episode);
+
+    @CacheEvict(value = "film", allEntries = true)
+    @Scheduled(fixedRateString = "10")
+    void evictAllProductsCache();
 }

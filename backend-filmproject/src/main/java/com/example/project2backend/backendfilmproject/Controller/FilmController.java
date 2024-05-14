@@ -9,12 +9,17 @@ import com.example.project2backend.backendfilmproject.Payload.Response.*;
 import com.example.project2backend.backendfilmproject.Repository.EpisodeRepository;
 import com.example.project2backend.backendfilmproject.Service.FilmService;
 import com.example.project2backend.backendfilmproject.Service.UserService;
+//import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
+//import java.util.concurrent.TimeUnit;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -56,7 +61,22 @@ public class FilmController {
     @GetMapping("/info")
     public ResponseEntity<?> getFilmDetails(@RequestParam("filmId") int filmId)
     {
-        return ResponseEntity.ok(modelMapper.map(filmService.getFilm(filmId), DetailFilmResponse.class));
+//        DetailFilmResponse film = filmService.getDetail(filmId);
+//        String version = Integer.toString(filmId); // Tính toán ETag dựa trên phiên bản của tài nguyên
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setCacheControl(CacheControl.maxAge(30, TimeUnit.DAYS).getHeaderValue());
+//        headers.setETag("W/"+version+ "\"");
+//
+//        return ResponseEntity.ok().headers(headers).body(film);
+        try {
+            return ResponseEntity.ok(modelMapper.map(filmService.getFilm(filmId),DetailFilmResponse.class));
+
+        }catch (Exception exception)
+        {
+            System.out.println(exception.getMessage());
+            return ResponseEntity.ok(null);
+        }
     }
     @GetMapping("/film")
     public ResponseEntity<?> getAllByTyp(@RequestParam("type")EType type,Pageable pageable){

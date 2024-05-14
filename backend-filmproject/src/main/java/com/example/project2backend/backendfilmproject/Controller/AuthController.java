@@ -1,5 +1,4 @@
 package com.example.project2backend.backendfilmproject.Controller;
-import com.example.project2backend.backendfilmproject.Entity.EClass_Key.UserRoleKey;
 import com.example.project2backend.backendfilmproject.Entity.UserRole;
 import com.example.project2backend.backendfilmproject.Payload.Request.LoginUser;
 import com.example.project2backend.backendfilmproject.Payload.Request.ProviderRegister;
@@ -36,9 +35,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 //
 
@@ -53,6 +49,7 @@ public class AuthController {
     private final RoleService roleService;
     private final JwtProvider jwtProvider;
     private final UserRoleRepository userRoleRepository;
+
     @Value("${jwt.accessTokenCookieName}")
     private String cookieName;
 
@@ -65,6 +62,7 @@ public class AuthController {
         this.roleService = roleService;
         this.jwtProvider = jwtProvider;
         this.userRoleRepository = userRoleRepository;
+
     }
     @Getter
     @Setter
@@ -115,6 +113,8 @@ public class AuthController {
 //        return ResponseEntity.badRequest().body("error");
 //
 //    }
+
+
 
     @PostMapping("/processToken")
     public ResponseEntity<?> processToken(HttpServletResponse httpServletResponse,@RequestBody SocialLoginReq token) {

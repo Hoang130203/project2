@@ -25,3 +25,12 @@ import java.util.Collections;
 //        return cacheManager;
 //    }
 //}
+@Configuration
+@EnableCaching
+public class CacheConfig {
+
+    @Bean
+    public CacheManager cacheManager() {
+        return new ConcurrentMapCacheManager("film","type","category","top","episode");
+    }
+}
