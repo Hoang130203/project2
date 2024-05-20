@@ -29,6 +29,9 @@ Chào mừng bạn đến với Ứng Dụng Xem Phim Trực Tuyến! Dự án n
 ![alt text](image-12.png)
 - **Và một số tính năng hữu ích khác**
 
+####  **Responsive cho điện thoại để phù hợp với xu thế**
+![alt text](image-13.png) ![alt text](image-14.png)
+![alt text](image-15.png)
 ## Công Nghệ Sử Dụng
 
 - **Spring Boot**: Backend framework giúp xây dựng các dịch vụ RESTful mạnh mẽ và dễ bảo trì.

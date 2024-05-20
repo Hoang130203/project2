@@ -34,9 +34,13 @@ function Watch({ params }) {
     useEffect(() => {
 
         let trueCurrent = true
-        if (localStorage.getItem('currentFilm') == null) {
-            trueCurrent = false
+        const currentFilm = localStorage.getItem('currentFilm');
+
+        // Kiểm tra nếu currentFilm là null, undefined, rỗng hoặc là một mảng rỗng
+        if (!currentFilm || currentFilm === '[]' || currentFilm === 'undefined') {
+            trueCurrent = false;
         }
+
         if (trueCurrent) {
             let hasepisode = false
             for (let i = 0; i < JSON.parse(localStorage.getItem('currentFilm')).length; i++) {

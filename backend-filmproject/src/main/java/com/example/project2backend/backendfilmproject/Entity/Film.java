@@ -78,7 +78,7 @@ public class Film {
     private List<Episode> episodes;
 
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "film")
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "film",fetch = FetchType.EAGER)
     private List<Review> reviews;
 
     @JsonIgnore
