@@ -34,7 +34,7 @@ const items = [
     },
 ];
 
-export const CardTransactions = () => {
+export const CardTransactions = ({ dashboard }) => {
     return (
         <Card className=" bg-default-50 rounded-xl shadow-md px-3">
             <CardBody className="py-5 gap-4">
@@ -47,23 +47,23 @@ export const CardTransactions = () => {
                 </div>
 
                 <div className="flex flex-col gap-6 ">
-                    {items.map((item) => (
+                    {dashboard?.currentTransaction.map((item) => (
                         <div key={item.name} className="grid grid-cols-5 w-full">
                             <div className="w-full">
                                 <Avatar
                                     isBordered
-                                    src={item.picture}
+                                    src={item?.user?.avatar}
                                 />
                             </div>
 
                             <span className="text-default-900  font-semibold" style={{ gridColumn: "span 2" }}>
-                                {item.name}
+                                {item?.user?.name}
                             </span>
                             <div>
-                                <span className="text-success text-xs">{item.amount}</span>
+                                <span className="text-success text-xs">{item?.money?.toLocaleString()}</span>
                             </div>
                             <div>
-                                <span className="text-default-500 text-xs">{item.date}</span>
+                                <span className="text-default-500 text-xs">{item?.time.slice(0, 10)}</span>
                             </div>
                         </div>
                     ))}

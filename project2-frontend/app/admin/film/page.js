@@ -27,6 +27,8 @@ import { MotionDiv } from "@/app/component/OtherComponent/MotionDiv";
 import AddFilm from "./AddFilm";
 import AdminApi from "@/app/api/AdminApi";
 import AddFilmByApi from "./AddFilmByApi";
+import { toast } from "react-toastify";
+import { useQuery } from "react-query";
 
 const statusColorMap = {
     active: "success",
@@ -45,20 +47,47 @@ function Page() {
     // const [users, setUsers] = useState(user);
     const [showAddFilm, setShowAddFilm] = useState(false);
     const [showAddFilmByApi, setShowAddFilmByApi] = useState(false);
-    const [users, setUsers] = useState([]);
-    useEffect(() => {
-        AdminApi.GetALlFilm().then((res) => {
-            setUsers(res.data);
-        }).catch((err) => {
-            console.log(err);
-        });
-    }, []);
+    // const [users, setUsers] = useState([]);
+
+    const { data: users = [], isLoading, isError } = useQuery(
+        'films',
+        async () => {
+            toast.loading('Đang tải danh sách phim');
+            try {
+                const res = await AdminApi.GetALlFilm();
+                return res.data;
+            } catch (err) {
+                console.log(err);
+            } finally {
+                toast.dismiss();
+            }
+        },
+        {
+            cacheTime: 60000,
+            refetchOnWindowFocus: false,
+            staleTime: 100000,
+        }
+    );
+    const setUsers = (data) => {
+        console.log(data);
+    }
+    // useEffect(() => {
+    //     // toast.loading('Đang tải danh sách phim');
+    //     // const res = AdminApi.GetALlFilm().then((res) => {
+    //     //     setUsers(res.data);
+    //     // }).catch((err) => {
+    //     //     console.log(err);
+    //     // }).finally(() => {
+    //     //     toast.dismiss();
+    //     // });
+    // }, [users]);
     const [sortDescriptor, setSortDescriptor] = useState({
         column: "id",
         direction: "ascending",
     });
     const [page, setPage] = useState(1);
 
+    const [isShowEpisodes, setIsShowEpisodes] = useState(false);
     const hasSearchFilter = Boolean(filterValue);
 
     const headerColumns = useMemo(() => {
@@ -68,7 +97,7 @@ function Page() {
     }, [visibleColumns]);
 
     const filteredItems = useMemo(() => {
-        let filteredUsers = [...users].filter((user) => !listRemove.includes(user.id));
+        let filteredUsers = [...users || []].filter((user) => !listRemove.includes(user.id));
 
         if (hasSearchFilter) {
             filteredUsers = filteredUsers.filter((user) =>
@@ -102,7 +131,27 @@ function Page() {
             return sortDescriptor.direction === "descending" ? -cmp : cmp;
         });
     }, [sortDescriptor, items]);
-
+    const [currentFilm, setCurrenFilm] = useState(null);
+    const [listEpisodes, setListEpisodes] = useState([]);
+    useEffect(() => {
+        if (currentFilm == null) {
+            return;
+        }
+        toast.loading('Đang tải danh sách tập phim');
+        AdminApi.GetEpisodesByFilmId(currentFilm).then((res) => {
+            console.log(res.data);
+            setListEpisodes(res.data);
+        }).catch((err) => {
+            console.log(err);
+        }).finally(() => {
+            toast.dismiss();
+        });
+    }
+        , [currentFilm]);
+    useEffect(() => {
+        console.log(listEpisodes);
+    }
+        , [listEpisodes]);
     const renderCell = useCallback((user, columnKey) => {
         const cellValue = user[columnKey];
 
@@ -138,7 +187,7 @@ function Page() {
                                 </Button>
                             </DropdownTrigger>
                             <DropdownMenu>
-                                <DropdownItem>Chi tiết</DropdownItem>
+                                <DropdownItem onClick={() => { setListEpisodes([]); setCurrenFilm(user.id); setIsShowEpisodes(true); }}>Chi tiết</DropdownItem>
                                 <DropdownItem>Chỉnh sửa</DropdownItem>
                                 <DropdownItem onClick={() => handleDelete(user)}>Xóa</DropdownItem>
                             </DropdownMenu>
@@ -252,7 +301,7 @@ function Page() {
                 </div>
                 <div className="w-full float-right"><Button onClick={() => { setShowAddFilmByApi(true) }} className="float-right text-white" color="warning" endContent={<PlusIcon />}>Thêm bằng API</Button></div>
                 <div className="flex justify-between items-center">
-                    <span className="text-default-400 text-small">Tổng {users.length} phim</span>
+                    <span className="text-default-400 text-small">Tổng {users?.length || 0} phim</span>
                     <label className="flex items-center text-default-400 text-small">
                         Số hàng mỗi trang:
                         <select
@@ -272,7 +321,7 @@ function Page() {
         statusFilter,
         visibleColumns,
         onRowsPerPageChange,
-        users.length,
+        users?.length || 0,
         onSearchChange,
         hasSearchFilter,
     ]);
@@ -305,6 +354,22 @@ function Page() {
             </div>
         );
     }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
+    const changVipStatus = (id) => {
+        AdminApi.ChangeEpisodeStatus(id).then((res) => {
+            console.log(res.data);
+            setListEpisodes(prevListEpisodes => {
+                const updatedListEpisodes = prevListEpisodes.map((episode) => {
+                    if (episode.id === id) {
+                        episode.vipRequire = res.data.vipRequire;
+                    }
+                    return episode;
+                });
+                return updatedListEpisodes;
+            });
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
 
     return (
         <div className="p-3 pt-8 md:p-9 text-white">
@@ -312,7 +377,32 @@ function Page() {
                 <AddFilm />
             </div>
             <div onClick={() => { setShowAddFilmByApi(false) }} className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-[30] w-full h-full max-w-[100%]" style={{ backgroundColor: '#4343439e', display: `${showAddFilmByApi ? '' : 'none'}` }}>
-                <AddFilmByApi></AddFilmByApi>
+                <AddFilmByApi listFilms={users} setListFilms={setUsers}></AddFilmByApi>
+            </div>
+            <div onClick={() => { setIsShowEpisodes(false) }} className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-[30] w-full h-full max-w-[100%]" style={{ backgroundColor: '#4343439e', display: `${isShowEpisodes ? '' : 'none'}` }}>
+                <div onClick={(e) => e.stopPropagation()} className="w-[700px] max-w-[90%] h-[90%] z-40 bg-slate-900 rounded-lg overflow-y-auton p-2 overflow-auto">
+                    <h1 className="text-xl text-white">Danh sách tập phim</h1>
+                    <div className="flex justify-between items-center">
+                        <Button color="success" onClick={() => { setIsShowEpisodes(false) }}>Thêm tập</Button>
+                        <Button color="warning" onClick={() => { setIsShowEpisodes(false) }}>Tự động cập nhật</Button>
+                    </div>
+                    {
+                        listEpisodes.map((episode) => {
+                            return (
+                                <div key={episode.id} className="flex justify-between items-center p-2 border-b border-slate-800">
+                                    <div className="w-full">
+                                        <p className="text-white">{episode.serial}</p>
+                                        <p className="text-default-400">{episode.url}</p>
+                                        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                            <Button variant="shadow" onClick={() => { changVipStatus(episode.id) }}>{episode.vipRequire ? 'Vip' : 'Thường'}</Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        }
+                        )
+                    }
+                </div>
             </div>
             <MotionDiv
                 initial={{ y: 15, opacity: 0 }}

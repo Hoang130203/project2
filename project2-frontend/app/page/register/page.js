@@ -5,6 +5,7 @@ import Link from "next/link";
 import UserApi from "@/app/api/UserApi";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 function Register() {
     const { data: session } = useSession();
     const [userName, setUserName] = useState('')
@@ -34,21 +35,24 @@ function Register() {
     const router = useRouter()
     const handleRegister = () => {
         if (userName.length == 0 || password.length < 6 || name.length == 0) {
-            alert('Nhập đủ thông tin')
+            toast.warn('Nhập đủ thông tin')
             return
         }
         if (password !== rePassword) {
-            alert('Nhập lại mật khẩu k đúng')
+            toast.warn('Nhập lại mật khẩu k đúng')
             return
         }
+        toast.loading('Đang đăng ký...')
         UserApi.Register(userName, password, email, name).then(
             res => {
                 if (res.status == 201) {
-                    alert('register success')
+                    toast.success('Đăng ký thành công')
                     router.push('/page/login')
                 }
             }
-        )
+        ).finally(() => {
+            toast.dismiss()
+        })
     }
     return (
         <div className="flex flex-col md:flex-row pt-36 text-white justify-between items-center space-x-2 animate-slide-up">

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { signIn, signOut, useSession } from 'next-auth/react'
 import UserApi from "@/app/api/UserApi";
 import SocialButton from "./SocialButton";
+import { toast } from "react-toastify";
 function Login() {
     const [userName, setUserName] = useState('')
     const [password, setPassword] = useState('')
@@ -30,12 +31,14 @@ function Login() {
 
     const baseLogin = () => {
         if (userName.length == 0 || password.length == 0) {
-            alert('Điền đầy đủ thông tin đăng nhập')
+            toast.warn('Điền đầy đủ thông tin đăng nhập')
         } else {
+            toast.loading('Đang đăng nhập...')
             UserApi.Login(userName, password).then(
                 res => {
                     if (res.status === 200) {
-                        alert('login success')
+                        toast.dismiss()
+                        toast.success('Đăng nhập thành công')
                         try {
                             localStorage.setItem('filmInfo', JSON.stringify(res.data))
                         } catch (error) {

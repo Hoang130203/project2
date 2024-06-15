@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Pagination } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import UserApi from "@/app/api/UserApi";
+import { toast } from "react-toastify";
 function Country({ params }) {
     const id = params.id;
     const [country, setCountry] = useState(null)
@@ -20,10 +21,14 @@ function Country({ params }) {
     }, [currentPage]); // Sử dụng useEffect để gọi API khi trang thay đổi
 
     const fetchData = (page) => {
+        setFilms([]);
+        toast.loading('Đang tải dữ liệu...');
         UserApi.GetByCountry(id, page - 1).then(res => {
             setFilms(res.data?.content);
             setTotalPages(res.data?.totalPages); // Cập nhật tổng số trang từ API
-        });
+        }).finally(() => {
+            toast.dismiss();
+        })
     }
     const scrollToTop = () => {
         window.scrollTo({

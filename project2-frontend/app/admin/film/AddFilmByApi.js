@@ -4,17 +4,78 @@ import NavBottom from "@/app/page/detail/NavBottom";
 import { Button, Checkbox, CheckboxGroup, Input, Radio, RadioGroup, Select, SelectItem, Textarea } from "@nextui-org/react";
 import * as XLSX from 'xlsx';
 import { AnimatePresence, motion } from "framer-motion";
-import { Fragment, useEffect, useState } from "react";
 import UserApi from "@/app/api/UserApi";
 import axios from "axios";
+import { Fragment, useEffect, useRef, useState } from "react";
+import AdminApi from "@/app/api/AdminApi";
+import { toast } from "react-toastify";
 
 
-function AddFilmByApi() {
+function AddFilmByApi({ listFilms, setListFilms }) {
     const [api, setApi] = useState('')
     const [api2, setApi2] = useState('')
     const [film, setFilm] = useState({})
     const [films, setFilms] = useState([{}])
     const [number, setNumber] = useState(0)
+    const [listUpdate, setListUpdate] = useState([{}])
+    const listUpdateRef = useRef(listUpdate);
+
+    useEffect(() => {
+        listUpdateRef.current = listUpdate;
+    }, [listUpdate]);
+    useEffect(() => {
+        var updates = []
+        if (!listFilms) return
+        for (const film of listFilms) {
+            if (!film.slug) {
+                continue;
+            }
+            if (film.origin == 'ophim') {
+                var match = 'https://ophim1.com/phim/';
+            } else {
+                var match = 'https://phimapi.com/phim/';
+            }
+            const url = `${match}${film.slug}`;
+            axios.get(url).then((data) => {
+                let data1 = {}
+                if (data && data.data.episodes[0]?.server_data?.length > film.episode) {
+                    console.log(data.data.episodes[0].server_data.length - film.episode)
+                    data1 = {
+                        ...film, newEpisodes: data.data.episodes[0].server_data?.slice(film.episode - data.data.episodes[0].server_data.length)
+                    }
+                    updates.push(data1)
+                }
+            }
+            );
+        }
+        console.log(updates)
+        setListUpdate(updates)
+    }, [listFilms])
+    const addEpisodes = async (id, episodes) => {
+        let episodes1 = []
+        for (let episode of episodes) {
+            episodes1.push({
+                description: episode.filename,
+                serial: parseInt(episode.slug.replace(/\D/g, '')), // Chuyển slug thành số
+                image: '', // Không có ảnh mặc định
+                isVipRequire: 0, // Không yêu cầu VIP mặc định
+                url: episode.link_embed,
+            })
+        }
+        AdminApi.AddEpisode(episodes1, id).then(res => {
+            if (res.status == 200) {
+                const updatedFilm = listUpdateRef.current.find(film => film.id === id);
+                toast.success('Cập nhật thành công cho ' + listUpdate.find((film) => film.id == id).name + ' ' + episodes1.length + ' tập')
+                let list = listUpdate.filter((film) => film.id != id)
+                setListUpdate(prevList => prevList.filter(film => film.id !== id));
+            }
+        })
+    }
+    const addEpisodesAll = async () => {
+        for (const film of listUpdateRef.current) {
+            await addEpisodes(film.id, film.newEpisodes)
+        }
+    }
     const tabs = [
         {
             name: "1 phim",
@@ -23,6 +84,10 @@ function AddFilmByApi() {
         {
             name: "Hàng loạt",
             label: "Thêm hàng loạt",
+        },
+        {
+            name: "Cập nhật",
+            label: "Cập nhật phim"
         }
     ];
 
@@ -111,6 +176,8 @@ function AddFilmByApi() {
                 isVipRequire: 0, // Không yêu cầu VIP mặc định
                 url: episode.link_embed,
             })),
+            slug: dataFromExternalAPI.movie.slug,
+            origin: dataFromExternalAPI.movie.poster_url ? dataFromExternalAPI.movie.poster_url.includes('ophim') ? 'ophim' : dataFromExternalAPI.movie.thumb_url.includes('ophim') ? 'ophim' : 'phimkk' : 'phimkk',
             characters: dataFromExternalAPI.movie.actor.map(actor => ({ name: actor, role: 'Nhân vật phụ', image: 'https://freesvg.org/img/abstract-user-flat-4.png' })), // Giả sử tất cả là nhân vật phụ và không có ảnh
         };
 
@@ -143,11 +210,12 @@ function AddFilmByApi() {
 
     }, [api2]);
     const handleUpfilm = async () => {
-        if (!film.name) return alert('Vui lòng nhập api đúng')
-
+        if (!film.name) return toast.warn('Vui lòng nhập api đúng')
+        if (listFilms.find((film1) => film1.slug == film.slug)) return toast.warn('Phim đã tồn tại')
         await UserApi.PostFilm(film).then(res => {
             if (res.status == 200) {
-                alert('Thêm phim thành công')
+                toast.success('Thêm phim thành công')
+                setListFilms(prev => [...listFilms, film]);
             }
         })
 
@@ -160,24 +228,31 @@ function AddFilmByApi() {
         const match = api2.match(regex)[1];
         try {
             for (const film of films) {
+                // if (listFilms.find((film1) => film1.slug == film.dataFromExternalAPI.movie.slug)) continue
                 const url = `${match}/phim/${film.slug}`;
                 console.log(url);
                 const response = await axios.get(url);
                 const data = response.data;
                 if (data) {
                     const formattedData = formatData(data);
+                    if (listFilms.find((film1) => film1.slug == formattedData.slug)) continue
+                    toast.loading('Đang thêm phim ' + formattedData.name)
                     const res = await UserApi.PostFilm(formattedData);
+
+                    toast.dismiss();
+                    toast.success('Thêm phim ' + formattedData.name + ' thành công');
                     if (res.status === 200) {
                         count++;
+                        setListFilms(prev => [...listFilms, formattedData]);
                     }
                 }
             }
-            alert('Thành công: ' + count + ' phim đã được thêm.');
+            toast.success('Thành công: ' + count + ' phim đã được thêm.');
         } catch (error) {
             console.error('Lỗi khi thêm phim:', error);
-            alert('Đã có lỗi xảy ra khi thêm phim. Vui lòng thử lại sau.');
+            toast.error('Đã có lỗi xảy ra khi thêm phim. Vui lòng thử lại sau.');
         }
-        await alert('thêm thành công ' + count + ' phim')
+        await toast.success('thêm thành công ' + count + ' phim')
     }
     return (
         <div onClick={(e) => e.stopPropagation()} className="w-[700px] max-w-[90%] h-[90%] z-40 bg-slate-900 rounded-lg overflow-y-auto">
@@ -342,6 +417,24 @@ function AddFilmByApi() {
                         </div>
 
                     )}
+                    {
+                        activeTab.name === "Cập nhật" && (
+                            <div className="px-2">
+                                {listUpdate?.map((film, index) => (
+                                    <div key={index} className="grid grid-cols-5 gap-4 py-1">
+                                        <div><img src={film?.avatar} className="w-10 h-10 rounded-full" /></div>
+                                        <div className="col-span-2">{film.name}</div>
+                                        <div>{film.newEpisodes?.length} tập mới</div>
+                                        <div><Button color="warning" onClick={() => { addEpisodes(film.id, film.newEpisodes) }}>Cập nhật</Button></div>
+                                    </div>
+                                ))
+                                }
+                                <div className="flex justify-center py-2">
+                                    <Button onClick={addEpisodesAll} className=" text-white text-xl" color="primary">Cập nhật tất cả</Button>
+                                </div>
+                            </div>
+                        )
+                    }
                 </motion.div>
             </AnimatePresence>
 

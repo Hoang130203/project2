@@ -6,6 +6,7 @@ import { Input, User } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 function Watch({ params }) {
     const id = params.id;
@@ -14,6 +15,8 @@ function Watch({ params }) {
     const [list, setList] = useState([])
     const [name, setName] = useState('')
     const [saved, setSaved] = useState(false)
+    const [isVip, setIsVip] = useState(false)
+
     const [listComment, setListComment] = useState([
 
     ])
@@ -146,6 +149,12 @@ function Watch({ params }) {
         }
     }
     useEffect(() => {
+        for (let i = 0; i < getUserFromLocalStorage()?.roles?.length; i++) {
+            if (getUserFromLocalStorage()?.roles[i].role.name == 'ROLE_VIP') {
+                setIsVip(true)
+                break
+            }
+        }
         let save = false
         if (getSavedFromLocalStorage()) {
             for (let i = 0; i < getSavedFromLocalStorage().length; i++) {
@@ -218,7 +227,7 @@ function Watch({ params }) {
                 <div className="grid grid-cols-6 py-5 sm:grid-cols-9 md:grid-cols-12 px-2 gap-y-3 md:gap-y-5 md:px-3 xl:hidden md:pr-10 2xl:max-w-[80%]">
                     {
                         list?.map((item, index) => (
-                            <Link key={index} href={`/page/watch/${item.id}`} style={{ fontFamily: 'west' }}>
+                            <Link onClick={() => { if (!isVip && item.vipRequire == true) { toast.warn('Cần nạp vip để xem!') } }} key={index} href={(!isVip && item.vipRequire == true) ? '#' : `/page/watch/${item.id}`} style={{ fontFamily: 'west' }}>
                                 <div className="md:w-14 md:h-14 w-12 h-12  p-1 pt-2 bg-slate-600 hover:text-yellow-300 rounded-full flex justify-center items-center cursor-pointer hover:bg-slate-500 hover:ring-2 hover:ring-slate-400 hover:text-xl hover:scale-105 duration-300 transition-transform">
                                     {item.serial}
                                 </div>
@@ -284,7 +293,7 @@ function Watch({ params }) {
                     <div className="grid grid-cols-3 py-5 sm:grid-cols-3 gap-x-3 md:grid-cols-4 gap-y-3 ">
                         {
                             list?.map((item, index) => (
-                                <Link key={index} href={`/page/watch/${item.id}`} style={{ fontFamily: 'Hazu' }}>
+                                <Link onClick={() => { if (!isVip && item.vipRequire == true) { toast.warn('Cần nạp vip để xem!') } }} key={index} href={(!isVip && item.vipRequire == true) ? '#' : `/page/watch/${item.id}`} style={{ fontFamily: 'Hazu' }}>
                                     <div className="md:w-[62px] md:h-10 w-12 h-9 col-span-1 p-1 pt-2 text-[20px] bg-slate-600 hover:text-yellow-300 rounded-2xl flex justify-center items-center cursor-pointer hover:bg-slate-500 hover:ring-2 hover:ring-slate-400 hover:text-xl hover:scale-105 duration-300 transition-transform">
                                         Tập {item.serial}
                                     </div>

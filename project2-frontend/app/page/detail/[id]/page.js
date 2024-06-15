@@ -6,13 +6,15 @@ import { MotionDiv } from "@/app/component/OtherComponent/MotionDiv";
 import { SendIcon } from "@/icons/icon";
 import { useEffect, useState } from "react";
 import UserApi from "@/app/api/UserApi";
+import { toast } from "react-toastify";
+import { useQuery } from "react-query";
 
 function Detail({ params }) {
     const bg = 'https://images3.alphacoders.com/132/1328396.png'
     const img = 'https://cdn.oneesports.vn/cdn-data/sites/4/2023/10/Anime-Naruto-avt.jpg'
     const [isVip, setIsVip] = useState(false)
     const epdata = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
-    const [film, setFilm] = useState({})
+    // const [film, setFilm] = useState({})
     const [liked, setLiked] = useState(false)
     const [listReview, setListReview] = useState([
 
@@ -32,6 +34,25 @@ function Detail({ params }) {
             return '';
         }
     };
+    const { data: film = [] } = useQuery(
+        'filmDetail' + params.id,
+        async () => {
+            toast.loading('Đang tải dữ liệu...');
+            const res = await UserApi.GetFilmDetail(params.id).finally(() => {
+                toast.dismiss();
+            });
+            localStorage.setItem('currentFilm', JSON.stringify(res.data.episodes))
+            setListReview(res.data.reviews);
+            localStorage.setItem('currentName', res.data.name)
+            return res.data;
+        },
+        {
+            cacheTime: 60000,
+            refetchOnWindowFocus: false,
+            staleTime: 100000,
+        }
+    );
+
     const getLikedFromLocalStorage = () => {
         try {
             // avatar2 = localStorage.getItem('film_avatar');
@@ -47,12 +68,15 @@ function Detail({ params }) {
         setName(getUserFromLocalStorage()?.name)
         setAvatar(getUserFromLocalStorage()?.avatar)
         const id = params.id
-        UserApi.GetFilmDetail(id).then(res => {
-            setListReview(res.data.reviews);
-            setFilm(res.data)
-            localStorage.setItem('currentFilm', JSON.stringify(res.data.episodes))
-            localStorage.setItem('currentName', res.data.name)
-        })
+        // toast.loading('Đang tải dữ liệu...');
+        // UserApi.GetFilmDetail(id).then(res => {
+        //     setListReview(res.data.reviews);
+        //     setFilm(res.data)
+        //     localStorage.setItem('currentFilm', JSON.stringify(res.data.episodes))
+        //     localStorage.setItem('currentName', res.data.name)
+        // }).finally(() => {
+        //     toast.dismiss();
+        // })
         UserApi.GetReviews(id).then(res => {
             setListReview(res.data)
         })
@@ -128,7 +152,7 @@ function Detail({ params }) {
             <div style={{ zIndex: 0, position: 'fixed', top: '0px', left: '0px', height: '100%', width: '100%', backgroundImage: `url('https://mega.com.vn/media/news/0106_hinh-nen-may-tinh-full-hd62.jpg')`, backgroundPosition: 'center', opacity: 0.03, backgroundRepeat: 'no-repeat' }}></div>
             <div className="h-[500px]">
                 <div className="h-[350px] relative text-white">
-                    <div className="w-full " style={{ backgroundImage: `url(${film.background})`, backgroundPosition: 'center center', backgroundSize: 'cover', height: '100%' }}>
+                    <div className="w-full " style={{ backgroundImage: `url(${film?.background})`, backgroundPosition: 'center center', backgroundSize: 'cover', height: '100%' }}>
                     </div>
                     <div className="video"></div>
                     <div className="absolute bottom-[-35%] flex flex-col sm:flex-row sm:left-[4%] z-10 gap-4 sm:gap-6 items-center w-full sm:w-[90%]">
@@ -204,7 +228,7 @@ function Detail({ params }) {
                                     <Image src={episode?.image || film?.background || film?.image || 'https://cdn.popsww.com/blog/sites/2/2022/02/naruto-co-bao-nhieu-tap.jpg'} width={200} height={200} alt={episode?.title} className="bg-[#18181b] h-full w-full object-cover aspect-w-16 aspect-h-9 rounded-lg transition-all duration-300 transform group-hover:scale-105 group-hover:opacity-60" quality={100} />
                                     <div className="absolute inset-0 flex items-center justify-center">
                                         {(episode.vipRequire && !isVip) ?
-                                            <div onClick={(e) => { alert("vip require") }} className="hidden group-hover:flex items-center justify-center opacity-0 bg-white bg-opacity-40 hover:bg-[#4d148c] rounded-full shadow group-hover:opacity-90 w-12 h-12">
+                                            <div onClick={(e) => { toast.warn("Nạp vip để xem tập phim này!") }} className="hidden group-hover:flex items-center justify-center opacity-0 bg-white bg-opacity-40 hover:bg-[#4d148c] rounded-full shadow group-hover:opacity-90 w-12 h-12">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                                     <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
                                                 </svg>

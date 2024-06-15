@@ -1,7 +1,7 @@
 import { Card, CardBody } from "@nextui-org/react";
 import React from "react";
 
-function CardFilm() {
+function CardFilm({ dashboard }) {
     return (
         <Card className="xl:max-w-sm bg-default-50 rounded-xl shadow-md px-3 w-full">
             <CardBody className="py-5">
@@ -12,12 +12,12 @@ function CardFilm() {
 
                     <div className="flex flex-col">
                         <span className="text-default-900">Thống kê phim</span>
-                        <span className="text-default-900 text-xs">2000 phim</span>
+                        <span className="text-default-900 text-xs">{dashboard?.numberOfFilm} phim</span>
                     </div>
                 </div>
                 <div className="flex gap-2.5 py-2 items-center">
                     <span className="text-default-900 text-lg font-semibold">
-                        10,000 tập phim
+                        {dashboard?.numberOfEpisodes} tập phim
                     </span>
                     <span className="text-danger text-xs"></span>
                 </div>
@@ -27,7 +27,7 @@ function CardFilm() {
                             <span className="font-semibold text-success-600 text-xs">
                                 {"↓"}
                             </span>
-                            <span className="text-xs">11,930</span>
+                            <span className="text-xs">1,190</span>
                         </div>
                         <span className="text-default-900 text-xs">lượt xem</span>
                     </div>
@@ -35,7 +35,7 @@ function CardFilm() {
                     <div>
                         <div>
                             <span className="font-semibold text-danger text-xs">{"↑"}</span>
-                            <span className="text-xs">54,120</span>
+                            <span className="text-xs">5,412</span>
                         </div>
                         <span className="text-default-900 text-xs">bình luận</span>
                     </div>
@@ -43,7 +43,7 @@ function CardFilm() {
                     <div>
                         <div>
                             <span className="font-semibold text-danger text-xs">{"⭐"}</span>
-                            <span className="text-xs">15,000</span>
+                            <span className="text-xs">150</span>
                         </div>
                         <span className="text-default-900 text-xs">review</span>
                     </div>

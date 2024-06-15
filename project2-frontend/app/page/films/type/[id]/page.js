@@ -5,24 +5,49 @@ import Link from "next/link";
 import { useEffect, useState, useContext } from "react";
 import { Pagination } from "@nextui-org/react";
 import { FilmContext } from "../../context";
+import { useQuery } from "react-query";
+import { toast } from "react-toastify";
 function TypeFilm({ params }) {
     const id = params.id
     const [type, setType] = useState(null)
-    const [films, setFilms] = useState([]);
+    // const [films, setFilms] = useState([]);
     const [totalPages, setTotalPages] = useState(1); // Thêm state để lưu tổng số trang
     const [currentPage, setCurrentPage] = useState(1);
     const { yearActive, setYearActive } = useContext(FilmContext);
+    const { data, isLoading } = useQuery(
+        ['films', id, currentPage],
+        async () => {
+            toast.loading('Đang tải dữ liệu...');
+            const res = await UserApi.GetByType(id, currentPage - 1).finally(() => {
+                toast.dismiss();
+            });
+            return res.data;
+        },
+        {
+            cacheTime: 600000,
+            refetchOnWindowFocus: false,
+            staleTime: 1000000,
+        }
+    );
+
     useEffect(() => {
-        fetchData(currentPage);
+        if (data) {
+            setTotalPages(data.totalPages);
+        }
+    }, [data, id]);
 
-    }, [currentPage]); // Sử dụng useEffect để gọi API khi trang thay đổi
+    const films = data?.content || [];
+    // useEffect(() => {
+    //     fetchData(currentPage);
 
-    const fetchData = (page) => {
-        UserApi.GetByType(id, page - 1).then(res => {
-            setFilms(res.data?.content);
-            setTotalPages(res.data?.totalPages); // Cập nhật tổng số trang từ API
-        });
-    }
+    // }, [currentPage]); // Sử dụng useEffect để gọi API khi trang thay đổi
+
+    // const fetchData = (page) => {
+    //     UserApi.GetByType(id, page - 1).then(res => {
+    //         setFilms(res.data?.content);
+    //         setTotalPages(res.data?.totalPages); // Cập nhật tổng số trang từ API
+    //     });
+    // }
     const listTypes = [{ id: 'ACTION', name: 'Hành động' }, { id: 'ADVENTURE', name: 'Phiêu lưu' }, { id: 'HORROR', name: 'Kinh dị' }, { id: 'COMEDY', name: 'Hài hước' }, { id: 'ROMATIC', name: 'Lãng mạn' }, { id: 'WAR', name: 'Chiến tranh' }, { id: 'DRAMA', name: 'Tâm lý' }, { id: 'ANIME', name: 'Anime' }, { id: 'COSTUME', name: 'Cổ trang' }, { id: 'FANTASY', name: 'Viễn tưởng' }]
     for (let i = 0; i < listTypes.length; i++) {
         if (listTypes[i].id == id) {

@@ -7,6 +7,9 @@ import Provider from "./Providers";
 import { Fragment } from "react";
 import Wrap from "./wrap";
 import { FilmContextProvider } from "./page/films/context";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,8 +28,12 @@ export default function RootLayout({ children }) {
       </head>
       <body className=" dark:bg-black bg-white">
         <FilmContextProvider>
+
           <Provider>
-            <Wrap>{children}</Wrap>
+            <Wrap>{children}
+              <ToastContainer position='bottom-right' autoClose={3000} hideProgressBar style={{ zIndex: '1000' }} theme="light" />
+            </Wrap>
+
           </Provider>
         </FilmContextProvider>
       </body>

@@ -5,27 +5,53 @@ import { MotionDiv } from "@/app/component/OtherComponent/MotionDiv";
 import Link from "next/link";
 import { Pagination } from "@nextui-org/react";
 import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
+import { toast } from "react-toastify";
 function Series() {
     const [films, setFilms] = useState([]);
     const [totalPages, setTotalPages] = useState(1); // Thêm state để lưu tổng số trang
     const [currentPage, setCurrentPage] = useState(1);
-    const [data, setData] = useState([])
+    // const [data, setData] = useState([])
 
-    useEffect(() => {
-        UserApi.GetSeriesTop().then(res => {
-            setData(res.data);
-        });
-    }, []);
+    // useEffect(() => {
+    //     UserApi.GetSeriesTop().then(res => {
+    //         setData(res.data);
+    //     });
+    // }, []);
 
+    const { data: data, isLoading, isError } = useQuery(
+        'series',
+        async () => {
+            // toast.loading('Đang tải top series...');
+            try {
+                const res = await UserApi.GetSeriesTop();
+                return res.data;
+            } catch (err) {
+                console.log(err);
+            } finally {
+                // toast.dismiss();
+            }
+        },
+        {
+            cacheTime: 120000,
+            refetchOnWindowFocus: false,
+            staleTime: 120000,
+        }
+    );
     useEffect(() => {
+        setFilms([]);
+
         fetchData(currentPage);
     }, [currentPage]); // Sử dụng useEffect để gọi API khi trang thay đổi
 
     const fetchData = (page) => {
+        toast.loading('Đang tải dữ liệu...');
         UserApi.GetSeries(page - 1).then(res => {
             setFilms(res.data?.content);
             setTotalPages(res.data?.totalPages); // Cập nhật tổng số trang từ API
-        });
+        }).finally(() => {
+            toast.dismiss();
+        })
     }
     const scrollToTop = () => {
         window.scrollTo({

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import UserApi from "@/app/api/UserApi";
 import { Radio, RadioGroup } from "@nextui-org/react";
 import Provider from "@/app/Providers";
+import { toast } from "react-toastify";
 function Favorite() {
     const [showPay, setShowPay] = useState(false)
     const [provider, setProvider] = useState('payos')
@@ -62,23 +63,27 @@ function Favorite() {
         UserApi.UpdateUser(password, isChangePass, name, email, age).then(
             res => {
                 if (res.status == 200) {
-                    alert('Update success')
+                    toast.success('Cập nhật thành công')
                     localStorage.setItem('filmInfo', JSON.stringify(res.data))
                 }
             }
         )
         if (file != null) {
             console.log('image')
+            toast.loading('Đang tải lên avatar...')
             UserApi.PostImage(file).then(
                 res => {
                     UserApi.UpdateAvatar(res.data.url).then(
                         res => {
-                            alert('Update avatar success')
+                            toast.success('Cập nhật avatar thành công')
                             localStorage.setItem('filmInfo', JSON.stringify(res.data))
                         }
                     )
                 }
             )
+                .finally(() => {
+                    toast.dismiss()
+                })
         }
     }
     const getVip = (money) => {

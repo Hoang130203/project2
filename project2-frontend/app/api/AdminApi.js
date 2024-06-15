@@ -30,5 +30,42 @@ class AdminApi {
             throw error;
         }
     }
+    async GetEpisodesByFilmId(id) {
+        try {
+            const response = await axios.get(`${base_api}/api/film/film/episodes?id=${id}`, headers);
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    async ChangeEpisodeStatus(id) {
+        try {
+            const response = await axios.put(`${base_api}/api/admin/episode/status?id=${id}`, {}, headers);
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+    async AddEpisode(episodes, filmId) {
+        try {
+            const response = await axios.put(`${base_api}/api/film/advanceinfo/addepisode?filmId=${filmId}`, episodes, headers);
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+    async Dashboard() {
+        try {
+            const response = await axios.get(`${base_api}/api/admin/dashboard`, headers);
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
 }
 export default new AdminApi();

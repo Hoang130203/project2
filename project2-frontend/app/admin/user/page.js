@@ -25,6 +25,8 @@ import { columns, statusOptions } from "./data";
 import { capitalize } from "../film/utils";
 import { MotionDiv } from "@/app/component/OtherComponent/MotionDiv";
 import AdminApi from "@/app/api/AdminApi";
+import { useQuery } from "react-query";
+import { toast } from "react-toastify";
 
 const statusColorMap = {
     normal: "success",
@@ -34,14 +36,33 @@ const statusColorMap = {
 
 const INITIAL_VISIBLE_COLUMNS = ["name", "totalmoney", "status", "actions"];
 function Users() {
-    const [users, setUsers] = useState([]);
-    useEffect(() => {
-        AdminApi.GetAllUser().then((res) => {
-            setUsers(res.data);
-        }).catch((err) => {
-            console.log(err);
-        });
-    }, []);
+    // const [users, setUsers] = useState([]);
+    // useEffect(() => {
+    //     AdminApi.GetAllUser().then((res) => {
+    //         setUsers(res.data);
+    //     }).catch((err) => {
+    //         console.log(err);
+    //     });
+    // }, []);
+    const { data: users, isLoading, isError } = useQuery(
+        'users',
+        async () => {
+            toast.loading('Đang tải dữ liệu...');
+            try {
+                const res = await AdminApi.GetAllUser();
+                return res.data;
+            } catch (err) {
+                console.log(err);
+            } finally {
+                toast.dismiss();
+            }
+        },
+        {
+            cacheTime: 6000,
+            refetchOnWindowFocus: false,
+            staleTime: 10000,
+        }
+    );
     const [filterValue, setFilterValue] = useState("");
     const [selectedKeys, setSelectedKeys] = useState(new Set([]));
     const [visibleColumns, setVisibleColumns] = useState(new Set(INITIAL_VISIBLE_COLUMNS));
@@ -62,7 +83,7 @@ function Users() {
     }, [visibleColumns]);
 
     const filteredItems = useMemo(() => {
-        let filteredUsers = [...users];
+        let filteredUsers = [...users || []];
 
         if (hasSearchFilter) {
             filteredUsers = filteredUsers.filter((user) =>
@@ -236,7 +257,7 @@ function Users() {
                     </div>
                 </div>
                 <div className="flex justify-between items-center">
-                    <span className="text-default-400 text-small">Total {users.length} users</span>
+                    <span className="text-default-400 text-small">Total {users?.length || 0} users</span>
                     <label className="flex items-center text-default-400 text-small">
                         Số hàng mỗi trang:
                         <select
@@ -256,7 +277,7 @@ function Users() {
         statusFilter,
         visibleColumns,
         onRowsPerPageChange,
-        users.length,
+        users?.length || 0,
         onSearchChange,
         hasSearchFilter,
     ]);
@@ -289,7 +310,8 @@ function Users() {
             </div>
         );
     }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
-
+    if (isLoading) return <div></div>;
+    if (isError) return <div>Lỗi...</div>;
     return (
         <div className="p-3 pt-8 md:p-9 text-white">
             <MotionDiv
