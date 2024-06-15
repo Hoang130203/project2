@@ -76,6 +76,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,"/api/film/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
 //                        .requestMatchers(HttpMethod.POST,"/api/film/")
+                        .requestMatchers(HttpMethod.GET,"/ws/**").hasRole("ADMIN")
                         .requestMatchers("/vnpay/**").permitAll()
                         .requestMatchers("/payos/**").permitAll()
                         .anyRequest().authenticated()

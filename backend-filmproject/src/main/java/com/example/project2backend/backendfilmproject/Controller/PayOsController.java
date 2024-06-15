@@ -1,14 +1,20 @@
 package com.example.project2backend.backendfilmproject.Controller;
 
 import com.example.project2backend.backendfilmproject.Entity.User;
+import com.example.project2backend.backendfilmproject.Payload.Response.NotificationMessage;
 import com.example.project2backend.backendfilmproject.Service.UserService;
+import com.example.project2backend.backendfilmproject.payos.PayOS;
+import com.example.project2backend.backendfilmproject.payos.type.ItemData;
+import com.example.project2backend.backendfilmproject.payos.type.PaymentData;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lib.payos.PayOS;
-import com.lib.payos.type.ItemData;
-import com.lib.payos.type.PaymentData;
+//import com.lib.payos.PayOS;
+//import com.lib.payos.type.ItemData;
+//import com.lib.payos.type.PaymentData;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +31,8 @@ public class PayOsController {
     private final UserService userService;
     private String base_url="http://localhost:8080";
     private String base_url2="http://localhost:3000";
+    @Autowired
+    private SimpMessageSendingOperations messagingTemplate;
     public PayOsController(PayOS payOS, UserService userService) {
         super();
         this.payOS = payOS;
@@ -39,6 +47,14 @@ public class PayOsController {
         User user = userService.getById(userId)
                 .orElseThrow(()->new RuntimeException("transaction not found"));
         boolean status= userService.completeTransaction(user,amount);
+        NotificationMessage notificationMessage= new NotificationMessage();
+        notificationMessage.setAdmin(true);
+        notificationMessage.setSender("System");
+        notificationMessage.setTimestamp(new Date());
+        notificationMessage.setContent(user.getName()+" vừa mua thành công gói vip ");
+        if(status) {
+            messagingTemplate.convertAndSend("/topic-admin", notificationMessage);
+        }
         return "<a href=\"http://localhost:3000/page/account/info\" id=\"return-page-btn\">Trở về</a>";
     }
 //    @RequestMapping(value = "/cancel")

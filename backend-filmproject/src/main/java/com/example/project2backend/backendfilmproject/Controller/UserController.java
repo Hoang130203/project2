@@ -14,10 +14,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +31,8 @@ public class UserController {
     private final UserService userService;
     private final RoleService roleService;
     private final FilmService filmService;
+    @Autowired
+    private SimpMessageSendingOperations messagingTemplate;
     public UserController(UserService userService, RoleService roleService, FilmService filmService) {
         this.userService = userService;
         this.roleService = roleService;
@@ -177,6 +181,7 @@ public class UserController {
     @GetMapping("/reviews")
     public ResponseEntity<?> getReviews(@RequestParam("filmId") int filmid){
         Film film= filmService.getFilm(filmid);
+
         return ResponseEntity.ok(filmService.getReview(film).stream().map(review -> modelMapper.map(review, ReviewRes.class)));
     }
 
@@ -187,6 +192,13 @@ public class UserController {
         User user= userService.getById(getUserId(userDetails))
                 .orElseThrow(()->new RuntimeException("User not found"));
         Film film= filmService.getFilm(reviewReq.getFilmId());
+        NotificationMessage notificationMessage= new NotificationMessage();
+        notificationMessage.setAdmin(true);
+        notificationMessage.setSender("System");
+        notificationMessage.setTimestamp(new Date());
+        notificationMessage.setContent(user.getName()+" vừa review cho phim "+film.getName());
+        messagingTemplate.convertAndSend("/topic-admin", notificationMessage);
+
         return ResponseEntity.ok(userService.postReview(user,film,reviewReq.getContent()));
 
     }

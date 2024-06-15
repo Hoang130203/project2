@@ -8,6 +8,7 @@ import com.example.project2backend.backendfilmproject.Entity.EClass_Key.EType;
 import com.example.project2backend.backendfilmproject.Payload.Response.*;
 import com.example.project2backend.backendfilmproject.Repository.EpisodeRepository;
 import com.example.project2backend.backendfilmproject.Service.FilmService;
+import com.example.project2backend.backendfilmproject.Service.RoleService;
 import com.example.project2backend.backendfilmproject.Service.UserService;
 //import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
 //import java.util.concurrent.TimeUnit;
@@ -38,6 +39,8 @@ public class FilmController {
     private ModelMapper modelMapper;
     @Autowired
     private UserService userService;
+    @Autowired
+    private RoleService roleService;
     private final FilmService filmService;
     @Autowired
     private EpisodeRepository episodeRepository;
@@ -45,6 +48,12 @@ public class FilmController {
     public FilmController(FilmService filmService) {
         this.filmService = filmService;
     }
+    @GetMapping("/init")
+    public ResponseEntity<?> init(){
+        roleService.createRoleAndType();
+        return ResponseEntity.ok("ok");
+    }
+
     @PostMapping("/film")
     public ResponseEntity<?> upFilm(@RequestBody DetailFilmResponse detailFilmResponse)
     {
@@ -216,6 +225,13 @@ public class FilmController {
     {
         return ResponseEntity.ok(filmService.removeCharacters(characters,filmId));
     }
+
+    @GetMapping("/film/episodes")
+    public ResponseEntity<?> getAllEpisodesByfilm(@RequestParam("id") int id){
+        return ResponseEntity.ok(filmService.getEpisodesByFilm(id));
+    }
+
+
     public String getUserId(UserDetails userDetails){
 
         String userName = userDetails.getUsername();

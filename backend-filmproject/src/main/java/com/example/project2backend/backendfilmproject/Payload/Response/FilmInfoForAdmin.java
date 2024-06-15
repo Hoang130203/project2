@@ -25,6 +25,8 @@ public class FilmInfoForAdmin implements Serializable {
     private String type;
     private String avatar;
     private int episode;
+    private String slug;
+    private String origin;
 //    private boolean status;
 
     public Long getWatch() {

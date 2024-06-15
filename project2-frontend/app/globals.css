@@ -183,3 +183,21 @@ body {
 .disable-hover-click {
   pointer-events: none;
 }
+
+@keyframes scaleAnimation {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.25);
+  }
+}
+
+.scale-animation {
+  width: 8px;
+  height: 8px;
+  /* background-color: #60a5fa; Màu xanh tương tự bg-blue-400 trong Tailwind */
+  border-radius: 50%; /* Làm cho phần tử tròn */
+  animation: scaleAnimation 2s infinite;
+}

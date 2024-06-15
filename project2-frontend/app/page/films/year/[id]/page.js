@@ -6,23 +6,46 @@ import UserApi from "@/app/api/UserApi";
 import { Pagination } from "@nextui-org/react";
 import Link from "next/link";
 import { MotionDiv } from "@/app/component/OtherComponent/MotionDiv";
+import { toast } from "react-toastify";
+import { useQuery } from "react-query";
 
 function FilmYear({ params }) {
     const [year, setYear] = useState(params.id)
-    const [films, setFilms] = useState([]);
+    // const [films, setFilms] = useState([]);
     const [totalPages, setTotalPages] = useState(1); // Thêm state để lưu tổng số trang
     const [currentPage, setCurrentPage] = useState(1);
     const { yearActive, setYearActive } = useContext(FilmContext)
-    useEffect(() => {
-        fetchData(currentPage);
-    }, [currentPage]); // Sử dụng useEffect để gọi API khi trang thay đổi
+    // useEffect(() => {
+    //     fetchData(currentPage);
+    // }, [currentPage]); // Sử dụng useEffect để gọi API khi trang thay đổi
 
-    const fetchData = (page) => {
-        UserApi.GetByYear(year, page - 1).then(res => {
-            setFilms(res.data?.content);
-            setTotalPages(res.data?.totalPages); // Cập nhật tổng số trang từ API
-        });
-    }
+    // const fetchData = (page) => {
+    //     UserApi.GetByYear(year, page - 1).then(res => {
+    //         setFilms(res.data?.content);
+    //         setTotalPages(res.data?.totalPages); // Cập nhật tổng số trang từ API
+    //     });
+    // }
+    const { data, isLoading } = useQuery(
+        ['filmsYears', year, currentPage],
+        async () => {
+            toast.loading('Đang tải dữ liệu...');
+            const res = await UserApi.GetByYear(year, currentPage - 1).finally(() => {
+                toast.dismiss();
+            });
+            return res.data;
+        },
+        {
+            cacheTime: 600000,
+            refetchOnWindowFocus: false,
+            staleTime: 1000000,
+        }
+    );
+    useEffect(() => {
+        if (data) {
+            setTotalPages(data.totalPages);
+        }
+    }, [data, year]);
+    const films = data?.content || [];
     const scrollToTop = () => {
         window.scrollTo({
             top: 0,

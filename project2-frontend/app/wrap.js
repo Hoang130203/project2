@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
 import Header from "./component/header";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { SocketProvider } from "./admin/notifi/NotificationContext";
 const queryClient = new QueryClient();
 
 function Wrap({ children }) {
@@ -14,12 +15,14 @@ function Wrap({ children }) {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <Fragment>
-                {admin ? <Fragment>{children}</Fragment> : <Fragment>
-                    <Header />
-                    {children}
-                </Fragment>}
-            </Fragment>
+            <SocketProvider>
+                <Fragment>
+                    {admin ? <Fragment>{children}</Fragment> : <Fragment>
+                        <Header />
+                        {children}
+                    </Fragment>}
+                </Fragment>
+            </SocketProvider>
         </QueryClientProvider>
     );
 }

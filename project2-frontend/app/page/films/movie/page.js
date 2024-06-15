@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 //<iframe className="disable-hover-click no_select" width="560" height="315" src="https://www.youtube.com/embed/c_hnKogqvEs?si=xofpzzaDHSrBTt32&amp;list=PL3h_l0eg0zdgFPHA0WofJacPC54_yBtLU&autoplay=1&mute=1&controls=0&loop=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 function Movie() {
-    const [films, setFilms] = useState([]);
+    // const [films, setFilms] = useState([]);
     const [totalPages, setTotalPages] = useState(1); // Thêm state để lưu tổng số trang
     const [currentPage, setCurrentPage] = useState(1);
     // const [data, setData] = useState([])
@@ -40,20 +40,43 @@ function Movie() {
             staleTime: 120000,
         }
     );
-    useEffect(() => {
-        setFilms([]);
-        fetchData(currentPage);
-    }, [currentPage]); // Sử dụng useEffect để gọi API khi trang thay đổi
+    // useEffect(() => {
+    //     setFilms([]);
+    //     fetchData(currentPage);
+    // }, [currentPage]); // Sử dụng useEffect để gọi API khi trang thay đổi
 
-    const fetchData = (page) => {
-        toast.loading('Đang tải dữ liệu...');
-        UserApi.GetMovies(page - 1).then(res => {
-            setFilms(res.data?.content);
-            setTotalPages(res.data?.totalPages); // Cập nhật tổng số trang từ API
-        }).then(() => {
-            toast.dismiss();
-        });
+    // const fetchData = (page) => {
+    //     toast.loading('Đang tải dữ liệu...');
+    //     UserApi.GetMovies(page - 1).then(res => {
+    //         setFilms(res.data?.content);
+    //         setTotalPages(res.data?.totalPages); // Cập nhật tổng số trang từ API
+    //     }).then(() => {
+    //         toast.dismiss();
+    //     });
+    // }
+    const { data: data1 } = useQuery(
+        ['filmsMovies', currentPage],
+        async () => {
+            toast.loading('Đang tải dữ liệu...');
+            const res = await UserApi.GetMovies(currentPage - 1).finally(() => {
+                toast.dismiss();
+            });
+            return res.data;
+        },
+        {
+            cacheTime: 600000,
+            refetchOnWindowFocus: false,
+            staleTime: 1000000,
+        }
+    );
+
+    useEffect(() => {
+        if (data1) {
+            setTotalPages(data1.totalPages); // Cập nhật tổng số trang từ API
+        }
     }
+        , [data1, currentPage]);
+    const films = data1?.content || [];
     const scrollToTop = () => {
         window.scrollTo({
             top: 0,

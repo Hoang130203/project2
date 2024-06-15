@@ -42,7 +42,10 @@ public interface FilmService {
 
     List<Review> getReview(Film film);
     List<Comment> getComment(Episode episode);
-
+    List<Episode> getEpisodesByFilm(int id);
+    Episode changeVip(Long id);
+    long numberOfFilms();
+    long numberOfEpisodes();
     @CacheEvict(value = "film", allEntries = true)
     @Scheduled(fixedRateString = "10")
     void evictAllProductsCache();

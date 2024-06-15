@@ -1,6 +1,7 @@
 package com.example.project2backend.backendfilmproject;
 
-import com.lib.payos.PayOS;
+import com.example.project2backend.backendfilmproject.payos.PayOS;
+//import com.lib.payos.PayOS;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;

@@ -30,6 +30,8 @@ public class DetailFilmResponse {
     private List<Episode> episodes;
     private List<Review> reviews;
     private Long views;
+    private String slug;
+    private String origin;
 //    private boolean status;
 
 }

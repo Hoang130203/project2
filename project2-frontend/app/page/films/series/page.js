@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 function Series() {
-    const [films, setFilms] = useState([]);
+    // const [films, setFilms] = useState([]);
     const [totalPages, setTotalPages] = useState(1); // Thêm state để lưu tổng số trang
     const [currentPage, setCurrentPage] = useState(1);
     // const [data, setData] = useState([])
@@ -38,28 +38,50 @@ function Series() {
             staleTime: 120000,
         }
     );
+    // useEffect(() => {
+    //     // setFilms([]);
+
+    //     // fetchData(currentPage);
+    // }, [currentPage]); // Sử dụng useEffect để gọi API khi trang thay đổi
+
+    // const fetchData = (page) => {
+    //     toast.loading('Đang tải dữ liệu...');
+    //     UserApi.GetSeries(page - 1).then(res => {
+    //         setFilms(res.data?.content);
+    //         setTotalPages(res.data?.totalPages); // Cập nhật tổng số trang từ API
+    //     }).finally(() => {
+    //         toast.dismiss();
+    //     })
+    // }
+    const { data: data1 } = useQuery(
+        ['filmsSeries', currentPage],
+        async () => {
+            toast.loading('Đang tải dữ liệu...');
+            const res = await UserApi.GetSeries(currentPage - 1).finally(() => {
+                toast.dismiss();
+            });
+            return res.data;
+        },
+        {
+            cacheTime: 600000,
+            refetchOnWindowFocus: false,
+            staleTime: 1000000,
+        }
+    );
     useEffect(() => {
-        setFilms([]);
+        if (data1) {
+            setTotalPages(data1.totalPages);
+        }
+    }, [data1]);
 
-        fetchData(currentPage);
-    }, [currentPage]); // Sử dụng useEffect để gọi API khi trang thay đổi
+    const films = data1?.content || [];
 
-    const fetchData = (page) => {
-        toast.loading('Đang tải dữ liệu...');
-        UserApi.GetSeries(page - 1).then(res => {
-            setFilms(res.data?.content);
-            setTotalPages(res.data?.totalPages); // Cập nhật tổng số trang từ API
-        }).finally(() => {
-            toast.dismiss();
-        })
-    }
     const scrollToTop = () => {
         window.scrollTo({
             top: 0,
             behavior: "smooth"
         });
     }
-    const newData = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }, { id: 7 }, { id: 8 }, { id: 9 }, { id: 10 }, { id: 11 }, { id: 12 }, { id: 13 }, { id: 14 }, { id: 15 }, { id: 16 }, { id: 17 }, { id: 18 }, { id: 19 }, { id: 20 }]
     return (
         <div className="w-full">
             <div className="w-full flex justify-center items-center p-7 no_select">

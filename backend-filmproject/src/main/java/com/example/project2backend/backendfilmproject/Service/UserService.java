@@ -18,4 +18,7 @@ public interface UserService {
     List<User> getAll();
     Review postReview(User user, Film film, String content);
     Comment postComment(User user, Episode episode,String content);
+    long numberOfUsers();
+    Long totalMoney();
+    List<Transaction> findTop5Current();
 }

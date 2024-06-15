@@ -173,6 +173,21 @@ public class UserServiceImpl implements UserService{
         return comment;
     }
 
+    @Override
+    public long numberOfUsers() {
+        return userRepository.count();
+    }
+
+    @Override
+    public Long totalMoney(){
+        return transactionRepository.totalMoney();
+    }
+
+    @Override
+    public List<Transaction> findTop5Current() {
+        return transactionRepository.findTop5ByOrderByIdDesc();
+    }
+
     public String randomString(){
         int length=15;
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
