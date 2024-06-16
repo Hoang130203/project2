@@ -419,7 +419,7 @@ function AddFilmByApi({ listFilms, setListFilms }) {
                     )}
                     {
                         activeTab.name === "Cập nhật" && (
-                            <div className="px-2">
+                            <div className="px-2 overflow-y-auto">
                                 {listUpdate?.map((film, index) => (
                                     <div key={index} className="grid grid-cols-5 gap-4 py-1">
                                         <div><img src={film?.avatar} className="w-10 h-10 rounded-full" /></div>
