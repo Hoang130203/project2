@@ -10,7 +10,9 @@ const headers = {
 }
 // export const base_api = 'http://localhost:8080'
 // export const base_api = 'https://blessed-absolute-dragon.ngrok-free.app'
-export const base_api = 'https://project2-97w5.onrender.com'
+// export const base_api = 'https://project2-97w5.onrender.com'
+export const base_api = 'https://hoangmm.site'
+
 class UserApi {
     PostImage(img) {
 
