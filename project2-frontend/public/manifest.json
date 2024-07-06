@@ -1,0 +1,21 @@
+{
+  "name": "Project 2 - Phim project2",
+  "short_name": "Phim project2",
+  "description": "Mô tả ",
+  "icons": [
+    {
+      "src": "https://media.tenor.com/rUXa12gyM5cAAAAe/acheron-hsr.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "https://media.tenor.com/rUXa12gyM5cAAAAe/acheron-hsr.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000"
+}

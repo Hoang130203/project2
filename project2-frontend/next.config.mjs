@@ -1,8 +1,10 @@
+import withPWA from 'next-pwa';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
         domains: ['s4.anilist.co', 'artworks.thetvdb.com', 'media.kitsu.io', 'image.tmdb.org'],
-        unoptimized: true
+        unoptimized: true,
     },
     webpack: (config, { isServer }) => {
         config.module.rules.push({
@@ -22,4 +24,11 @@ const nextConfig = {
     },
 };
 
-export default nextConfig;
+const withPWANextConfig = withPWA({
+    dest: 'public',
+    disable: process.env.NODE_ENV === 'development',
+    register: true,
+    skipWaiting: true,
+});
+
+export default withPWANextConfig(nextConfig);
