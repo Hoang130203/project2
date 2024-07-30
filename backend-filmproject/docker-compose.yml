@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8080"
+    env_file: ./src/main/resources/application.properties
+    environment:
+      spring_datasource_url: jdbc:sqlserver://sqlserver:1433;databaseName=film;trustServerCertificate=true
+      spring.datasource.username: sa
+      spring.datasource.password: hoang2k3ql1
+    depends_on:
+      - sqlserver
+    networks:
+      - mynetwork
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sqlserver
+    environment:
+      - SA_PASSWORD=hoang2k3ql1
+      - ACCEPT_EULA=Y
+    ports:
+      - "1434:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        /opt/mssql/bin/sqlservr --accept-eula &
+        sleep 30
+        /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P hoang2k3ql1 -Q "CREATE DATABASE film"
+        wait
+    networks:
+      - mynetwork
+volumes:
+  sqlserver-data:
+networks:
+  mynetwork:
+    driver: bridge
