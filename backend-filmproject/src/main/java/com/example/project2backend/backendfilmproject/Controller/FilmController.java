@@ -53,6 +53,11 @@ public class FilmController {
         roleService.createRoleAndType();
         return ResponseEntity.ok("ok");
     }
+    @GetMapping("/initrole")
+    public ResponseEntity<?> initRole(){
+        roleService.createRole();
+        return ResponseEntity.ok("ok");
+    }
 
     @PostMapping("/film")
     public ResponseEntity<?> upFilm(@RequestBody DetailFilmResponse detailFilmResponse)
