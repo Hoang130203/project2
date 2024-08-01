@@ -20,7 +20,6 @@ public class BackendFilmprojectApplication {
 	}
 	public static void main(String[] args) {
 		SpringApplication.run(BackendFilmprojectApplication.class, args);
-		System.out.println("hello");
 	}
 	@Value("${PAYOS_CLIENT_ID}")
 	private String clientId;

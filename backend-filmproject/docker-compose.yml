@@ -1,53 +1,53 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8081:8080"
+  postgresdb:
+    image: postgres
+    restart: unless-stopped
+    env_file: ./.env
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:sqlserver://sqlserver:1433;databaseName=film;trustServerCertificate=true
-      - SPRING_DATASOURCE_USERNAME=sa
-      - SPRING_DATASOURCE_PASSWORD=hoang2k3ql1@
-    depends_on:
-      - sqlserver
-    restart: always
-    networks:
-      - mynetwork
-
-  sqlserver:
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    restart: always
-    environment:
-      - SA_PASSWORD=hoang2k3ql1@
-      - ACCEPT_EULA=Y
+      - POSTGRES_USER=$POSTGRESDB_USER
+      - POSTGRES_PASSWORD=$POSTGRESDB_ROOT_PASSWORD
+      - POSTGRES_DB=$POSTGRESDB_DATABASE
     ports:
-      - "1434:1433"
+      - $POSTGRESDB_LOCAL_PORT:$POSTGRESDB_DOCKER_PORT
     volumes:
-      - sqlserver-data:/var/opt/mssql
-    entrypoint:
-      - /bin/bash
-      - -c
-      - |
-        /opt/mssql/bin/sqlservr --accept-eula &
-        sleep 30
-        /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P hoang2k3ql1@ -Q "CREATE DATABASE film"
-        wait
-    networks:
-      - mynetwork
-    healthcheck:
-      test: [ "CMD", "nc", "-z", "localhost", "1433" ]
-      interval: 10s
-      retries: 5
-      start_period: 30s
-      timeout: 10s
+      - db:/var/lib/postgres
+  app:
+    depends_on:
+      - postgresdb
+    build: .
+    restart: on-failure
+    env_file: ./.env
+    ports:
+      - $SPRING_LOCAL_PORT:$SPRING_DOCKER_PORT
+    environment:
+      SPRING_APPLICATION_JSON: '{
+        "spring.datasource.url"  : "jdbc:postgresql://postgresdb:$POSTGRESDB_DOCKER_PORT/$POSTGRESDB_DATABASE",
+        "spring.datasource.username" : "$POSTGRESDB_USER",
+        "spring.datasource.password" : "$POSTGRESDB_ROOT_PASSWORD",
+        "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.PostgreSQLDialect",
+        "spring.jpa.hibernate.ddl-auto" : "update",
+        "spring.jpa.generate-ddl" : "true",
+        "spring.jpa.show-sql" : "true",
+        "jwt.secret" : "secret",
+        "jwt.expiration" :"36000",
+        "jwt.accessTokenCookieName" : "FilmToken",
+        "spring.session.jdbc.initialize-schema" :"always",
+        "spring.session.store-type" :"jdbc",
+        "spring.session.jdbc.schema" :"classpath:org/springframework/session/jdbc/schema-@@platform@@.sql",
+        "spring.session.jdbc.table-name" :"SPRING_SESSION",
+        "server.servlet.session.cookie.http-only" :"true",
+        "server.servlet.session.timeout" :"20m",
+        "server.servlet.session.cookie.same-site" :"none",
+        "PAYOS_CLIENT_ID" :"5cd4dbe7-86e7-41e1-9bd0-d0482ac14f9c",
+        "PAYOS_API_KEY" :"80583c18-44ab-462c-a64c-c990c6d46c34",
+        "PAYOS_CHECKSUM_KEY" :"$CHECK_SUM"
+      }'
+    volumes:
+      - .m2:/root/.m2
+    stdin_open: true
+    tty: true
 
 volumes:
-  sqlserver-data:
-    driver: local
-
-networks:
-  mynetwork:
-    driver: bridge
+  db:

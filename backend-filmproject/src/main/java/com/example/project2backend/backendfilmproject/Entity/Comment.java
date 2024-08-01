@@ -30,10 +30,10 @@ public class Comment {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "time",columnDefinition = "datetime")
+    @Column(name = "time")
     private Timestamp time;
 
-    @Column(columnDefinition = "nvarchar(max)")
+    @Column(columnDefinition = "text")
     private String content;
 
     public Comment(Episode episode, User user, Timestamp time, String content) {

@@ -26,17 +26,16 @@ public class RoleServiceImpl implements RoleService{
     private final RoleRepository roleRepository;
     private final UserRoleRepository userRoleRepository;
     private final TypeRepository typeRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserService userService;
-    public RoleServiceImpl(RoleRepository roleRepository, UserRoleRepository userRoleRepository, TypeRepository typeRepository, PasswordEncoder passwordEncoder, UserService userService, UserRepository userRepository) {
+    public RoleServiceImpl(RoleRepository roleRepository, UserRoleRepository userRoleRepository, TypeRepository typeRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.roleRepository = roleRepository;
         this.userRoleRepository = userRoleRepository;
         this.typeRepository = typeRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.userService = userService;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
-    private final UserRepository userRepository;
+
     @Override
     public Optional<Role> getByName(ERole name) {
         return roleRepository.findByName(name);
@@ -55,12 +54,12 @@ public class RoleServiceImpl implements RoleService{
 
     @Override
     public void createRoleAndType() {
-        for (ERole eRole : ERole.values()) {
+        for (ERole eColor : ERole.values()) {
 
-            if (roleRepository.findByName(eRole) == null) {
-                Role role = new Role();
-                role.setName(eRole);
-                roleRepository.save(role);
+            if (roleRepository.findByName(eColor) == null) {
+                Role color = new Role();
+                color.setName(eColor);
+                roleRepository.save(color);
             }
         }
         for (EType eType : EType.values()) {
@@ -71,32 +70,33 @@ public class RoleServiceImpl implements RoleService{
                 typeRepository.save(type);
             }
         }
-    }
-    @Override
-    public void createRole() {
-        for (ERole eRole : ERole.values()) {
-            int i=1;
-            if (roleRepository.findByName(eRole) == null) {
-                Role role = new Role();
-                role.setName(eRole);
-                roleRepository.save(role);
-                System.out.println(i++);
-            }
+        if(roleRepository.findByName(ERole.ROLE_ADMIN).isEmpty()){
+            Role role= new Role();
+            role.setName(ERole.ROLE_ADMIN);
+            roleRepository.save(role);
         }
-        String adminAccount= "admin";
-        if(userRepository.findByAccount(adminAccount).isEmpty()) {
-            User user = new User();
-            user.setId("Adminnn");
-            user.setAccount(adminAccount);
+        if(roleRepository.findByName(ERole.ROLE_USER).isEmpty()){
+            Role role= new Role();
+            role.setName(ERole.ROLE_USER);
+            roleRepository.save(role);
+        }
+        if(roleRepository.findByName(ERole.ROLE_VIP).isEmpty()){
+            Role role= new Role();
+            role.setName(ERole.ROLE_VIP);
+            roleRepository.save(role);
+        }
+        if(userRepository.findByAccount("admin").isEmpty()){
+            User user= new User();
+            user.setId("admin");
+            user.setHasProvider(false);
+            user.setAccount("admin");
             user.setPassword(passwordEncoder.encode("123"));
-//            user.setEmail(registerUser.getEmail());
             user.setName("admin");
             Set<Role> roles = new HashSet<>();
             roles.add(getByName(ERole.ROLE_ADMIN).get());
 
             user.setRoles(roles);
-            userService.save(user);
-            System.out.println("abc");
+            userRepository.save(user);
         }
     }
 }

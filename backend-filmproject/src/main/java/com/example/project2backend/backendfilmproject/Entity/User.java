@@ -39,10 +39,10 @@ public class User {
     @Column(name = "has_provider")
     private boolean hasProvider;
 
-    @Column(name = "avatar",columnDefinition = "nvarchar(max)")
+    @Column(name = "avatar",columnDefinition = "text")
     private String avatar;
 
-    @Column(name="name",columnDefinition = "nvarchar(70)")
+    @Column(name="name",columnDefinition = "text")
     private String name;
 
     @Column(name = "age")

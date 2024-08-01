@@ -18,13 +18,13 @@ public class Character {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "nvarchar(500)")
+    @Column(columnDefinition = "text")
     private String name;
 
-    @Column(columnDefinition = "nvarchar(200)")
+    @Column(columnDefinition = "text")
     private String role;
 
-    @Column(columnDefinition = "varchar(max)")
+    @Column(columnDefinition = "text")
     private String image;
 
     @JsonIgnore

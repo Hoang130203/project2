@@ -22,11 +22,11 @@ public class Film {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "film_name",columnDefinition = "nvarchar(1000)")
+    @Column(name = "film_name",columnDefinition = "text")
     private String name;
 
     @JsonIgnore
-    @Column(name = "trailer_url",columnDefinition = "varchar(max)")
+    @Column(name = "trailer_url",columnDefinition = "text")
     private String trailer;
 
     @JsonIgnore
@@ -35,21 +35,21 @@ public class Film {
     private ECountry country;
 
     @JsonIgnore
-    @Column(name = "film_description",columnDefinition = "nvarchar(max)")
+    @Column(name = "film_description",columnDefinition = "text")
     private String description;
 
     @Column(name = "is_movie")
     private boolean isMovie;
 
-    @Column(name = "image_url",columnDefinition = "varchar(max)")
+    @Column(name = "image_url",columnDefinition = "text")
     private String image;
 
     @JsonIgnore
-    @Column(name = "background_image",columnDefinition = "varchar(max)")
+    @Column(name = "background_image",columnDefinition = "text")
     private String background;
 
     @JsonIgnore
-    @Column(name = "film_author",columnDefinition = "nvarchar(500)")
+    @Column(name = "film_author",columnDefinition = "text")
     private String author;
 
     @Column(name = "year")

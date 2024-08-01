@@ -13,5 +13,4 @@ public interface RoleService {
     List<UserRole> getByUser(User user);
     void deleleVipUser(User user);
     void createRoleAndType();
-    void createRole();
 }

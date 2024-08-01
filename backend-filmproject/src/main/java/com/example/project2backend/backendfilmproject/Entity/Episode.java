@@ -22,14 +22,14 @@ public class Episode {
     private Long id;
 
 //    @JsonIgnore
-    @Column(columnDefinition = "nvarchar(max)")
+    @Column(columnDefinition = "text")
     private String description;
 
     private int serial;
 
     private Long views;
 
-    @Column(columnDefinition = "varchar(max)")
+    @Column(columnDefinition = "text")
     private String image;
 
     @JsonIgnore
@@ -43,7 +43,7 @@ public class Episode {
     @Column(name = "vip_require")
     private boolean vipRequire;
 
-    @Column(name="film_url",columnDefinition = "varchar(max)")
+    @Column(name="film_url",columnDefinition = "text")
     private String url;
 
     public Episode(String description, int serial, Long views, String image, Film film, boolean vipRequire,String url) {
